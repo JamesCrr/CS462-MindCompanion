@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/core';
 
 import {IArticleOptions} from '../constants/types';
@@ -6,6 +6,7 @@ import {useData, useTheme, useTranslation} from '../hooks/';
 import {Block, Button, Image, Product, Text, Article, EventDetails} from '../components/';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { userJoinEvent } from '../../api/event';
+import { UserContext } from '../hooks/userContext';
 
 const Rental = () => {
   const {article} = useData();
@@ -18,19 +19,20 @@ const Rental = () => {
   // Retrieve rentalId from route parameters
   const {eventId} = route.params;
   const [selectedMeetUpLocation, setSelectedMeetUpLocation] = useState<string | null>(null);
+  const { identity, retrieveIdentity } = useContext(UserContext);
 
 
-  const retrieveIdentity = async () => {
-    try {
-      const userData = await AsyncStorage.getItem("user");
-      if (!userData) {
-        throw new Error("User not found");
-      }
-      return userData;
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  // const retrieveIdentity = async () => {
+  //   try {
+  //     const userData = await AsyncStorage.getItem("user");
+  //     if (!userData) {
+  //       throw new Error("User not found");
+  //     }
+  //     return userData;
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // };
 
 
   const handleRegister = async () => {

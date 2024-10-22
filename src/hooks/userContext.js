@@ -15,6 +15,7 @@ export const UserProvider = ({children}) => {
           setIdentity(parsed);
         }
       }
+      return userData;
     } catch (e) {
       console.error('Error retrieving identity:', e);
     }
