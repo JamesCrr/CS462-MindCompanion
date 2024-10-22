@@ -2,13 +2,13 @@ import React, {useContext, useEffect, useState} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/core';
 
 import {IArticleOptions} from '../constants/types';
-import {useData, useTheme, useTranslation} from '../hooks/';
-import {Block, Button, Image, Product, Text, Article, EventDetails} from '../components/';
+import {useData, useTheme, useTranslation} from '../hooks';
+import {Block, Button, Image, Product, Text, Article, EventDetails} from '../components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { userJoinEvent } from '../../api/event';
 import { UserContext } from '../hooks/userContext';
 
-const Rental = () => {
+const MyEvent = () => {
   const {article} = useData();
   const {t} = useTranslation();
   const navigation = useNavigation();
@@ -90,4 +90,4 @@ const Rental = () => {
   );
 };
 
-export default Rental;
+export default MyEvent;

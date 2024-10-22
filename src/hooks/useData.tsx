@@ -128,22 +128,6 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
     [notifications, setNotifications],
   );
 
-
-  const retrieveIdentity = async () => {
-    try {
-      const userData = await AsyncStorage.getItem("user");
-      if (!userData) {
-        return;
-      }
-      const parsed: IUser = JSON.parse(userData);
-      if (parsed !== null) {
-        setIdentity(parsed);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   // Fetch events from Firestore and map to articles
   const fetchEvents = useCallback(async () => {
     console.log("Fetching events...");

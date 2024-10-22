@@ -10,6 +10,7 @@ import Article from './Article';
 import Product from './Product';
 import Calendar from './Calendar';
 import EventDetails from './EventDetails';
+import MyEventCard from './MyEventCard';
 
 export {
   Block,
@@ -24,4 +25,5 @@ export {
   Modal,
   Calendar,
   EventDetails,
+  MyEventCard
 };

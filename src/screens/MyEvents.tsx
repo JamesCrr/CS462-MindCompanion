@@ -2,9 +2,12 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {FlatList} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 
-import {useData, useTheme, useTranslation} from '../hooks/';
+import {useData, useTheme, useTranslation} from '../hooks';
 import {IArticle, IEvent2} from '../constants/types';
-import {Block, Button, Input, Image, Article, Text} from '../components/';
+import {Block, Button, Input, Image, Article, Text, MyEventCard } from '../components';
+import { useContext } from 'react';
+import { UserContext } from '../hooks/userContext';
+import { fetchAllEventsOfUser } from '../../api/event';
 
 const RentalHeader = () => {
   const {t} = useTranslation();
@@ -17,55 +20,11 @@ const RentalHeader = () => {
         align="center"
         justify="space-around"
         marginVertical={sizes.s}>
-        {/* <Block flex={0}>
-          <Button
-            flex={0}
-            gradient={gradients.primary}
-            radius={sizes.socialRadius}>
-            <Image source={assets.flight} radius={0} />
-          </Button>
-          <Text center marginTop={sizes.s} semibold>
-            {t('rentals.flight')}
-          </Text>
-        </Block>
-        <Block flex={0}>
-          <Button
-            flex={0}
-            gradient={gradients.info}
-            radius={sizes.socialRadius}>
-            <Image source={assets.hotel} radius={0} />
-          </Button>
-          <Text center marginTop={sizes.s} semibold>
-            {t('rentals.hotel')}
-          </Text>
-        </Block>
-        <Block flex={0}>
-          <Button
-            flex={0}
-            gradient={gradients.warning}
-            radius={sizes.socialRadius}>
-            <Image source={assets.train} radius={0} />
-          </Button>
-          <Text center marginTop={sizes.s} semibold>
-            {t('rentals.train')}
-          </Text>
-        </Block>
-        <Block flex={0}>
-          <Button
-            flex={0}
-            gradient={gradients.dark}
-            radius={sizes.socialRadius}>
-            <Image source={assets.more} radius={0} />
-          </Button>
-          <Text center marginTop={sizes.s} semibold>
-            {t('common.more')}
-          </Text>
-        </Block> */}
       </Block>
       <Block row flex={0} align="center" justify="space-between">
         <Text h5 semibold>
           {/* {t('common.recommended')} */}
-          Our Events
+          My Events
         </Text>
         <Button>
           {/* <Text p primary semibold>
@@ -80,7 +39,7 @@ const RentalHeader = () => {
   );
 };
 
-const Rentals = () => {
+const MyEvents = () => {
   const data = useData();
   const {t} = useTranslation();
   const {handleArticle} = data;
@@ -88,14 +47,36 @@ const Rentals = () => {
   const {colors, sizes} = useTheme();
   const [notFound, setNotFound] = useState(false);
   const [search, setSearch] = useState('');
+
+  const { identity, retrieveIdentity } = useContext(UserContext );
   // const [recommendations, setRecommendations] = useState<IArticle[]>([]);
   const [events, setEvents] = useState<IEvent2[]>([]);
 
   // init recommendations list
   useEffect(() => {
     // setRecommendations(data?.recommendations);
-    setEvents(data?.events);
+    fetchEvents();
+    // setEvents(data?.events);
   }, [data?.events]);
+
+  const fetchEvents = async () => {
+    // setLoading(true);
+    try {
+      console.log("identity", identity.uid);
+      const fetchedEvents = await fetchAllEventsOfUser(identity.uid);
+      console.log("fetchedEvents", fetchedEvents);
+      if (fetchedEvents == null) {
+        console.log("Failed to fetch events");
+        throw new Error("Failed to fetch events");
+      } else {
+        setEvents(fetchedEvents);
+      }
+    } catch (error) {
+      console.error("Failed to fetch events:", error);
+    } finally {
+      // setLoading(false);
+    }
+  };
 
   const handleRental = useCallback(
     (article: IEvent2) => {
@@ -151,11 +132,11 @@ const Rentals = () => {
         style={{paddingHorizontal: sizes.padding}}
         contentContainerStyle={{paddingBottom: sizes.l}}
         renderItem={({item}) => (
-          <Article {...item} onPress={() => handleRental(item)} />
+          <MyEventCard {...item} onPress={() => handleRental(item)} />
         )}
       />
     </Block>
   );
 };
 
-export default Rentals;
+export default MyEvents;

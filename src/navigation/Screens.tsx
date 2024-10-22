@@ -20,6 +20,8 @@ import {
   Settings,
   Shopping,
   NotificationsSettings,
+  MyEvents, 
+  MyEvent,
 } from '../screens';
 import { useNavigation } from '@react-navigation/native';
 
@@ -77,33 +79,54 @@ export default () => {
       />
 
 
+      <Stack.Screen
+        name="Rentals"
+        component={Rentals}
+        options={{
+          title: t('navigation.events'),
+          ...screenOptions.profile,
+          headerRight: () => (
+            identity ? (
+              <TouchableOpacity
+                onPress={() => navigation.navigate('MyEvents', {userId: identity.uid})}
+              >
+                <Text style={{color: 'blue', marginRight: 10}}>My Events</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Login')}  // Navigate to Login screen
+              >
+                <Text style={{color: 'blue', marginRight: 10}}>Log In</Text>
+              </TouchableOpacity>
+            )
+          ),
+        }}
+      /> 
+
     <Stack.Screen
-      name="Rentals"
-      component={Rentals}
-      options={{
-        title: t('navigation.events'),
-        ...screenOptions.profile,
-        headerRight: () => (
-          identity ? (
-            <TouchableOpacity
-              onPress={() => console.log('Profile')}  // Can navigate to the Profile page or another screen
-            >
-              <Text style={{color: 'blue', marginRight: 10}}>Profile</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Login')}  // Navigate to Login screen
-            >
-              <Text style={{color: 'blue', marginRight: 10}}>Log In</Text>
-            </TouchableOpacity>
-          )
-        ),
-      }}
-    />
-        
+        name="MyEvents"
+        component={MyEvents}
+        options={{
+          title: t('navigation.events'),
+          ...screenOptions.profile,
+          headerRight: () => (
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Rentals')}
+              >
+                <Text style={{color: 'blue', marginRight: 10}}>My Events</Text>
+              </TouchableOpacity>
+          ),
+        }}
+      /> 
+
       <Stack.Screen
         name="Rental"
         component={Rental}
+        options={{title: t('navigation.eventDetails'), ...screenOptions.rental}}
+      />
+      <Stack.Screen
+        name="MyEvent"
+        component={MyEvent}
         options={{title: t('navigation.eventDetails'), ...screenOptions.rental}}
       />
       <Stack.Screen
