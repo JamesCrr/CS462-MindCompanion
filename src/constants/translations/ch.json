@@ -1,0 +1,190 @@
+{
+  "common": {
+    "appDetails": "应用详情",
+    "appName": "应用名称",
+    "appVersion": "应用版本",
+    "buildVersion": "构建版本",
+    "expoVersion": "Expo 版本",
+    "about": "关于",
+    "visit": "访问",
+    "posted": "发布于 {{date}}",
+    "recommended": "为您推荐",
+    "viewall": "查看全部",
+    "more": "更多",
+    "follow": "关注",
+    "followed": "已关注",
+    "search": "搜索",
+    "night": "夜晚",
+    "day": "白天",
+    "booknow": "立即预订",
+    "selectDate": "选择日期",
+    "checkInOut": "入住 & 退房",
+    "adults": "成人",
+    "roomType": "房型",
+    "luxury": "豪华",
+    "message": "输入您的信息",
+    "album": "相册",
+    "or": "或者",
+    "name": "姓名",
+    "namePlaceholder": "输入您的全名",
+    "email": "邮箱",
+    "emailPlaceholder": "输入您的电子邮箱",
+    "password": "密码",
+    "passwordPlaceholder": "输入密码",
+    "agree": "我同意 ",
+    "terms": "条款和条件",
+    "signup": "注册",
+    "signin": "登录",
+    "goBack": "返回",
+    "inStock": "有库存",
+    "outStock": "无库存",
+    "addToCart": "加入购物车",
+    "checkout": "去结算",
+    "readArticle": "阅读文章",
+    "OurEvents": "我们的活动",
+    "send": "发送",
+    "guests": {
+      "one": "1 位客人",
+      "other": "{{count}} 位客人",
+      "zero": "0 位客人"
+    }
+  },
+  "app": {
+    "name": "Soft UI",
+    "fullname": "Soft UI Kit",
+    "native": "React Native",
+    "link": "creative-tim.com"
+  },
+  "darkMode": "夜间模式",
+  "screens": {
+    "home": "首页",
+    "components": "组件",
+    "articles": "文章",
+    "event": "活动",
+    "eventDetails": "活动详情",
+    "profile": "个人资料",
+    "settings": "设置",
+    "register": "创建账户",
+    "extra": "额外 - 汽车"
+  },
+  "navigation": {
+    "home": "Soft UI",
+    "components": "组件",
+    "articles": "Soft UI",
+    "rentals": "活动",
+    "events": "活动",
+    "event": "最佳优惠",
+    "eventDetails": "活动详情",
+    "booking": "预订",
+    "chat": "聊天",
+    "profile": "个人资料",
+    "settings": "设置",
+    "notifications": "通知",
+    "agreement": "用户协议",
+    "about": "关于",
+    "privacy": "隐私",
+    "register": "注册",
+    "login": "登录",
+    "extra": "汽车",
+    "shopping": "购物车"
+  },
+  "menu": {
+    "started": "入门",
+    "documentation": "文档", 
+    "logout": "登出",
+    "login": "登录"
+  },
+  "home": {
+    "title": "Soft UI",
+    "following": "关注",
+    "trending": "趋势"
+  },
+  "extras": {
+    "title1": "想在购买前试用",
+    "title2": "一下吗？",
+    "description": "首先，这并不意味着今年夏天会有创纪录数量的冰融化。",
+    "schedule": "安排试驾：",
+    "available": "可用",
+    "unavailable": "不可用",
+    "save": "保存以供稍后使用",
+    "saved": "已保存",
+    "book": "预订",
+    "booked": "已预订",
+    "contactUs": "联系我们"
+  },
+  "register": {
+    "title": "欢迎",
+    "subtitle": "注册"
+  },
+  "login": {
+    "title": "欢迎",
+    "subtitle": "登录"
+  },
+  "settings": {
+    "recommended": {
+      "title": "推荐设置",
+      "subtitle": "这是最重要的设置",
+      "faceid": "使用 FaceID 登录",
+      "autolock": "自动锁定安全",
+      "notifications": "通知",
+      "darkmode": "夜间模式",
+      "language": "语言"
+    },
+    "payment": {
+      "title": "支付设置",
+      "subtitle": "这些是支付设置",
+      "options": "管理支付选项",
+      "giftcards": "管理礼品卡"
+    },
+    "privacy": {
+      "title": "隐私设置",
+      "subtitle": "第三重要的设置",
+      "agreement": "用户协议",
+      "privacy": "隐私",
+      "about": "关于"
+    },
+    "notifications": {
+      "title": "通知设置",
+      "subtitle": "这是最重要的设置",
+      "mentions": "有人提到我",
+      "follows": "有人关注我",
+      "comments": "有人评论我",
+      "offers": "新优惠"
+    }
+  },
+  "event": {
+    "title": "Soft UI",
+    "flight": "航班",
+    "hotel": "酒店",
+    "train": "火车",
+    "availability": "检查可用性",
+    "interested": "您可能还对以下内容感兴趣",
+    "viewoffer": "查看优惠",
+    "notFound1": "我们没有找到 ",
+    "notFound2": " 在我们的应用中。",
+    "moreOptions": "您可以从其他类别中查看更多选项。", 
+    "joinEvent": "加入活动"
+  },
+  "profile": {
+    "title": "个人资料",
+    "posts": "帖子",
+    "followers": "粉丝",
+    "following": "关注",
+    "aboutMe": "关于我"
+  },
+  "notifications": {
+    "title": "通知",
+    "read": "已读通知",
+    "unread": "未读通知",
+    "personal": "个人",
+    "business": "商业"
+  },
+  "shop": {
+    "subtotal": {
+      "one": "购物车小计（1 件商品）",
+      "other": "购物车小计（{{count}} 件商品）",
+      "zero": "购物车小计（0 件商品）"
+    },
+    "alsoShopped": "购买您购物车中的商品的客户也购买了"
+  }
+}
