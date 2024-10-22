@@ -25,28 +25,31 @@ import { useNavigation } from '@react-navigation/native';
 
 import {useScreenOptions, useTranslation} from '../hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserContext } from '../hooks/userContext';
+import { useContext } from 'react';
 
 const Stack = createStackNavigator();
 
 export default () => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+  const { identity, retrieveIdentity } = useContext(UserContext );
   const screenOptions = useScreenOptions();
-  const [identity, setIdentity] = useState(null);
+  // const [identity, setIdentity] = useState(null);
 
-  const retrieveIdentity = async () => {
-    try {
-      const userData = await AsyncStorage.getItem('user');
-      if (userData) {
-        const parsed = JSON.parse(userData);
-        if (parsed) {
-          setIdentity(parsed); // Set identity if the user data is found
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  // const retrieveIdentity = async () => {
+  //   try {
+  //     const userData = await AsyncStorage.getItem('user');
+  //     if (userData) {
+  //       const parsed = JSON.parse(userData);
+  //       if (parsed) {
+  //         setIdentity(parsed); // Set identity if the user data is found
+  //       }
+  //     }
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // };
 
   // Call retrieveIdentity when the component is mounted
   useEffect(() => {

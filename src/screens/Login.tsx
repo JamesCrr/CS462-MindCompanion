@@ -1,52 +1,35 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState, useContext} from 'react';
 import {Linking, Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
-
 import {useData, useTheme, useTranslation} from '../hooks/';
 import * as regex from '../constants/regex';
 import {Block, Button, Input, Image, Text, Checkbox} from '../components/';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
-import { db } from '../../config/firebaseConfig'; // Import db from your config file
+import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
+import {getFirestore, doc, getDoc} from 'firebase/firestore';
+import {db} from '../../config/firebaseConfig'; // Import db from your config file
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {UserContext} from '../hooks/userContext'; // Import UserContext
 
 const isAndroid = Platform.OS === 'android';
-
-interface ILogin {
-  email: string;
-  password: string;
-  agreed: boolean;
-}
-interface ILoginValidation {
-  email: boolean;
-  password: boolean;
-  agreed: boolean;
-}
 
 const Login = () => {
   const {isDark} = useData();
   const {t} = useTranslation();
   const navigation = useNavigation();
-  const [isValid, setIsValid] = useState<ILoginValidation>({
+  const {login} = useContext(UserContext); // Use login from UserContext
+
+  const [isValid, setIsValid] = useState({
     email: false,
     password: false,
     agreed: false,
   });
-  const [login, setLoginData] = useState<ILogin>({
+  const [loginData, setLoginData] = useState({
     email: '',
     password: '',
     agreed: false,
   });
 
   const auth = getAuth();
-
-  const [userData, setUserData] = React.useState({
-    type: "",
-    email: "",
-    password: "",
-    displayName: ""
-  });
-
   const {assets, colors, gradients, sizes} = useTheme();
 
   const handleChange = useCallback(
@@ -57,38 +40,49 @@ const Login = () => {
   );
 
   const handleSignIn = useCallback(async () => {
-    /** send/save registratin data */
-    // console.log('handleSignIn', login);
-    let userCredential;
-    let userType = userData.type;
+    try {
+      // Sign in the user
+      const userCredential = await signInWithEmailAndPassword(auth, loginData.email, loginData.password);
+      
+      // Retrieve user data from Firestore
+      const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
+      let userType = '';
+      let displayName = '';
 
+      if (userDoc.exists()) {
+        userType = userDoc.data().type;
+        displayName = userDoc.data().displayName;
+      } else {
+        throw new Error('User data not found');
+      }
 
-    userCredential = await signInWithEmailAndPassword(auth, login.email, login.password);
-    const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
-    if (userDoc.exists()) {
-      userType = userDoc.data().type;
-      userData.displayName = userDoc.data().displayName;
-    } else {
-      throw new Error("User data not found");
+      // Create the user object
+      const user = {
+        email: userCredential.user.email,
+        type: userType,
+        displayName: displayName,
+        uid: userCredential.user.uid,
+      };
+
+      // Store user info in AsyncStorage and update global state via UserContext
+      await login(user);  // Call login function from UserContext
+
+      // Navigate to home or wherever you need
+      navigation.navigate('Home');
+
+    } catch (error) {
+      console.error('Error during sign in:', error);
     }
-
-    // Store user info in AsyncStorage
-    const user = { email: userCredential.user.email, type: userType, displayName: userData.displayName, uid: userCredential.user.uid };
-    await AsyncStorage.setItem("user", JSON.stringify(user));
-
-    navigation.navigate('Home');
-    // navigation.navigate('Rental', {rentalId: 1});
-
-  }, [login]);
+  }, [loginData, login, navigation]);
 
   useEffect(() => {
     setIsValid((state) => ({
       ...state,
-      email: regex.email.test(login.email),
-      password: login.password.length > 0,
-      agreed: login.agreed,
+      email: regex.email.test(loginData.email),
+      password: loginData.password.length > 0,
+      agreed: loginData.agreed,
     }));
-  }, [login, setIsValid]);
+  }, [loginData, setIsValid]);
 
   return (
     <Block safe marginTop={sizes.md}>
@@ -133,8 +127,7 @@ const Login = () => {
             flex={0}
             radius={sizes.sm}
             marginHorizontal="8%"
-            shadow={!isAndroid} // disabled shadow on Android due to blur overlay + elevation issue
-          >
+            shadow={!isAndroid}>
             <Block
               blur
               flex={0}
@@ -174,32 +167,12 @@ const Login = () => {
                   />
                 </Button>
               </Block>
-              <Block
-                row
-                flex={0}
-                align="center"
-                justify="center"
-                marginBottom={sizes.sm}
-                paddingHorizontal={sizes.xxl}>
-                <Block
-                  flex={0}
-                  height={1}
-                  width="50%"
-                  end={[1, 0]}
-                  start={[0, 1]}
-                  gradient={gradients.divider}
-                />
+              <Block row flex={0} align="center" justify="center" marginBottom={sizes.sm} paddingHorizontal={sizes.xxl}>
+                <Block flex={0} height={1} width="50%" end={[1, 0]} start={[0, 1]} gradient={gradients.divider} />
                 <Text center marginHorizontal={sizes.s}>
                   {t('common.or')}
                 </Text>
-                <Block
-                  flex={0}
-                  height={1}
-                  width="50%"
-                  end={[0, 1]}
-                  start={[1, 0]}
-                  gradient={gradients.divider}
-                />
+                <Block flex={0} height={1} width="50%" end={[0, 1]} start={[1, 0]} gradient={gradients.divider} />
               </Block>
               {/* form inputs */}
               <Block paddingHorizontal={sizes.sm}>
@@ -209,8 +182,8 @@ const Login = () => {
                   marginBottom={sizes.m}
                   keyboardType="email-address"
                   placeholder={t('common.emailPlaceholder')}
-                  success={Boolean(login.email && isValid.email)}
-                  danger={Boolean(login.email && !isValid.email)}
+                  success={Boolean(loginData.email && isValid.email)}
+                  danger={Boolean(loginData.email && !isValid.email)}
                   onChangeText={(value) => handleChange({email: value})}
                 />
                 <Input
@@ -220,15 +193,15 @@ const Login = () => {
                   marginBottom={sizes.m}
                   placeholder={t('common.passwordPlaceholder')}
                   onChangeText={(value) => handleChange({password: value})}
-                  success={Boolean(login.password && isValid.password)}
-                  danger={Boolean(login.password && !isValid.password)}
+                  success={Boolean(loginData.password && isValid.password)}
+                  danger={Boolean(loginData.password && !isValid.password)}
                 />
               </Block>
               {/* checkbox terms */}
               <Block row flex={0} align="center" paddingHorizontal={sizes.sm}>
                 <Checkbox
                   marginRight={sizes.sm}
-                  checked={login?.agreed}
+                  checked={loginData?.agreed}
                   onPress={(value) => handleChange({agreed: value})}
                 />
                 <Text paddingRight={sizes.s}>

@@ -13,6 +13,9 @@ import Screens from './Screens';
 import {Block, Text, Switch, Button, Image} from '../components';
 import {useData, useTheme, useTranslation} from '../hooks';
 
+import {UserContext} from '../hooks/userContext';
+import { useContext } from 'react';
+
 
 const Drawer = createDrawerNavigator();
 
@@ -67,7 +70,8 @@ const DrawerContent = (props: DrawerContentComponentProps) => {
   const {navigation} = props;
   const {isDark, handleIsDark} = useData();
   // const identity = useData();
-  const [identity, setIdentity] = useState(null)
+  // const [identity, setIdentity] = useState(null)
+  const {identity, logout, retrieveIdentity} = useContext(UserContext); // Use identity and logout from context
   const {t} = useTranslation();
   const [active, setActive] = useState('Home');
   const {assets, colors, gradients, sizes} = useTheme();
@@ -82,31 +86,31 @@ const DrawerContent = (props: DrawerContentComponentProps) => {
     [navigation, setActive],
   );
 
-  async function logout() {
-    try {
-      await AsyncStorage.removeItem('user');
-      handleNavigation('Login')
-      setIdentity(null);
-    } catch (e) {
-      console.log(e);
-    }
-  }
+  // async function logout() {
+  //   try {
+  //     await AsyncStorage.removeItem('user');
+  //     handleNavigation('Login')
+  //     setIdentity(null);
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // }
 
 
-  const retrieveIdentity = async () => {
-    try {
-      const userData = await AsyncStorage.getItem("user");
-      if (!userData) {
-        return;
-      }
-      const parsed = JSON.parse(userData);
-      if (parsed !== null) {
-        setIdentity(parsed);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  // const retrieveIdentity = async () => {
+  //   try {
+  //     const userData = await AsyncStorage.getItem("user");
+  //     if (!userData) {
+  //       return;
+  //     }
+  //     const parsed = JSON.parse(userData);
+  //     if (parsed !== null) {
+  //       setIdentity(parsed);
+  //     }
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // };
 
   useEffect(() => {
     if (isDrawerOpen) {
@@ -215,10 +219,14 @@ const DrawerContent = (props: DrawerContentComponentProps) => {
           justify="flex-start"
           marginTop={sizes.sm}
           marginBottom={sizes.s}
-          onPress={() =>
-            // handleWebLink('https://github.com/creativetimofficial')
-            logout()
-          }>
+          onPress={() => {
+            if (identity) {
+              logout(); // Call logout function from UserContext
+              handleNavigation('Login');
+            } else {
+              handleNavigation('Login');
+            }
+          }}>
           <Block
             flex={0}
             radius={6}

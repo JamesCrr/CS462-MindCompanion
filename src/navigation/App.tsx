@@ -5,6 +5,7 @@ import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import * as SplashScreen from 'expo-splash-screen';
 import Menu from './Menu';
 import {useData, ThemeProvider, TranslationProvider} from '../hooks';
+import { UserProvider } from "../hooks/userContext";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -54,6 +55,7 @@ export default () => {
   };
 
   return (
+    <UserProvider>
     <TranslationProvider>
       <ThemeProvider theme={theme} setTheme={setTheme}>
         <NavigationContainer theme={navigationTheme}>
@@ -61,5 +63,6 @@ export default () => {
         </NavigationContainer>
       </ThemeProvider>
     </TranslationProvider>
+    </UserProvider>
   );
 };
