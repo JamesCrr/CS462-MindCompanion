@@ -1,14 +1,12 @@
-import React, {useCallback, useEffect, useState, useContext} from 'react';
-import {Linking, Platform} from 'react-native';
+import React, {useCallback, useState, useContext} from 'react';
+import {Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 import {useData, useTheme, useTranslation} from '../hooks/';
-import * as regex from '../constants/regex';
-import {Block, Button, Input, Image, Text, Checkbox} from '../components/';
-import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
-import {getFirestore, doc, getDoc} from 'firebase/firestore';
-import {db} from '../../config/firebaseConfig'; // Import db from your config file
+import {Block, Button, Input, Image, Text} from '../components/';
+import {getFirestore, collection, query, where, getDocs} from 'firebase/firestore';
+import {db} from '../../config/firebaseConfig';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {UserContext} from '../hooks/userContext'; // Import UserContext
+import {UserContext} from '../hooks/userContext';
 
 const isAndroid = Platform.OS === 'android';
 
@@ -16,73 +14,83 @@ const Login = () => {
   const {isDark} = useData();
   const {t} = useTranslation();
   const navigation = useNavigation();
-  const {login} = useContext(UserContext); // Use login from UserContext
+  const {login} = useContext(UserContext);
 
-  const [isValid, setIsValid] = useState({
-    email: false,
-    password: false,
-    agreed: false,
-  });
+  const [selectedRole, setSelectedRole] = useState('');
   const [loginData, setLoginData] = useState({
-    email: '',
+    name: '',
     password: '',
-    agreed: false,
   });
+  const [error, setError] = useState('');
 
-  const auth = getAuth();
   const {assets, colors, gradients, sizes} = useTheme();
 
   const handleChange = useCallback(
     (value) => {
       setLoginData((state) => ({...state, ...value}));
+      setError(''); // Clear error when input changes
     },
     [setLoginData],
   );
 
   const handleSignIn = useCallback(async () => {
-    try {
-      // Sign in the user
-      const userCredential = await signInWithEmailAndPassword(auth, loginData.email, loginData.password);
-      
-      // Retrieve user data from Firestore
-      const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
-      let userType = '';
-      let displayName = '';
+    if (!selectedRole || !loginData.name || !loginData.password) {
+      setError('Please fill in all fields and select a role');
+      return;
+    }
 
-      if (userDoc.exists()) {
-        userType = userDoc.data().type;
-        displayName = userDoc.data().displayName;
-      } else {
-        throw new Error('User data not found');
+    try {
+      // Query Firestore for user with matching name and role
+      const usersRef = collection(db, 'users');
+      const q = query(
+        usersRef,
+        where('name', '==', loginData.name),
+        where('role', '==', selectedRole)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      
+      if (querySnapshot.empty) {
+        setError('User not found with selected role');
+        return;
       }
 
-      // Create the user object
+      const userDoc = querySnapshot.docs[0];
+      const userData = userDoc.data();
+
+      // Check password
+      if (userData.password !== loginData.password) {
+        setError('Invalid password');
+        return;
+      }
+
+      // Create user object
       const user = {
-        email: userCredential.user.email,
-        type: userType,
-        displayName: displayName,
-        uid: userCredential.user.uid,
+        name: userData.name,
+        role: userData.role,
+        id: userDoc.id,
       };
 
-      // Store user info in AsyncStorage and update global state via UserContext
-      await login(user);  // Call login function from UserContext
+      // Store user info and update context
+      await login(user);
 
-      // Navigate to home or wherever you need
-      navigation.navigate('Home');
+      // Navigate based on role
+      switch (selectedRole) {
+        // case 'Caregiver':
+        //   navigation.navigate('Caregivers');
+        //   break;
+        // case 'Volunteer':
+        //   navigation.navigate('Volunteers');
+        //   break;
+        default:
+          navigation.navigate('Home');
+      }
 
     } catch (error) {
       console.error('Error during sign in:', error);
+      setError('An error occurred during sign in');
     }
-  }, [loginData, login, navigation]);
-
-  useEffect(() => {
-    setIsValid((state) => ({
-      ...state,
-      email: regex.email.test(loginData.email),
-      password: loginData.password.length > 0,
-      agreed: loginData.agreed,
-    }));
-  }, [loginData, setIsValid]);
+  }, [loginData, selectedRole, login, navigation]);
 
   return (
     <Block safe marginTop={sizes.md}>
@@ -118,7 +126,7 @@ const Login = () => {
             </Text>
           </Image>
         </Block>
-        {/* login form */}
+
         <Block
           keyboard
           marginTop={-(sizes.height * 0.2 - sizes.l)}
@@ -137,94 +145,72 @@ const Login = () => {
               justify="space-evenly"
               tint={colors.blurTint}
               paddingVertical={sizes.sm}>
-              <Text p semibold center>
-                {t('login.subtitle')}
-              </Text>
-              {/* social buttons */}
-              <Block row center justify="space-evenly" marginVertical={sizes.m}>
-                <Button outlined gray shadow={!isAndroid}>
-                  <Image
-                    source={assets.facebook}
-                    height={sizes.m}
-                    width={sizes.m}
-                    color={isDark ? colors.icon : undefined}
-                  />
-                </Button>
-                <Button outlined gray shadow={!isAndroid}>
-                  <Image
-                    source={assets.apple}
-                    height={sizes.m}
-                    width={sizes.m}
-                    color={isDark ? colors.icon : undefined}
-                  />
-                </Button>
-                <Button outlined gray shadow={!isAndroid}>
-                  <Image
-                    source={assets.google}
-                    height={sizes.m}
-                    width={sizes.m}
-                    color={isDark ? colors.icon : undefined}
-                  />
-                </Button>
-              </Block>
-              <Block row flex={0} align="center" justify="center" marginBottom={sizes.sm} paddingHorizontal={sizes.xxl}>
-                <Block flex={0} height={1} width="50%" end={[1, 0]} start={[0, 1]} gradient={gradients.divider} />
-                <Text center marginHorizontal={sizes.s}>
-                  {t('common.or')}
+              
+              {/* Role Selection Buttons */}
+              <Block paddingHorizontal={sizes.sm} marginBottom={sizes.sm}>
+                <Text p semibold marginBottom={sizes.sm}>
+                  Select your role:
                 </Text>
-                <Block flex={0} height={1} width="50%" end={[0, 1]} start={[1, 0]} gradient={gradients.divider} />
+                <Block row flex={0} justify="space-between" marginBottom={sizes.sm}>
+                  {['Staff', 'Caregiver', 'Volunteer'].map((role) => (
+                    <Button
+                      key={role}
+                      flex={0}
+                      width="30%"
+                      gradient={selectedRole === role ? gradients.primary : undefined}
+                      outlined={selectedRole !== role}
+                      onPress={() => setSelectedRole(role)}>
+                      <Text
+                        bold
+                        size={13}
+                        transform="uppercase"
+                        color={selectedRole === role ? colors.white : colors.primary}>
+                        {role}
+                      </Text>
+                    </Button>
+                  ))}
+                </Block>
               </Block>
-              {/* form inputs */}
+
+              {/* Login Form */}
               <Block paddingHorizontal={sizes.sm}>
                 <Input
-                  label={t('common.email')}
+                  label="Name"
                   autoCapitalize="none"
                   marginBottom={sizes.m}
-                  keyboardType="email-address"
-                  placeholder={t('common.emailPlaceholder')}
-                  success={Boolean(loginData.email && isValid.email)}
-                  danger={Boolean(loginData.email && !isValid.email)}
-                  onChangeText={(value) => handleChange({email: value})}
+                  placeholder="Enter your name"
+                  onChangeText={(value) => handleChange({name: value})}
                 />
                 <Input
                   secureTextEntry
-                  label={t('common.password')}
+                  label="Password"
                   autoCapitalize="none"
                   marginBottom={sizes.m}
-                  placeholder={t('common.passwordPlaceholder')}
+                  placeholder="Enter your password"
                   onChangeText={(value) => handleChange({password: value})}
-                  success={Boolean(loginData.password && isValid.password)}
-                  danger={Boolean(loginData.password && !isValid.password)}
                 />
               </Block>
-              {/* checkbox terms */}
-              <Block row flex={0} align="center" paddingHorizontal={sizes.sm}>
-                <Checkbox
-                  marginRight={sizes.sm}
-                  checked={loginData?.agreed}
-                  onPress={(value) => handleChange({agreed: value})}
-                />
-                <Text paddingRight={sizes.s}>
-                  {t('common.agree')}
-                  <Text
-                    semibold
-                    onPress={() => {
-                      Linking.openURL('https://www.creative-tim.com/terms');
-                    }}>
-                    {t('common.terms')}
-                  </Text>
+
+              {/* Error Message */}
+              {error ? (
+                <Text p color={colors.danger} center marginBottom={sizes.sm}>
+                  {error}
                 </Text>
-              </Block>
+              ) : null}
+
+              {/* Sign In Button */}
               <Button
                 onPress={handleSignIn}
                 marginVertical={sizes.s}
                 marginHorizontal={sizes.sm}
                 gradient={gradients.primary}
-                disabled={Object.values(isValid).includes(false)}>
+                disabled={!selectedRole || !loginData.name || !loginData.password}>
                 <Text bold white transform="uppercase">
                   {t('common.signin')}
                 </Text>
               </Button>
+
+              {/* Register Button */}
               <Button
                 primary
                 outlined

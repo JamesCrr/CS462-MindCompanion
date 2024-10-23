@@ -25,6 +25,7 @@ export const UserProvider = ({children}) => {
     try {
       await AsyncStorage.setItem('user', JSON.stringify(user));
       setIdentity(user);  // Update the identity after login
+      console.log(user)
     } catch (e) {
       console.error('Error during login:', e);
     }
