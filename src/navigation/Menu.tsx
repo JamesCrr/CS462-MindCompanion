@@ -175,7 +175,7 @@ const DrawerContent = (props: DrawerContentComponentProps) => {
     >
       <Block paddingHorizontal={sizes.padding}>
         <Block flex={0} row align="center" marginBottom={sizes.l}>
-          <Image radius={0} width={33} height={33} color={colors.text} source={assets.logo} marginRight={sizes.sm} />
+          {/* <Image radius={0} width={33} height={33} color={colors.text} source={assets.logo} marginRight={sizes.sm} />
           <Block>
             <Text size={12} semibold>
               {t("app.name")}
@@ -183,7 +183,7 @@ const DrawerContent = (props: DrawerContentComponentProps) => {
             <Text size={12} semibold>
               {t("app.native")}
             </Text>
-          </Block>
+          </Block> */}
         </Block>
 
         {retrieveDrawerMenuItems()
