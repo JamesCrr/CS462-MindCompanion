@@ -1,8 +1,8 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import Storage from '@react-native-async-storage/async-storage';
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
-import { db } from '../../config/firebaseConfig'; // Import db from your config file
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import Storage from "@react-native-async-storage/async-storage";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { db } from "../../config/firebaseConfig"; // Import db from your config file
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   IArticle,
   ICategory,
@@ -11,11 +11,10 @@ import {
   IUseData,
   IBasket,
   INotification,
-
   ITheme,
   IEvent, // Define your IEvent type
-  IEvent2, 
-} from '../constants/types';
+  IEvent2,
+} from "../constants/types";
 
 import {
   USERS,
@@ -26,8 +25,8 @@ import {
   BASKET,
   NOTIFICATIONS,
   RECOMMENDATIONS,
-} from '../constants/mocks';
-import { light, dark } from '../constants';
+} from "../constants/mocks";
+import { light, dark } from "../constants";
 
 export const DataContext = React.createContext({});
 
@@ -50,7 +49,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   // get isDark mode from storage
   const getIsDark = useCallback(async () => {
     // get preference from storage
-    const isDarkJSON = await Storage.getItem('isDark');
+    const isDarkJSON = await Storage.getItem("isDark");
 
     if (isDarkJSON !== null) {
       // set isDark / compare if has updated
@@ -64,9 +63,9 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
       // set isDark / compare if has updated
       setIsDark(payload);
       // save preference to storage
-      Storage.setItem('isDark', JSON.stringify(payload));
+      Storage.setItem("isDark", JSON.stringify(payload));
     },
-    [setIsDark],
+    [setIsDark]
   );
 
   // handle users / profiles
@@ -77,7 +76,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
         setUsers({ ...users, ...payload });
       }
     },
-    [users, setUsers],
+    [users, setUsers]
   );
 
   // handle basket
@@ -92,7 +91,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
         setBasket({ ...basket, ...payload, subtotal });
       }
     },
-    [basket, setBasket],
+    [basket, setBasket]
   );
 
   // handle user
@@ -103,7 +102,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(payload);
       }
     },
-    [user, setUser],
+    [user, setUser]
   );
 
   // handle Article
@@ -114,7 +113,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
         setArticle(payload);
       }
     },
-    [article, setArticle],
+    [article, setArticle]
   );
 
   // handle Notifications
@@ -125,14 +124,14 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
         setNotifications(payload);
       }
     },
-    [notifications, setNotifications],
+    [notifications, setNotifications]
   );
 
   // Fetch events from Firestore and map to articles
   const fetchEvents = useCallback(async () => {
     console.log("Fetching events...");
     try {
-      const eventsCollection = collection(db, 'events');
+      const eventsCollection = collection(db, "events");
       const eventsSnapshot = await getDocs(eventsCollection);
       // const eventsList = eventsSnapshot.docs.map(doc => doc.data() as IEvent);
       // const articlesList = eventsList.map(event => (
@@ -153,20 +152,22 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
       // console.log("Fetched events: ", articlesList);
       // setEvents(articlesList);
 
-      const eventList = eventsSnapshot.docs.map(doc => {
+      const eventList = eventsSnapshot.docs.map((doc) => {
         const data = doc.data();
-        console.log("Event data:", data, "\n", "docId:", doc.id, "dateTime:", data.datetime);
+        // console.log("Event data:", data, "\n", "docId:", doc.id, "dateTime:", data.datetime);
         const date = new Date(data.datetime.seconds * 1000); // Convert seconds to milliseconds
-        const formattedDate = date.toLocaleString('en-US', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-          hour12: true,
-        }).replace(',', ' -'); // Format the date and time
+        const formattedDate = date
+          .toLocaleString("en-US", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+          })
+          .replace(",", " -"); // Format the date and time
         // const event: IEvent = {
-        //   id: doc.id, 
+        //   id: doc.id,
         //   title: data.title ?? "Untitled Event",
         //   description: data.name ?? "No description available",
         //   category: data.category ?? { id: 0, name: "Uncategorized" },
@@ -180,7 +181,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
         //   onPress: data.onPress ?? (() => {}),
         // };
         const event: IEvent2 = {
-          id: doc.id, 
+          id: doc.id,
           title: data.name ?? "Untitled Event",
           information: data.information ?? "No information available",
           category: data.category ?? { id: 0, name: "Uncategorized" },
@@ -232,7 +233,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
     setCategories,
     events, // Replace recommendations with events
     setEvents, // Add setEvents to context
-    recommendations, 
+    recommendations,
     setRecommendations,
     articles,
     setArticles,
@@ -240,13 +241,11 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
     handleArticle,
     notifications,
     handleNotifications,
-    identity, 
+    identity,
     setIdentity,
   };
 
-  return (
-    <DataContext.Provider value={contextValue}>{children}</DataContext.Provider>
-  );
+  return <DataContext.Provider value={contextValue}>{children}</DataContext.Provider>;
 };
 
 export const useData = () => useContext(DataContext) as IUseData;

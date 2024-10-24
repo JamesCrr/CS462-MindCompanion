@@ -1,33 +1,47 @@
-import React, {useCallback, useState} from 'react';
-
-import {useData, useTheme, useTranslation} from '../hooks/';
-import {Block, Button, Image, Input, Product, Text} from '../components/';
+import React, { useCallback, useState, useEffect, useContext } from "react";
+import { useNavigation } from "@react-navigation/core";
+import { useData, useTheme, useTranslation } from "../hooks/";
+import { Block, Button, Image, Input, Product, Text } from "../components/";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserContext } from "../hooks/userContext";
 
 const Home = () => {
-  const {t} = useTranslation();
-  const [tab, setTab] = useState<number>(0);
-  const {following, trending} = useData();
-  const [products, setProducts] = useState(following);
-  const {assets, colors, fonts, gradients, sizes} = useTheme();
+  // const {t} = useTranslation();
+  // const [tab, setTab] = useState<number>(0);
+  // const {following, trending} = useData();
+  // const [products, setProducts] = useState(following);
+  // const {assets, colors, fonts, gradients, sizes} = useTheme();
 
-  const handleProducts = useCallback(
-    (tab: number) => {
-      setTab(tab);
-      setProducts(tab === 0 ? following : trending);
-    },
-    [following, trending, setTab, setProducts],
-  );
+  // const handleProducts = useCallback(
+  //   (tab: number) => {
+  //     setTab(tab);
+  //     setProducts(tab === 0 ? following : trending);
+  //   },
+  //   [following, trending, setTab, setProducts],
+  // );
+
+  const navigation = useNavigation();
+  const { identity } = useContext(UserContext);
+
+  useEffect(() => {
+    console.log("identity:", identity);
+    if (identity == null) {
+      navigation.replace("Login");
+    }
+  }, []);
 
   return (
     <Block>
+      {identity && <Text h5={true}>Current role is {identity["type"]}</Text>}
+      <Text p={true}>Should render the Calender Component here. Change actions permitted based on role</Text>
+
       {/* search input */}
-      <Block color={colors.card} flex={0} padding={sizes.padding}>
+      {/* <Block color={colors.card} flex={0} padding={sizes.padding}>
         <Input search placeholder={t('common.search')} />
-      </Block>
+      </Block> */}
 
       {/* toggle products list */}
-      <Block
+      {/* <Block
         row
         flex={0}
         align="center"
@@ -81,10 +95,10 @@ const Home = () => {
             </Text>
           </Block>
         </Button>
-      </Block>
+      </Block> */}
 
       {/* products list */}
-      <Block
+      {/* <Block
         scroll
         paddingHorizontal={sizes.padding}
         showsVerticalScrollIndicator={false}
@@ -94,7 +108,7 @@ const Home = () => {
             <Product {...product} key={`card-${product?.id}`} />
           ))}
         </Block>
-      </Block>
+      </Block> */}
     </Block>
   );
 };
