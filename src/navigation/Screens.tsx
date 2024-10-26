@@ -22,8 +22,7 @@ import {
   NotificationsSettings,
   MyEvents,
   MyEvent,
-  AddEvent
-  
+  StaffCalendar,
 } from "../screens";
 import { useNavigation } from "@react-navigation/native";
 
@@ -202,6 +201,7 @@ export default () => {
         component={Login}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="StaffCalendar" component={StaffCalendar} />
 
       <Stack.Screen
         name="Extra"

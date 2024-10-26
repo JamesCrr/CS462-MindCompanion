@@ -167,7 +167,7 @@ const MainCalendar = () => {
 
   return (
     <Block>
-      {identity && <Text h5={true}>Current role is {identity["type"]}</Text>}
+      {/* {identity && <Text h5={true}>Current role is {identity["type"]}</Text>} */}
 
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>

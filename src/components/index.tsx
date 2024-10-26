@@ -11,6 +11,7 @@ import Product from './Product';
 import Calendar from './Calendar';
 import EventDetails from './EventDetails';
 import MyEventCard from './MyEventCard';
+import MainCalendar from './MainCalendar';
 
 export {
   Block,
@@ -25,5 +26,6 @@ export {
   Modal,
   Calendar,
   EventDetails,
-  MyEventCard
+  MyEventCard,
+  MainCalendar
 };

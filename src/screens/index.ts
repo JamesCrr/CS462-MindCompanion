@@ -18,3 +18,4 @@ export {default as Settings} from './Settings';
 export {default as Shopping} from './Shopping';
 export {default as MyEvents} from './MyEvents';
 export {default as MyEvent} from './MyEvent';
+export { default as StaffCalendar } from "./StaffCalendar";

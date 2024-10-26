@@ -1,14 +1,27 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {FlatList} from 'react-native';
-import {useNavigation} from '@react-navigation/core';
+import React, { useCallback, useEffect, useState } from "react";
+import { FlatList } from "react-native";
+import { useNavigation } from "@react-navigation/core";
 
-import {useData, useTheme, useTranslation} from '../hooks/';
-import {IArticle, IEvent2} from '../constants/types';
-import {Block, Button, Input, Image, Article, Text} from '../components/';
+import { useData, useTheme, useTranslation } from "../hooks/";
+import { IArticle, IEvent2 } from "../constants/types";
+import {
+  Block,
+  Button,
+  Input,
+  Image,
+  Article,
+  Text,
+  MainCalendar,
+} from "../components/";
 
 const RentalHeader = () => {
-  const {t} = useTranslation();
-  const {assets, gradients, sizes} = useTheme();
+  const { t } = useTranslation();
+  const { assets, gradients, sizes } = useTheme();
+  const [viewCalendar, setViewCalendar] = useState(false);
+  const navigation = useNavigation();
+  const changeView = () => {
+    navigation.navigate("StaffCalendar");
+  };
   return (
     <>
       <Block
@@ -16,7 +29,8 @@ const RentalHeader = () => {
         flex={0}
         align="center"
         justify="space-around"
-        marginVertical={sizes.s}>
+        marginVertical={sizes.s}
+      >
         {/* <Block flex={0}>
           <Button
             flex={0}
@@ -71,7 +85,7 @@ const RentalHeader = () => {
           {/* <Text p primary semibold>
             {t('common.viewall')}
           </Text> */}
-          <Text p primary semibold>
+          <Text p primary semibold onPress={changeView}>
             View Calendar
           </Text>
         </Button>
@@ -82,12 +96,13 @@ const RentalHeader = () => {
 
 const Rentals = () => {
   const data = useData();
-  const {t} = useTranslation();
-  const {handleArticle} = data;
+  const { t } = useTranslation();
+  const { handleArticle } = data;
   const navigation = useNavigation();
-  const {colors, sizes} = useTheme();
+  const { colors, sizes } = useTheme();
   const [notFound, setNotFound] = useState(false);
-  const [search, setSearch] = useState('');
+
+  const [search, setSearch] = useState("");
   // const [recommendations, setRecommendations] = useState<IArticle[]>([]);
   const [events, setEvents] = useState<IEvent2[]>([]);
 
@@ -100,12 +115,10 @@ const Rentals = () => {
   const handleRental = useCallback(
     (article: IEvent2) => {
       handleArticle(article);
-      navigation.navigate('Rental', {eventId: article.id});
+      navigation.navigate("Rental", { eventId: article.id });
     },
-    [handleArticle, navigation],
+    [handleArticle, navigation]
   );
-
-  
 
   const handleSearch = useCallback(() => {
     setNotFound(true);
@@ -129,14 +142,14 @@ const Rentals = () => {
       {notFound && (
         <Block flex={0} padding={sizes.padding}>
           <Text p>
-            {t('rentals.notFound1')}"
+            {t("rentals.notFound1")}"
             <Text p bold>
               {search}
             </Text>
-            "{t('rentals.notFound2')}
+            "{t("rentals.notFound2")}
           </Text>
           <Text p marginTop={sizes.s}>
-            {t('rentals.moreOptions')}
+            {t("rentals.moreOptions")}
           </Text>
         </Block>
       )}
@@ -148,9 +161,9 @@ const Rentals = () => {
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => `${item?.id}`}
         ListHeaderComponent={() => <RentalHeader />}
-        style={{paddingHorizontal: sizes.padding}}
-        contentContainerStyle={{paddingBottom: sizes.l}}
-        renderItem={({item}) => (
+        style={{ paddingHorizontal: sizes.padding }}
+        contentContainerStyle={{ paddingBottom: sizes.l }}
+        renderItem={({ item }) => (
           <Article {...item} onPress={() => handleRental(item)} />
         )}
       />

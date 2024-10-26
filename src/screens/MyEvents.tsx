@@ -128,7 +128,7 @@ const MyEvents = () => {
           </Text>
         </Block>
       )}
-
+      <MainCalendar />
       {/* rentals list */}
       <FlatList
         data={events}
