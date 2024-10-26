@@ -12,6 +12,7 @@ import { UserContext } from "../hooks/userContext";
 import { format, addDays } from "date-fns";
 import { collection, getDocs, DocumentData } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
+import { useTheme } from "../hooks/";
 
 interface Event {
   name: string;
@@ -28,6 +29,7 @@ interface Event {
 const MainCalendar = () => {
   const navigation = useNavigation();
   const { identity } = useContext(UserContext);
+  const { assets, colors, gradients, sizes } = useTheme();
 
   // Calendar states
   const [events, setEvents] = useState<Event[]>([]);
@@ -108,7 +110,7 @@ const MainCalendar = () => {
       <View style={styles.monthGrid}>
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
           <View key={day} style={styles.dayHeader}>
-            <Text style={styles.dayHeaderText}>{day}</Text>
+            <Text>{day}</Text>
           </View>
         ))}
         {monthDays.map((day, index) => (
@@ -166,35 +168,63 @@ const MainCalendar = () => {
   };
 
   return (
-    <Block>
-      {/* {identity && <Text h5={true}>Current role is {identity["type"]}</Text>} */}
+    <Block row marginVertical={sizes.sm}>
+      <Block card marginHorizontal={sizes.xs}>
+        {/* {identity && <Text h5={true}>Current role is {identity["type"]}</Text>} */}
 
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.title}>Calendar</Text>
-            <View style={styles.navigationButtons}>
-              <Button style={styles.buttons} onPress={prevPeriod}>
-                <Text>&lt;</Text>
-              </Button>
-              <Text>{format(currentDate, "MMMM yyyy")}</Text>
-              <Button style={styles.buttons} onPress={nextPeriod}>
-                <Text>&gt;</Text>
-              </Button>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.container}>
+            <View style={styles.header}>
+              <Text h5>Calendar</Text>
+              <View style={styles.navigationButtons}>
+                <Button gradient={gradients.dark} onPress={prevPeriod}>
+                  <Text
+                    white
+                    bold
+                    transform="uppercase"
+                    marginHorizontal={sizes.sm}
+                  >
+                    &lt;
+                  </Text>
+                </Button>
+
+                <Text paddingHorizontal={sizes.xs}>
+                  {format(currentDate, "MMMM yyyy")}
+                </Text>
+                <Button gradient={gradients.dark} onPress={nextPeriod}>
+                  <Text
+                    white
+                    bold
+                    transform="uppercase"
+                    marginHorizontal={sizes.sm}
+                  >
+                    &gt;
+                  </Text>
+                </Button>
+              </View>
             </View>
+            {renderMonthView()}
+            {/* Only show Add Event button for admin/organizer roles */}
+            {identity && ["Staff", "organizer"].includes(identity.type) && (
+              <Button
+                flex={1}
+                gradient={gradients.success}
+                marginVertical={sizes.base}
+              >
+                <Text white bold transform="uppercase">
+                  Add Event
+                </Text>
+              </Button>
+              // <Button
+              //   style={styles.buttons}
+              //   //   onPress={() => navigation.navigate("AddEvent")}
+              // >
+              //   <Text>Add event</Text>
+              // </Button>
+            )}
           </View>
-          {renderMonthView()}
-          {/* Only show Add Event button for admin/organizer roles */}
-          {identity && ["Staff", "organizer"].includes(identity.type) && (
-            <Button
-              style={styles.buttons}
-              //   onPress={() => navigation.navigate("AddEvent")}
-            >
-              <Text>Add event</Text>
-            </Button>
-          )}
-        </View>
-      </SafeAreaView>
+        </SafeAreaView>
+      </Block>
     </Block>
   );
 };
@@ -244,7 +274,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   event: {
-    backgroundColor: "green",
+    backgroundColor: "lightgreen",
     padding: 2,
     marginBottom: 2,
     borderRadius: 3,
