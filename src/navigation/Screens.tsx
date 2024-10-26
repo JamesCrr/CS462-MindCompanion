@@ -22,6 +22,8 @@ import {
   NotificationsSettings,
   MyEvents,
   MyEvent,
+  AddEvent
+  
 } from "../screens";
 import { useNavigation } from "@react-navigation/native";
 
@@ -60,11 +62,23 @@ export default () => {
 
   return (
     <Stack.Navigator screenOptions={screenOptions.stack}>
-      <Stack.Screen name="Home" component={Home} options={{ title: t("navigation.home") }} />
+      <Stack.Screen
+        name="Home"
+        component={Home}
+        options={{ title: t("navigation.home") }}
+      />
 
-      <Stack.Screen name="Components" component={Components} options={screenOptions.components} />
+      <Stack.Screen
+        name="Components"
+        component={Components}
+        options={screenOptions.components}
+      />
 
-      <Stack.Screen name="Articles" component={Articles} options={{ title: t("navigation.articles") }} />
+      <Stack.Screen
+        name="Articles"
+        component={Articles}
+        options={{ title: t("navigation.articles") }}
+      />
 
       <Stack.Screen
         name="Rentals"
@@ -74,8 +88,14 @@ export default () => {
           ...screenOptions.profile,
           headerRight: () =>
             identity ? (
-              <TouchableOpacity onPress={() => navigation.navigate("MyEvents", { userId: identity.uid })}>
-                <Text style={{ color: "blue", marginRight: 10 }}>My Events</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("MyEvents", { userId: identity.uid })
+                }
+              >
+                <Text style={{ color: "blue", marginRight: 10 }}>
+                  My Events
+                </Text>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
@@ -104,21 +124,35 @@ export default () => {
       <Stack.Screen
         name="Rental"
         component={Rental}
-        options={{ title: t("navigation.eventDetails"), ...screenOptions.rental }}
+        options={{
+          title: t("navigation.eventDetails"),
+          ...screenOptions.rental,
+        }}
       />
       <Stack.Screen
         name="MyEvent"
         component={MyEvent}
-        options={{ title: t("navigation.eventDetails"), ...screenOptions.rental }}
+        options={{
+          title: t("navigation.eventDetails"),
+          ...screenOptions.rental,
+        }}
       />
       <Stack.Screen
         name="Booking"
         component={Booking}
         options={{ title: t("navigation.booking"), ...screenOptions.rental }}
       />
-      <Stack.Screen name="Chat" component={Chat} options={{ title: t("navigation.chat"), ...screenOptions.chat }} />
+      <Stack.Screen
+        name="Chat"
+        component={Chat}
+        options={{ title: t("navigation.chat"), ...screenOptions.chat }}
+      />
 
-      <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={{ headerShown: false }}
+      />
 
       <Stack.Screen
         name="Settings"
@@ -128,28 +162,46 @@ export default () => {
       <Stack.Screen
         name="NotificationsSettings"
         component={NotificationsSettings}
-        options={{ title: t("navigation.notifications"), ...screenOptions.back }}
+        options={{
+          title: t("navigation.notifications"),
+          ...screenOptions.back,
+        }}
       />
       <Stack.Screen
         name="Notifications"
         component={Notifications}
-        options={{ title: t("navigation.notifications"), ...screenOptions.back }}
+        options={{
+          title: t("navigation.notifications"),
+          ...screenOptions.back,
+        }}
       />
       <Stack.Screen
         name="Agreement"
         component={Agreement}
         options={{ title: t("navigation.agreement"), ...screenOptions.back }}
       />
-      <Stack.Screen name="About" component={About} options={{ title: t("navigation.about"), ...screenOptions.back }} />
+      <Stack.Screen
+        name="About"
+        component={About}
+        options={{ title: t("navigation.about"), ...screenOptions.back }}
+      />
       <Stack.Screen
         name="Privacy"
         component={Privacy}
         options={{ title: t("navigation.privacy"), ...screenOptions.back }}
       />
 
-      <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="Register"
+        component={Register}
+        options={{ headerShown: false }}
+      />
 
-      <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{ headerShown: false }}
+      />
 
       <Stack.Screen
         name="Extra"

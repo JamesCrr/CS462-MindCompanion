@@ -35,7 +35,6 @@ const Modal = ({
           <Button
             top={0}
             right={0}
-            position="absolute"
             onPress={() => onRequestClose?.()}>
             <Image source={assets.close} color={colors.white} />
           </Button>
