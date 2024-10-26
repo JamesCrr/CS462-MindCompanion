@@ -114,18 +114,22 @@ const DrawerContent = (props: DrawerContentComponentProps) => {
   // };
 
   const retrieveDrawerMenuItems = () => {
-    //// screen list for Drawer menu
-    // return [
-    //   { name: t("screens.home"), to: "Home", icon: assets.home },
-    //   { name: t("screens.components"), to: "Components", icon: assets.components },
-    //   { name: t("screens.articles"), to: "Articles", icon: assets.document },
-    //   { name: t("screens.event"), to: "Rentals", icon: assets.rental },
-    //   { name: t("screens.profile"), to: "Profile", icon: assets.profile },
-    //   { name: t("screens.settings"), to: "Settings", icon: assets.settings },
-    //   // {name: t('screens.login'), to: 'Register', icon: assets.register},
-    //   { name: t("screens.extra"), to: "Extra", icon: assets.extras },
-    //   // {name: 'Bookings', to: 'Booking', icon: assets.register},
-    // ];
+    // screen list for Drawer menu
+    return [
+      { name: t("screens.home"), to: "Home", icon: assets.home },
+      {
+        name: t("screens.components"),
+        to: "Components",
+        icon: assets.components,
+      },
+      { name: t("screens.articles"), to: "Articles", icon: assets.document },
+      { name: t("screens.event"), to: "Rentals", icon: assets.rental },
+      { name: t("screens.profile"), to: "Profile", icon: assets.profile },
+      { name: t("screens.settings"), to: "Settings", icon: assets.settings },
+      // {name: t('screens.login'), to: 'Register', icon: assets.register},
+      { name: t("screens.extra"), to: "Extra", icon: assets.extras },
+      // {name: 'Bookings', to: 'Booking', icon: assets.register},
+    ];
 
     // Caregiver screen list for Drawer menu
     const screensCaregiver = [
@@ -229,7 +233,13 @@ const DrawerContent = (props: DrawerContentComponentProps) => {
             );
           })}
 
-        <Block flex={0} height={1} marginRight={sizes.md} marginVertical={sizes.sm} gradient={gradients.menu} />
+        <Block
+          flex={0}
+          height={1}
+          marginRight={sizes.md}
+          marginVertical={sizes.sm}
+          gradient={gradients.menu}
+        />
 
         {/* <Text semibold transform="uppercase" opacity={0.5}>
           {t('menu.documentation')}
@@ -259,7 +269,13 @@ const DrawerContent = (props: DrawerContentComponentProps) => {
             marginRight={sizes.s}
             gradient={gradients.white}
           >
-            <Image radius={0} width={14} height={14} color={colors.black} source={assets.register} />
+            <Image
+              radius={0}
+              width={14}
+              height={14}
+              color={colors.black}
+              source={assets.register}
+            />
           </Block>
           <Text p color={labelColor}>
             {identity ? t("menu.logout") : t("menu.login")}
@@ -268,7 +284,10 @@ const DrawerContent = (props: DrawerContentComponentProps) => {
 
         <Block row justify="space-between" marginTop={sizes.sm}>
           <Text color={labelColor}>{t("darkMode")}</Text>
-          <Switch checked={isDark} onPress={(checked) => handleIsDark(checked)} />
+          <Switch
+            checked={isDark}
+            onPress={(checked) => handleIsDark(checked)}
+          />
         </Block>
       </Block>
     </DrawerContentScrollView>
