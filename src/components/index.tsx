@@ -12,6 +12,7 @@ import Calendar from './Calendar';
 import EventDetails from './EventDetails';
 import MyEventCard from './MyEventCard';
 import MainCalendar from './MainCalendar';
+import Badge from './Badge';
 
 export {
   Block,
@@ -27,5 +28,6 @@ export {
   Calendar,
   EventDetails,
   MyEventCard,
-  MainCalendar
+  MainCalendar, 
+  Badge, 
 };

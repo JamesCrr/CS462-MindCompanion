@@ -1,6 +1,7 @@
 {
   "common": {
     "appDetails": "应用详情",
+    "addEvent": "添加活动",
     "appName": "应用名称",
     "appVersion": "应用版本",
     "buildVersion": "构建版本",
@@ -43,6 +44,13 @@
     "readArticle": "阅读文章",
     "OurEvents": "我们的活动",
     "send": "发送",
+    "eventName:": "活动名称",
+    "location": "地点",
+    "information": "信息",
+    "date": "日期",
+    "time": "时间",
+    "meetupLocation": "集合地点",
+    "itemsToBring": "需要携带的物品",
     "guests": {
       "one": "1 位客人",
       "other": "{{count}} 位客人",
@@ -121,6 +129,10 @@
     "title": "欢迎",
     "subtitle": "登录"
   },
+  "addEvent": {
+    "title": "添加活动",
+    "subtitle": "Sign In with"
+  },
   "settings": {
     "recommended": {
       "title": "推荐设置",
@@ -164,7 +176,8 @@
     "notFound1": "我们没有找到 ",
     "notFound2": " 在我们的应用中。",
     "moreOptions": "您可以从其他类别中查看更多选项。",
-    "joinEvent": "加入活动"
+    "joinEvent": "加入活动",
+    "publish": "发布活动"
   },
   "profile": {
     "title": "个人资料",

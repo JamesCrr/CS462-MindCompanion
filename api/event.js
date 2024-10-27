@@ -67,6 +67,9 @@ import {
   export const InsertEvent = async (eventpayload) => {
     try {
       console.log(eventpayload);
+      eventpayload.participants = [];
+      eventpayload.volunteers = [];
+      eventpayload.published = false;
       const collectionRef = collection(db, "events");
   
       await addDoc(collectionRef, eventpayload);

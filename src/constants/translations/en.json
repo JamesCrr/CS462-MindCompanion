@@ -1,6 +1,7 @@
 {
   "common": {
     "appDetails": "App Details",
+    "addEvent": "Add Event",
     "appName": "App name",
     "appVersion": "App version",
     "buildVersion": "Build version",
@@ -43,6 +44,18 @@
     "readArticle": "Read Article",
     "OurEvents": "Our Events",
     "send": "Send",
+    "eventName": "Event Name",
+    "eventNamePlaceholder": "Park Event",
+    "location": "Location",
+    "locationPlaceholder": "Central Park",
+    "information": "Information",
+    "informationPlaceholder": "Meet at the park. Have a fun day",
+    "date": "Date",
+    "time": "Time",
+    "meetupLocation": "Meet up Location",
+    "meetupLocationPlaceholder": "Woodlands Exit B",
+    "itemsToBring": "Items to bring",
+    "itemsToBringPlaceholder": "Water bottle, snacks, camera",
     "guests": {
       "one": "1 guest",
       "other": "{{count}} guests",
@@ -117,6 +130,10 @@
   },
   "login": {
     "title": "Welcome",
+    "subtitle": "Sign In with"
+  },
+  "addEvent": {
+    "title": "Add Event",
     "subtitle": "Sign In with"
   },
   "settings": {

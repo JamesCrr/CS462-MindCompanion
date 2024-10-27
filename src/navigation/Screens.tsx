@@ -25,6 +25,7 @@ import {
   StaffCalendar,
   EditEvent,
   ItemsPreCheck,
+  AddEvent,
 } from "../screens";
 import { useNavigation } from "@react-navigation/native";
 
@@ -59,6 +60,7 @@ export default () => {
   // Call retrieveIdentity when the component is mounted
   useEffect(() => {
     retrieveIdentity();
+    console.log('identity', identity);
   }, []);
 
   return (
@@ -77,17 +79,33 @@ export default () => {
           ...screenOptions.profile,
           headerRight: () =>
             identity ? (
-              <TouchableOpacity onPress={() => navigation.navigate("MyEvents", { userId: identity.uid })}>
-                <Text style={{ color: "blue", marginRight: 10 }}>My Events</Text>
-              </TouchableOpacity>
+              identity.type === 'Caregiver' ? (
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('MyEvents', { userId: identity.uid })}
+                >
+                  <Text style={{ color: 'blue', marginRight: 10 }}>My Events</Text>
+                </TouchableOpacity>
+              ) : identity.type === 'Staff' ? (
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('AddEvent')}
+                >
+                  <Text style={{ color: 'blue', marginRight: 10 }}>{t('addEvent.title')}</Text>
+                </TouchableOpacity>
+              ) : null
             ) : (
               <TouchableOpacity
                 onPress={() => navigation.navigate("Login")} // Navigate to Login screen
               >
-                <Text style={{ color: "blue", marginRight: 10 }}>Log In</Text>
+                <Text style={{ color: 'blue', marginRight: 10 }}>Log In</Text>
               </TouchableOpacity>
             ),
         }}
+      /> 
+
+      <Stack.Screen
+        name="AddEvent"
+        component={AddEvent}
+        options={{headerShown: false}}
       />
 
       <Stack.Screen
