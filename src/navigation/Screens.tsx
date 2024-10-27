@@ -23,6 +23,7 @@ import {
   MyEvents,
   MyEvent,
   StaffCalendar,
+  EditEvent,
 } from "../screens";
 import { useNavigation } from "@react-navigation/native";
 
@@ -213,6 +214,14 @@ export default () => {
         name="Shopping"
         component={Shopping}
         options={{ title: t("navigation.shopping"), ...screenOptions.back }}
+      />
+
+      <Stack.Screen
+        name="EditEvent"
+        component={EditEvent}
+        options={{
+          title: t("navigation.eventId"),
+        }}
       />
     </Stack.Navigator>
   );

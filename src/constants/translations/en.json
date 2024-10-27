@@ -89,7 +89,7 @@
   "menu": {
     "started": "Getting Started",
     "documentation": "Documentation",
-    "logout": "Logout", 
+    "logout": "Logout",
     "login": "Login"
   },
   "home": {
@@ -161,7 +161,8 @@
     "notFound1": "We didn’t find ",
     "notFound2": " in our app.",
     "moreOptions": "You can see more options from other categories.",
-    "joinEvent": "Join Event"
+    "joinEvent": "Join Event",
+    "publish": "Publish Event"
   },
   "profile": {
     "title": "Profile",

@@ -1,18 +1,18 @@
-import i18n from 'i18n-js';
-import {ImageSourcePropType} from 'react-native';
-import {CalendarBaseProps} from 'react-native-calendars';
-import {ITheme} from './theme';
+import i18n from "i18n-js";
+import { ImageSourcePropType } from "react-native";
+import { CalendarBaseProps } from "react-native-calendars";
+import { ITheme } from "./theme";
 
-export * from './components';
-export * from './theme';
+export * from "./components";
+export * from "./theme";
 
 export interface IUser {
   id: number | string;
   name?: string;
   department?: string;
   avatar?: string;
-  stats?: {posts?: number; followers?: number; following?: number};
-  social?: {twitter?: string; dribbble?: string};
+  stats?: { posts?: number; followers?: number; following?: number };
+  social?: { twitter?: string; dribbble?: string };
   about?: string;
 }
 
@@ -24,8 +24,8 @@ export interface IArticleOptions {
   id?: number;
   title?: string;
   description?: string;
-  type?: 'room' | 'apartment' | 'house'; // private room | entire apartment | entire house
-  sleeping?: {total?: number; type?: 'sofa' | 'bed'};
+  type?: "room" | "apartment" | "house"; // private room | entire apartment | entire house
+  sleeping?: { total?: number; type?: "sofa" | "bed" };
   guests?: number;
   price?: number;
   user?: IUser;
@@ -76,10 +76,11 @@ export interface IEvent2 {
   location?: string;
   dateTime?: string;
   thingsToBring?: string[];
-  meetUpLocations? : string[];
+  meetUpLocations?: string[];
   participants: string[];
   volunteers: string[];
   timestamp?: number;
+  published: boolean;
   onPress?: (event?: any) => void;
 }
 
@@ -90,7 +91,7 @@ export interface IProduct {
   image?: string;
   timestamp?: number;
   linkLabel?: string;
-  type: 'vertical' | 'horizontal';
+  type: "vertical" | "horizontal";
 }
 export interface ILocation {
   id?: number;
@@ -175,17 +176,17 @@ export interface INotification {
   business?: boolean;
   createdAt?: number | Date;
   type:
-    | 'document'
-    | 'documentation'
-    | 'payment'
-    | 'notification'
-    | 'profile'
-    | 'extras'
-    | 'office';
+    | "document"
+    | "documentation"
+    | "payment"
+    | "notification"
+    | "profile"
+    | "extras"
+    | "office";
 }
 
 export interface ICalendar extends CalendarBaseProps {
   dates?: any[];
-  calendar?: {start: number; end: number};
-  onClose?: (calendar?: {start?: number; end?: number}) => void;
+  calendar?: { start: number; end: number };
+  onClose?: (calendar?: { start?: number; end?: number }) => void;
 }

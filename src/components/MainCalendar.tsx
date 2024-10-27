@@ -19,6 +19,7 @@ interface Event {
   location: string;
   information: string;
   datetime: Date;
+  published: boolean;
   id?: string;
   meetUpLocations?: string[];
   itemsToBring?: string[];
@@ -58,6 +59,7 @@ const MainCalendar = () => {
         itemsToBring: doc.data().itemsToBring || [],
         participants: doc.data().participants || [],
         volunteers: doc.data().volunteers || [],
+        published: doc.data().published,
       };
       events.push(event);
     });
@@ -129,11 +131,25 @@ const MainCalendar = () => {
                     .map((event) => (
                       <TouchableOpacity
                         key={event.id}
-                        // onPress={() =>
-                        //   navigation.navigate("Event", { eventId: event.id })
-                        // }
+                        onPress={() =>
+                          // navigation.navigate("Rental", {
+                          //   eventId: event.id,
+                          // })
+                          navigation.navigate("EditEvent", {
+                            eventId: event.id,
+                          })
+                        }
                       >
-                        <View style={styles.event}>
+                        <View
+                          style={[
+                            styles.event,
+                            {
+                              backgroundColor: event.published
+                                ? "lightgreen"
+                                : "lightblue",
+                            },
+                          ]}
+                        >
                           <Text style={styles.eventTitle}>{event.name}</Text>
                           <Text style={styles.eventTime}>
                             {String(event.datetime.getHours()).padStart(2, "0")}
@@ -266,26 +282,25 @@ const styles = StyleSheet.create({
   dayCell: {
     width: "14.28%",
     height: 100,
-    borderWidth: 1,
-    borderColor: "#ccc",
+    borderTopWidth: 1, // Add top border
+    borderColor: "#ccc", // Color for both borders
     padding: 5,
   },
   dayNumber: {
     fontWeight: "bold",
   },
   event: {
-    backgroundColor: "lightgreen",
     padding: 2,
     marginBottom: 2,
     borderRadius: 3,
   },
   eventTitle: {
     color: "white",
-    fontSize: 10,
+    fontSize: 1,
   },
   eventTime: {
     color: "white",
-    fontSize: 8,
+    fontSize: 1,
   },
   buttons: {
     margin: 5,
