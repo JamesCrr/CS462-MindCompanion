@@ -128,75 +128,129 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   );
 
   // Fetch events from Firestore and map to articles
+  // const fetchEvents = useCallback(async () => {
+  //   console.log("Fetching events...");
+  //   try {
+  //     const eventsCollection = collection(db, "events");
+  //     const eventsSnapshot = await getDocs(eventsCollection);
+  //     // const eventsList = eventsSnapshot.docs.map(doc => doc.data() as IEvent);
+  //     // const articlesList = eventsList.map(event => (
+  //     //   {
+  //     //     id: event.id ?? 0,
+  //     //     title: event.title ?? "Untitled Event",
+  //     //     description: event.description ?? "No description available",
+  //     //     category: event.category ?? { id: 0, name: "Uncategorized" },
+  //     //     image: event.image ?? "default_image_url",
+  //     //     location: event.location ?? { address: "Unknown location" },
+  //     //     rating: event.rating ?? 0,
+  //     //     user: event.user ?? { id: 0, name: "Unknown user" },
+  //     //     offers: event.offers ?? [],
+  //     //     options: event.options ?? [],
+  //     //     timestamp: event.timestamp ?? Date.now(),
+  //     //     onPress: event.onPress ?? (() => {}),
+  //     // } as IEvent));
+  //     // console.log("Fetched events: ", articlesList);
+  //     // setEvents(articlesList);
+
+  //     const eventList = eventsSnapshot.docs.map((doc) => {
+  //       const data = doc.data();
+  //       // console.log("Event data:", data, "\n", "docId:", doc.id, "dateTime:", data.datetime);
+  //       const date = new Date(data.datetime.seconds * 1000); // Convert seconds to milliseconds
+  //       const formattedDate = date
+  //         .toLocaleString("en-US", {
+  //           day: "2-digit",
+  //           month: "short",
+  //           year: "numeric",
+  //           hour: "numeric",
+  //           minute: "numeric",
+  //           hour12: true,
+  //         })
+  //         .replace(",", " -"); // Format the date and time
+  //       // const event: IEvent = {
+  //       //   id: doc.id,
+  //       //   title: data.title ?? "Untitled Event",
+  //       //   description: data.name ?? "No description available",
+  //       //   category: data.category ?? { id: 0, name: "Uncategorized" },
+  //       //   image: data.image ?? "default_image_url",
+  //       //   location: data.location ?? "No location",
+  //       //   rating: data.rating ?? 0,
+  //       //   user: data.user ?? { id: 0, name: "Unknown user" },
+  //       //   offers: data.offers ?? [],
+  //       //   options: data.options ?? [],
+  //       //   timestamp: data.timestamp ?? Date.now(),
+  //       //   onPress: data.onPress ?? (() => {}),
+  //       // };
+  //       const event: IEvent2 = {
+  //         id: doc.id,
+  //         title: data.name ?? "Untitled Event",
+  //         information: data.information ?? "No information available",
+  //         category: data.category ?? { id: 0, name: "Uncategorized" },
+  //         image: data.image ?? "default_image_url",
+  //         location: data.location ?? "No location",
+  //         dateTime: formattedDate ?? "No date available",
+  //         thingsToBring: data.itemsToBring ?? [],
+  //         meetUpLocations: data.meetUpLocations ?? [],
+  //         participants: data.participants ?? [],
+  //         volunteers: data.volunteers ?? [],
+  //         timestamp: data.timestamp ?? Date.now(),
+  //         onPress: data.onPress ?? (() => {}),
+  //       };
+  //       return event;
+  //     });
+  //     setEvents(eventList);
+  //   } catch (error) {
+  //     console.error("Error fetching events: ", error);
+  //   }
+  // }, [setEvents]);
+
   const fetchEvents = useCallback(async () => {
     console.log("Fetching events...");
     try {
       const eventsCollection = collection(db, "events");
       const eventsSnapshot = await getDocs(eventsCollection);
-      // const eventsList = eventsSnapshot.docs.map(doc => doc.data() as IEvent);
-      // const articlesList = eventsList.map(event => (
-      //   {
-      //     id: event.id ?? 0,
-      //     title: event.title ?? "Untitled Event",
-      //     description: event.description ?? "No description available",
-      //     category: event.category ?? { id: 0, name: "Uncategorized" },
-      //     image: event.image ?? "default_image_url",
-      //     location: event.location ?? { address: "Unknown location" },
-      //     rating: event.rating ?? 0,
-      //     user: event.user ?? { id: 0, name: "Unknown user" },
-      //     offers: event.offers ?? [],
-      //     options: event.options ?? [],
-      //     timestamp: event.timestamp ?? Date.now(),
-      //     onPress: event.onPress ?? (() => {}),
-      // } as IEvent));
-      // console.log("Fetched events: ", articlesList);
-      // setEvents(articlesList);
-
+  
       const eventList = eventsSnapshot.docs.map((doc) => {
-        const data = doc.data();
-        // console.log("Event data:", data, "\n", "docId:", doc.id, "dateTime:", data.datetime);
-        const date = new Date(data.datetime.seconds * 1000); // Convert seconds to milliseconds
-        const formattedDate = date
-          .toLocaleString("en-US", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            hour12: true,
-          })
-          .replace(",", " -"); // Format the date and time
-        // const event: IEvent = {
-        //   id: doc.id,
-        //   title: data.title ?? "Untitled Event",
-        //   description: data.name ?? "No description available",
-        //   category: data.category ?? { id: 0, name: "Uncategorized" },
-        //   image: data.image ?? "default_image_url",
-        //   location: data.location ?? "No location",
-        //   rating: data.rating ?? 0,
-        //   user: data.user ?? { id: 0, name: "Unknown user" },
-        //   offers: data.offers ?? [],
-        //   options: data.options ?? [],
-        //   timestamp: data.timestamp ?? Date.now(),
-        //   onPress: data.onPress ?? (() => {}),
-        // };
-        const event: IEvent2 = {
-          id: doc.id,
-          title: data.name ?? "Untitled Event",
-          information: data.information ?? "No information available",
-          category: data.category ?? { id: 0, name: "Uncategorized" },
-          image: data.image ?? "default_image_url",
-          location: data.location ?? "No location",
-          dateTime: formattedDate ?? "No date available",
-          thingsToBring: data.itemsToBring ?? [],
-          meetUpLocations: data.meetUpLocations ?? [],
-          participants: data.participants ?? [],
-          volunteers: data.volunteers ?? [],
-          timestamp: data.timestamp ?? Date.now(),
-          onPress: data.onPress ?? (() => {}),
-        };
-        return event;
-      });
+        try {
+          const data = doc.data();
+          // Check if datetime exists and is valid
+          let formattedDate = "No date available";
+          if (data.datetime && data.datetime.seconds) {
+            const date = new Date(data.datetime.seconds * 1000); // Convert seconds to milliseconds
+            formattedDate = date
+              .toLocaleString("en-US", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+                hour12: true,
+              })
+              .replace(",", " -"); // Format the date and time
+          }
+  
+          const event: IEvent2 = {
+            id: doc.id,
+            title: data.name ?? "Untitled Event",
+            information: data.information ?? "No information available",
+            category: data.category ?? { id: 0, name: "Uncategorized" },
+            image: data.image ?? "default_image_url",
+            location: data.location ?? "No location",
+            dateTime: formattedDate,
+            thingsToBring: data.itemsToBring ?? [],
+            meetUpLocations: data.meetUpLocations ?? [],
+            participants: data.participants ?? [],
+            volunteers: data.volunteers ?? [],
+            timestamp: data.timestamp ?? Date.now(),
+            published: data.published ?? false,
+            onPress: data.onPress ?? (() => {}),
+          };
+          return event;
+        } catch (eventError) {
+          console.error(`Error processing event with ID ${doc.id}:`, eventError);
+          return null; // Return null if there is an error
+        }
+      }).filter(event => event !== null); // Filter out null values
+  
       setEvents(eventList);
     } catch (error) {
       console.error("Error fetching events: ", error);
