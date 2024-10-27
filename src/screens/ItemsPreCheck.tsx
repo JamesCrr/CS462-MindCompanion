@@ -60,7 +60,6 @@ const ItemsPreCheck = () => {
         <Block justify="center" marginTop={sizes.s}>
           {thingsToBring.map((item, index) => {
             const btnprop = buttonProps[index] || { dark: true }; // Get the corresponding button prop
-            console.log(buttonProps);
             return (
               <Button marginTop={sizes.s} key={index} rounded {...btnprop} disabled>
                 <Text>{item}</Text>
