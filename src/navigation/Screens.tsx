@@ -24,6 +24,7 @@ import {
   MyEvent,
   StaffCalendar,
   EditEvent,
+  ItemsPreCheck,
 } from "../screens";
 import { useNavigation } from "@react-navigation/native";
 
@@ -62,23 +63,11 @@ export default () => {
 
   return (
     <Stack.Navigator screenOptions={screenOptions.stack}>
-      <Stack.Screen
-        name="Home"
-        component={Home}
-        options={{ title: t("navigation.home") }}
-      />
+      <Stack.Screen name="Home" component={Home} options={{ title: t("navigation.home") }} />
 
-      <Stack.Screen
-        name="Components"
-        component={Components}
-        options={screenOptions.components}
-      />
+      <Stack.Screen name="Components" component={Components} options={screenOptions.components} />
 
-      <Stack.Screen
-        name="Articles"
-        component={Articles}
-        options={{ title: t("navigation.articles") }}
-      />
+      <Stack.Screen name="Articles" component={Articles} options={{ title: t("navigation.articles") }} />
 
       <Stack.Screen
         name="Rentals"
@@ -88,14 +77,8 @@ export default () => {
           ...screenOptions.profile,
           headerRight: () =>
             identity ? (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("MyEvents", { userId: identity.uid })
-                }
-              >
-                <Text style={{ color: "blue", marginRight: 10 }}>
-                  My Events
-                </Text>
+              <TouchableOpacity onPress={() => navigation.navigate("MyEvents", { userId: identity.uid })}>
+                <Text style={{ color: "blue", marginRight: 10 }}>My Events</Text>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
@@ -142,17 +125,9 @@ export default () => {
         component={Booking}
         options={{ title: t("navigation.booking"), ...screenOptions.rental }}
       />
-      <Stack.Screen
-        name="Chat"
-        component={Chat}
-        options={{ title: t("navigation.chat"), ...screenOptions.chat }}
-      />
+      <Stack.Screen name="Chat" component={Chat} options={{ title: t("navigation.chat"), ...screenOptions.chat }} />
 
-      <Stack.Screen
-        name="Profile"
-        component={Profile}
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
 
       <Stack.Screen
         name="Settings"
@@ -180,28 +155,16 @@ export default () => {
         component={Agreement}
         options={{ title: t("navigation.agreement"), ...screenOptions.back }}
       />
-      <Stack.Screen
-        name="About"
-        component={About}
-        options={{ title: t("navigation.about"), ...screenOptions.back }}
-      />
+      <Stack.Screen name="About" component={About} options={{ title: t("navigation.about"), ...screenOptions.back }} />
       <Stack.Screen
         name="Privacy"
         component={Privacy}
         options={{ title: t("navigation.privacy"), ...screenOptions.back }}
       />
 
-      <Stack.Screen
-        name="Register"
-        component={Register}
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
 
-      <Stack.Screen
-        name="Login"
-        component={Login}
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
       <Stack.Screen name="StaffCalendar" component={StaffCalendar} />
 
       <Stack.Screen
@@ -221,6 +184,20 @@ export default () => {
         component={EditEvent}
         options={{
           title: t("navigation.eventId"),
+        }}
+      />
+
+      <Stack.Screen
+        name="ItemsPreCheck"
+        component={ItemsPreCheck}
+        options={{
+          title: t("navigation.checklist"),
+          ...screenOptions.rental,
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Text style={{ color: "blue", marginRight: 10 }}>Back</Text>
+            </TouchableOpacity>
+          ),
         }}
       />
     </Stack.Navigator>

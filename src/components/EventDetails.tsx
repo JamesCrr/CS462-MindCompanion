@@ -1,14 +1,15 @@
-import React, {useState} from 'react';
-import dayjs from 'dayjs';
-import {TouchableWithoutFeedback, TouchableOpacity} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState } from "react";
+import dayjs from "dayjs";
+import { TouchableWithoutFeedback, TouchableOpacity } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import Text from './Text';
-import Block from './Block';
-import Image from './Image';
-import {useTheme, useTranslation} from '../hooks/';
-import {IArticle, IEvent2} from '../constants/types';
-import { userJoinEvent } from '../../api/event';
+import Text from "./Text";
+import Block from "./Block";
+import Image from "./Image";
+import { useNavigation } from "@react-navigation/native";
+import { useTheme, useTranslation } from "../hooks/";
+import { IArticle, IEvent2 } from "../constants/types";
+import { userJoinEvent } from "../../api/event";
 
 interface EventDetailsProp extends IEvent2 {
   onSelectMeetUpLocation: (location: string) => void;
@@ -23,7 +24,7 @@ const EventDetails = ({
   category,
   // rating,
   location,
-  dateTime, 
+  dateTime,
   thingsToBring,
   meetUpLocations,
   participants,
@@ -32,22 +33,22 @@ const EventDetails = ({
   // user,
 
   onPress,
-  onSelectMeetUpLocation
+  onSelectMeetUpLocation,
 }: EventDetailsProp) => {
-  const {t} = useTranslation();
-  const {colors, gradients, icons, sizes} = useTheme();
+  const { t } = useTranslation();
+  const navigation = useNavigation();
+  const { colors, gradients, icons, sizes } = useTheme();
   const [selectedMeetUpLocation, setSelectedMeetUpLocation] = useState<string | null>(null);
-
 
   const handleMeetUpLocationSelect = (location: string) => {
     setSelectedMeetUpLocation(location);
-    onSelectMeetUpLocation(location);  // Call the function to pass the selected location to Rental
+    onSelectMeetUpLocation(location); // Call the function to pass the selected location to Rental
   };
 
-
-  const handleThingsToBringPress =() => {
-    console.log('Things to bring:', thingsToBring);
-  }
+  const handleThingsToBringPress = () => {
+    console.log("Things to bring:", thingsToBring);
+    navigation.navigate("ItemsPreCheck", { eventId: id, thingsToBring });
+  };
 
   // render card for Newest & Fashion
   if (category?.id !== 1) {
@@ -55,17 +56,13 @@ const EventDetails = ({
     return (
       <TouchableWithoutFeedback onPress={onPress}>
         <Block card padding={sizes.sm} marginTop={sizes.sm}>
-          <Image height={170} resizeMode="cover" source={{uri: image}} />
+          <Image height={170} resizeMode="cover" source={{ uri: image }} />
           {/* article description */}
           <Text p semibold>
             {title}
           </Text>
           {information && (
-            <Text
-              p
-              marginTop={sizes.s}
-              marginLeft={sizes.xs}
-              marginBottom={sizes.sm}>
+            <Text p marginTop={sizes.s} marginLeft={sizes.xs} marginBottom={sizes.sm}>
               {information}
             </Text>
           )}
@@ -89,17 +86,19 @@ const EventDetails = ({
                   key={index}
                   onPress={() => handleMeetUpLocationSelect(item)}
                   style={{
-                    flexDirection: 'row', 
-                    alignItems: 'center', 
+                    flexDirection: "row",
+                    alignItems: "center",
                     marginBottom: sizes.xs,
-                    maxWidth: 250  // Set a maximum width
-                  }}>
+                    maxWidth: 250, // Set a maximum width
+                  }}
+                >
                   <Block
                     style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
+                      flexDirection: "row",
+                      alignItems: "center",
                       marginBottom: sizes.xs,
-                    }}>
+                    }}
+                  >
                     <Block
                       style={{
                         height: 20,
@@ -108,10 +107,11 @@ const EventDetails = ({
                         borderRadius: 10,
                         borderWidth: 1,
                         borderColor: colors.black,
-                        alignItems: 'center',
-                        justifyContent: 'center',
+                        alignItems: "center",
+                        justifyContent: "center",
                         marginRight: sizes.xs,
-                      }}>
+                      }}
+                    >
                       {selectedMeetUpLocation === item && (
                         <Block
                           style={{

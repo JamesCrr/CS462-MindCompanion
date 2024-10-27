@@ -84,7 +84,8 @@
     "register": "Register",
     "login": "Login",
     "extra": "Automotive",
-    "shopping": "Shopping Cart"
+    "shopping": "Shopping Cart",
+    "checklist": "Items Checklist"
   },
   "menu": {
     "started": "Getting Started",

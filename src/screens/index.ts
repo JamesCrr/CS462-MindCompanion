@@ -20,3 +20,4 @@ export { default as MyEvents } from "./MyEvents";
 export { default as MyEvent } from "./MyEvent";
 export { default as StaffCalendar } from "./StaffCalendar";
 export { default as EditEvent } from "./EditEvent";
+export { default as ItemsPreCheck } from "./ItemsPreCheck";

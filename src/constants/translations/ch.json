@@ -86,11 +86,12 @@
     "register": "注册",
     "login": "登录",
     "extra": "汽车",
-    "shopping": "购物车"
+    "shopping": "购物车",
+    "checklist": "物品清单"
   },
   "menu": {
     "started": "入门",
-    "documentation": "文档", 
+    "documentation": "文档",
     "logout": "登出",
     "login": "登录"
   },
@@ -162,7 +163,7 @@
     "viewoffer": "查看优惠",
     "notFound1": "我们没有找到 ",
     "notFound2": " 在我们的应用中。",
-    "moreOptions": "您可以从其他类别中查看更多选项。", 
+    "moreOptions": "您可以从其他类别中查看更多选项。",
     "joinEvent": "加入活动"
   },
   "profile": {
