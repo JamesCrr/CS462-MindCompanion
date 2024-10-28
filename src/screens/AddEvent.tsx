@@ -29,7 +29,7 @@ const AddEvent = () => {
     name: '',
     location: '',
     information: '',
-    dateTime: new Date(), 
+    datetime: new Date(), 
     meetupLocations:[],
     itemsToBring: []
   });
@@ -53,31 +53,6 @@ const AddEvent = () => {
 
   const handleAddEvent = useCallback(async () => {
     try {
-      // Add event to Firestore
-      // const eventDocRef = doc(db, 'events', eventData.eventName);
-      // await setDoc(eventDocRef, {
-      //   eventName: eventData.eventName,
-      //   location: eventData.location,
-      //   information: eventData.information,
-      //   meetupLocations,
-      //   itemsToBring,
-      //   date: eventData.date,
-      //   time: eventData.time,
-      // });
-
-      // Navigate to the events list or home screen
-
-      // const filteredMeetUp = meetupLocations.reduce((acc: string[], current: any) => {
-      //   acc.push(current.text);
-      //   return acc;
-      // }, []);
-      // const filteredItemstoBring = itemsToBring.reduce(
-      //   (acc: string[], current: any) => {
-      //     acc.push(current.text);
-      //     return acc;
-      //   },
-      //   []
-      // );
       const eventPayload = {
         ...eventData,
         // meetUpLocations: filteredMeetUp,
@@ -92,16 +67,22 @@ const AddEvent = () => {
         name: "",
         location: "",
         information: "",
-        dateTime: new Date(), // Initialize with current date
+        datetime: new Date(), // Initialize with current date
         meetupLocations: [],
         itemsToBring: [],
       });
 
       console.log("Event added successfully:", eventData);
 
+      if (res) {
+        console.log("response about adding event:", res);
+        navigation.goBack();
+      }
+
 
     } catch (error) {
       console.error('Error adding event:', error);
+
     }
   }, [eventData, meetupLocations, itemsToBring, navigation]);
 
@@ -113,27 +94,15 @@ const AddEvent = () => {
       information: eventData.information.length > 0,
       meetupLocations: eventData.meetupLocations.length > 0,
       itemsToBring: eventData.itemsToBring.length > 0,
-      dateTime: eventData.dateTime,
+      dateTime: eventData.datetime,
     }));
   }, [eventData, setIsValid]);
 
-  // const handleDateChange = (event, selectedDate) => {
-  //   const currentDate = selectedDate || eventData.date;
-  //   setShowDatePicker(false);
-  //   handleChange({ date: currentDate });
-  // };
-
-  // const handleTimeChange = (event, selectedTime) => {
-  //   const currentTime = selectedTime || eventData.time;
-  //   setShowTimePicker(false);
-  //   handleChange({ time: currentTime });
-  // };
-
   const handleDateChange = (event: any, selectedDate: Date | undefined) => {
-    const currentDate = selectedDate || eventData.dateTime;
+    const currentDate = selectedDate || eventData.datetime;
     setShowDatePicker(false);
   
-    const time = new Date(eventData.dateTime);
+    const time = new Date(eventData.datetime);
     const dateTime = new Date(
       currentDate.getFullYear(),
       currentDate.getMonth(),
@@ -147,10 +116,10 @@ const AddEvent = () => {
   };
   
   const handleTimeChange = (event: any, selectedTime: Date | undefined) => {
-    const currentTime = selectedTime || eventData.dateTime;
+    const currentTime = selectedTime || eventData.datetime;
     setShowTimePicker(false);
   
-    const date = new Date(eventData.dateTime);
+    const date = new Date(eventData.datetime);
     const dateTime = new Date(
       date.getFullYear(),
       date.getMonth(),
@@ -165,9 +134,6 @@ const AddEvent = () => {
 
   const addMeetupLocation = () => {
     if (eventData.meetupLocations) {
-      // if (typeof eventData.meetupLocations === 'array') {
-      //   setMeetupLocations([...meetupLocations, eventData.meetupLocations]);
-      // }
       setMeetupLocations([...meetupLocations, tempMeetupLocation]);
       handleChange({ meetupLocations: [...meetupLocations, tempMeetupLocation] });
     }
@@ -345,11 +311,11 @@ const AddEvent = () => {
                   <Block flex={1} paddingRight={sizes.s}>
                     <Text>{t('common.date')}</Text>
                     <Button onPress={() => setShowDatePicker(true)}>
-                      <Text>{eventData.dateTime.toDateString()}</Text>
+                      <Text>{eventData.datetime.toDateString()}</Text>
                     </Button>
                     {showDatePicker && (
                       <DateTimePicker
-                        value={eventData.dateTime}
+                        value={eventData.datetime}
                         mode="date"
                         display="default"
                         onChange={handleDateChange}
@@ -359,11 +325,11 @@ const AddEvent = () => {
                   <Block flex={1} paddingLeft={sizes.s}>
                     <Text>{t('common.time')}</Text>
                     <Button onPress={() => setShowTimePicker(true)}>
-                      <Text>{eventData.dateTime.toLocaleTimeString()}</Text>
+                      <Text>{eventData.datetime.toLocaleTimeString()}</Text>
                     </Button>
                     {showTimePicker && (
                       <DateTimePicker
-                        value={eventData.dateTime}
+                        value={eventData.datetime}
                         mode="time"
                         display="default"
                         onChange={handleTimeChange}
