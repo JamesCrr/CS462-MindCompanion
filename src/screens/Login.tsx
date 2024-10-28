@@ -16,7 +16,7 @@ const Login = () => {
   const navigation = useNavigation();
   const {login} = useContext(UserContext);
 
-  const [selectedRole, setSelectedRole] = useState('');
+  const [selectedType, setSelectedType] = useState('');
   const [loginData, setLoginData] = useState({
     name: '',
     password: '',
@@ -34,54 +34,46 @@ const Login = () => {
   );
 
   const handleSignIn = useCallback(async () => {
-    if (!selectedRole || !loginData.name || !loginData.password) {
-      setError('Please fill in all fields and select a role');
+    if (!selectedType || !loginData.name || !loginData.password) {
+      setError('Please fill in all fields and select a type');
       return;
     }
 
     try {
-      // Query Firestore for user with matching name and role
+      // Update query to use type instead of role
       const usersRef = collection(db, 'users');
       const q = query(
         usersRef,
         where('name', '==', loginData.name),
-        where('role', '==', selectedRole)
+        where('type', '==', selectedType)  // Changed from role to type
       );
       
       const querySnapshot = await getDocs(q);
       
       if (querySnapshot.empty) {
-        setError('User not found with selected role');
+        setError('User not found with selected type');
         return;
       }
 
       const userDoc = querySnapshot.docs[0];
       const userData = userDoc.data();
 
-      // Check password
       if (userData.password !== loginData.password) {
         setError('Invalid password');
         return;
       }
 
-      // Create user object
+      // Update user object to use type
       const user = {
         name: userData.name,
-        role: userData.role,
+        type: userData.type,  // Changed from role to type
         id: userDoc.id,
       };
 
-      // Store user info and update context
       await login(user);
 
-      // Navigate based on role
-      switch (selectedRole) {
-        // case 'Caregiver':
-        //   navigation.navigate('Caregivers');
-        //   break;
-        // case 'Volunteer':
-        //   navigation.navigate('Volunteers');
-        //   break;
+      // Update switch statement to use type
+      switch (selectedType) {
         default:
           navigation.navigate('Home');
       }
@@ -90,7 +82,7 @@ const Login = () => {
       console.error('Error during sign in:', error);
       setError('An error occurred during sign in');
     }
-  }, [loginData, selectedRole, login, navigation]);
+  }, [loginData, selectedType, login, navigation]);
 
   return (
     <Block safe marginTop={sizes.md}>
@@ -146,26 +138,26 @@ const Login = () => {
               tint={colors.blurTint}
               paddingVertical={sizes.sm}>
               
-              {/* Role Selection Buttons */}
+              {/* Type Selection Buttons */}
               <Block paddingHorizontal={sizes.sm} marginBottom={sizes.sm}>
                 <Text p semibold marginBottom={sizes.sm}>
-                  Select your role:
+                  Select your type:
                 </Text>
                 <Block row flex={0} justify="space-between" marginBottom={sizes.sm}>
-                  {['Staff', 'Caregiver', 'Volunteer'].map((role) => (
+                  {['Staff', 'Caregiver', 'Volunteer'].map((type) => (
                     <Button
-                      key={role}
+                      key={type}
                       flex={0}
                       width="30%"
-                      gradient={selectedRole === role ? gradients.primary : undefined}
-                      outlined={selectedRole !== role}
-                      onPress={() => setSelectedRole(role)}>
+                      gradient={selectedType === type ? gradients.primary : undefined}
+                      outlined={selectedType !== type}
+                      onPress={() => setSelectedType(type)}>
                       <Text
                         bold
                         size={13}
                         transform="uppercase"
-                        color={selectedRole === role ? colors.white : colors.primary}>
-                        {role}
+                        color={selectedType === type ? colors.white : colors.primary}>
+                        {type}
                       </Text>
                     </Button>
                   ))}
@@ -204,7 +196,7 @@ const Login = () => {
                 marginVertical={sizes.s}
                 marginHorizontal={sizes.sm}
                 gradient={gradients.primary}
-                disabled={!selectedRole || !loginData.name || !loginData.password}>
+                disabled={!selectedType || !loginData.name || !loginData.password}>
                 <Text bold white transform="uppercase">
                   {t('common.signin')}
                 </Text>

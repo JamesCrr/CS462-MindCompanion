@@ -13,7 +13,7 @@ const Register = () => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   
-  const [selectedRole, setSelectedRole] = useState('');
+  const [selectedType, setSelectedType] = useState('');
   const [registration, setRegistration] = useState({
     name: '',
     password: '',
@@ -31,24 +31,24 @@ const Register = () => {
   );
 
   const handleSignUp = useCallback(async () => {
-    if (!selectedRole || !registration.name || !registration.password) {
-      setError('Please fill in all fields and select a role');
+    if (!selectedType || !registration.name || !registration.password) {
+      setError('Please fill in all fields and select a type');
       return;
     }
 
     try {
-      // Check if user with same name and role already exists
+      // Check if user with same name and type already exists
       const usersRef = collection(db, 'users');
       const q = query(
         usersRef,
         where('name', '==', registration.name),
-        where('role', '==', selectedRole)
+        where('type', '==', selectedType)
       );
       
       const querySnapshot = await getDocs(q);
       
       if (!querySnapshot.empty) {
-        setError('User already exists with this name and role');
+        setError('User already exists with this name and type');
         return;
       }
 
@@ -56,7 +56,7 @@ const Register = () => {
       await addDoc(collection(db, 'users'), {
         name: registration.name,
         password: registration.password,
-        role: selectedRole,
+        type: selectedType,
       });
 
       // Navigate to login
@@ -66,7 +66,7 @@ const Register = () => {
       console.error('Error during registration:', error);
       setError('An error occurred during registration');
     }
-  }, [registration, selectedRole, navigation]);
+  }, [registration, selectedType, navigation]);
 
   return (
     <Block safe marginTop={sizes.md}>
@@ -122,26 +122,26 @@ const Register = () => {
               tint={colors.blurTint}
               paddingVertical={sizes.sm}>
               
-              {/* Role Selection Buttons */}
+              {/* Type Selection Buttons */}
               <Block paddingHorizontal={sizes.sm} marginBottom={sizes.sm}>
                 <Text p semibold marginBottom={sizes.sm}>
-                  Select your role:
+                  Select your type:
                 </Text>
                 <Block row flex={0} justify="space-between" marginBottom={sizes.sm}>
-                  {['Staff', 'Caregiver', 'Volunteer'].map((role) => (
+                  {['Staff', 'Caregiver', 'Volunteer'].map((type) => (
                     <Button
-                      key={role}
+                      key={type}
                       flex={0}
                       width="30%"
-                      gradient={selectedRole === role ? gradients.primary : undefined}
-                      outlined={selectedRole !== role}
-                      onPress={() => setSelectedRole(role)}>
+                      gradient={selectedType === type ? gradients.primary : undefined}
+                      outlined={selectedType !== type}
+                      onPress={() => setSelectedType(type)}>
                       <Text
                         bold
                         size={13}
                         transform="uppercase"
-                        color={selectedRole === role ? colors.white : colors.primary}>
-                        {role}
+                        color={selectedType === type ? colors.white : colors.primary}>
+                        {type}
                       </Text>
                     </Button>
                   ))}
@@ -180,7 +180,7 @@ const Register = () => {
                 marginVertical={sizes.s}
                 marginHorizontal={sizes.sm}
                 gradient={gradients.primary}
-                disabled={!selectedRole || !registration.name || !registration.password}>
+                disabled={!selectedType || !registration.name || !registration.password}>
                 <Text bold white transform="uppercase">
                   {t('common.signup')}
                 </Text>
