@@ -13,6 +13,7 @@ import {
     arrayRemove,
   } from "firebase/firestore";
   import { db } from "../config/firebaseConfig";
+  import { IEvent2 } from "../src/constants/types";
   
   export async function fetchEvent(eventId = "") {
     try {
@@ -50,6 +51,59 @@ import {
       throw new Error("Failed to fetch event records");
     }
   };
+
+  export const fetchEvents = async () => {
+    try {
+      const eventsCollection = collection(db, "events");
+      const eventsSnapshot = await getDocs(eventsCollection);
+  
+      const eventList = eventsSnapshot.docs.map((doc) => {
+        try {
+          const data = doc.data();
+          // Check if datetime exists and is valid
+          let formattedDate = "No date available";
+          if (data.datetime && data.datetime.seconds) {
+            const date = new Date(data.datetime.seconds * 1000); // Convert seconds to milliseconds
+            formattedDate = date
+              .toLocaleString("en-US", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+                hour12: true,
+              })
+              .replace(",", " -"); // Format the date and time
+          }
+  
+          const event: IEvent2 = {
+            id: doc.id,
+            title: data.name ?? "Untitled Event",
+            information: data.information ?? "No information available",
+            category: data.category ?? { id: 0, name: "Uncategorized" },
+            image: data.image ?? "default_image_url",
+            location: data.location ?? "No location",
+            dateTime: formattedDate,
+            thingsToBring: data.itemsToBring ?? [],
+            meetUpLocations: data.meetUpLocations ?? [],
+            participants: data.participants ?? [],
+            volunteers: data.volunteers ?? [],
+            timestamp: data.timestamp ?? Date.now(),
+            published: data.published ?? false,
+            onPress: data.onPress ?? (() => {}),
+          };
+          return event;
+        } catch (eventError) {
+          console.error(`Error processing event with ID ${doc.id}:`, eventError);
+          return null; // Return null if there is an error
+        }
+      }).filter(event => event !== null); // Filter out null values
+  
+      setEvents(eventList);
+    } catch (error) {
+      console.error("Error fetching events: ", error);
+    }
+  }
   
   export const updateEvent = async (eventId = "", eventpayload) => {
     try {

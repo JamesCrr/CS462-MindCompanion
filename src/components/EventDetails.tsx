@@ -37,6 +37,8 @@ const EventDetails = ({
 }: EventDetailsProp) => {
   const { t } = useTranslation();
   const navigation = useNavigation();
+
+  image = "https://images.unsplash.com/photo-1604998103924-89e012e5265a?fit=crop&w=450&q=80";
   const { colors, gradients, icons, sizes } = useTheme();
   const [selectedMeetUpLocation, setSelectedMeetUpLocation] = useState<string | null>(null);
 
