@@ -1,67 +1,72 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Linking, Platform} from 'react-native';
+import React, {useCallback, useState} from 'react';
+import {Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
-
 import {useData, useTheme, useTranslation} from '../hooks/';
-import * as regex from '../constants/regex';
-import {Block, Button, Input, Image, Text, Checkbox} from '../components/';
+import {Block, Button, Input, Image, Text} from '../components/';
+import {getFirestore, collection, query, where, getDocs, addDoc} from 'firebase/firestore';
+import {db} from '../../config/firebaseConfig';
 
 const isAndroid = Platform.OS === 'android';
-
-interface IRegistration {
-  name: string;
-  email: string;
-  password: string;
-  agreed: boolean;
-}
-interface IRegistrationValidation {
-  name: boolean;
-  email: boolean;
-  password: boolean;
-  agreed: boolean;
-}
 
 const Register = () => {
   const {isDark} = useData();
   const {t} = useTranslation();
   const navigation = useNavigation();
-  const [isValid, setIsValid] = useState<IRegistrationValidation>({
-    name: false,
-    email: false,
-    password: false,
-    agreed: false,
-  });
-  const [registration, setRegistration] = useState<IRegistration>({
+  
+  const [selectedRole, setSelectedRole] = useState('');
+  const [registration, setRegistration] = useState({
     name: '',
-    email: '',
     password: '',
-    agreed: false,
   });
+  const [error, setError] = useState('');
+
   const {assets, colors, gradients, sizes} = useTheme();
 
   const handleChange = useCallback(
     (value) => {
       setRegistration((state) => ({...state, ...value}));
+      setError(''); // Clear error when input changes
     },
     [setRegistration],
   );
 
-  const handleSignUp = useCallback(() => {
-    if (!Object.values(isValid).includes(false)) {
-      /** send/save registratin data */
-      console.log('handleSignUp', registration);
+  const handleSignUp = useCallback(async () => {
+    if (!selectedRole || !registration.name || !registration.password) {
+      setError('Please fill in all fields and select a role');
+      return;
     }
-  }, [isValid, registration]);
 
-  useEffect(() => {
-    setIsValid((state) => ({
-      ...state,
-      name: regex.name.test(registration.name),
-      email: regex.email.test(registration.email),
-      password: regex.password.test(registration.password),
-      agreed: registration.agreed,
-    }));
-  }, [registration, setIsValid]);
+    try {
+      // Check if user with same name and role already exists
+      const usersRef = collection(db, 'users');
+      const q = query(
+        usersRef,
+        where('name', '==', registration.name),
+        where('role', '==', selectedRole)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      
+      if (!querySnapshot.empty) {
+        setError('User already exists with this name and role');
+        return;
+      }
+
+      // Create new user
+      await addDoc(collection(db, 'users'), {
+        name: registration.name,
+        password: registration.password,
+        role: selectedRole,
+      });
+
+      // Navigate to login
+      navigation.navigate('Login');
+
+    } catch (error) {
+      console.error('Error during registration:', error);
+      setError('An error occurred during registration');
+    }
+  }, [registration, selectedRole, navigation]);
 
   return (
     <Block safe marginTop={sizes.md}>
@@ -97,17 +102,16 @@ const Register = () => {
             </Text>
           </Image>
         </Block>
-        {/* register form */}
+
         <Block
           keyboard
-          behavior={!isAndroid ? 'padding' : 'height'}
-          marginTop={-(sizes.height * 0.2 - sizes.l)}>
+          marginTop={-(sizes.height * 0.2 - sizes.l)}
+          behavior={!isAndroid ? 'padding' : 'height'}>
           <Block
             flex={0}
             radius={sizes.sm}
             marginHorizontal="8%"
-            shadow={!isAndroid} // disabled shadow on Android due to blur overlay + elevation issue
-          >
+            shadow={!isAndroid}>
             <Block
               blur
               flex={0}
@@ -117,123 +121,72 @@ const Register = () => {
               justify="space-evenly"
               tint={colors.blurTint}
               paddingVertical={sizes.sm}>
-              <Text p semibold center>
-                {t('register.subtitle')}
-              </Text>
-              {/* social buttons */}
-              <Block row center justify="space-evenly" marginVertical={sizes.m}>
-                <Button outlined gray shadow={!isAndroid}>
-                  <Image
-                    source={assets.facebook}
-                    height={sizes.m}
-                    width={sizes.m}
-                    color={isDark ? colors.icon : undefined}
-                  />
-                </Button>
-                <Button outlined gray shadow={!isAndroid}>
-                  <Image
-                    source={assets.apple}
-                    height={sizes.m}
-                    width={sizes.m}
-                    color={isDark ? colors.icon : undefined}
-                  />
-                </Button>
-                <Button outlined gray shadow={!isAndroid}>
-                  <Image
-                    source={assets.google}
-                    height={sizes.m}
-                    width={sizes.m}
-                    color={isDark ? colors.icon : undefined}
-                  />
-                </Button>
-              </Block>
-              <Block
-                row
-                flex={0}
-                align="center"
-                justify="center"
-                marginBottom={sizes.sm}
-                paddingHorizontal={sizes.xxl}>
-                <Block
-                  flex={0}
-                  height={1}
-                  width="50%"
-                  end={[1, 0]}
-                  start={[0, 1]}
-                  gradient={gradients.divider}
-                />
-                <Text center marginHorizontal={sizes.s}>
-                  {t('common.or')}
+              
+              {/* Role Selection Buttons */}
+              <Block paddingHorizontal={sizes.sm} marginBottom={sizes.sm}>
+                <Text p semibold marginBottom={sizes.sm}>
+                  Select your role:
                 </Text>
-                <Block
-                  flex={0}
-                  height={1}
-                  width="50%"
-                  end={[0, 1]}
-                  start={[1, 0]}
-                  gradient={gradients.divider}
-                />
+                <Block row flex={0} justify="space-between" marginBottom={sizes.sm}>
+                  {['Staff', 'Caregiver', 'Volunteer'].map((role) => (
+                    <Button
+                      key={role}
+                      flex={0}
+                      width="30%"
+                      gradient={selectedRole === role ? gradients.primary : undefined}
+                      outlined={selectedRole !== role}
+                      onPress={() => setSelectedRole(role)}>
+                      <Text
+                        bold
+                        size={13}
+                        transform="uppercase"
+                        color={selectedRole === role ? colors.white : colors.primary}>
+                        {role}
+                      </Text>
+                    </Button>
+                  ))}
+                </Block>
               </Block>
-              {/* form inputs */}
+
+              {/* Registration Form */}
               <Block paddingHorizontal={sizes.sm}>
                 <Input
+                  label="Name"
                   autoCapitalize="none"
                   marginBottom={sizes.m}
-                  label={t('common.name')}
-                  placeholder={t('common.namePlaceholder')}
-                  success={Boolean(registration.name && isValid.name)}
-                  danger={Boolean(registration.name && !isValid.name)}
+                  placeholder="Enter your name"
                   onChangeText={(value) => handleChange({name: value})}
                 />
                 <Input
-                  autoCapitalize="none"
-                  marginBottom={sizes.m}
-                  label={t('common.email')}
-                  keyboardType="email-address"
-                  placeholder={t('common.emailPlaceholder')}
-                  success={Boolean(registration.email && isValid.email)}
-                  danger={Boolean(registration.email && !isValid.email)}
-                  onChangeText={(value) => handleChange({email: value})}
-                />
-                <Input
                   secureTextEntry
+                  label="Password"
                   autoCapitalize="none"
                   marginBottom={sizes.m}
-                  label={t('common.password')}
-                  placeholder={t('common.passwordPlaceholder')}
+                  placeholder="Enter your password"
                   onChangeText={(value) => handleChange({password: value})}
-                  success={Boolean(registration.password && isValid.password)}
-                  danger={Boolean(registration.password && !isValid.password)}
                 />
               </Block>
-              {/* checkbox terms */}
-              <Block row flex={0} align="center" paddingHorizontal={sizes.sm}>
-                <Checkbox
-                  marginRight={sizes.sm}
-                  checked={registration?.agreed}
-                  onPress={(value) => handleChange({agreed: value})}
-                />
-                <Text paddingRight={sizes.s}>
-                  {t('common.agree')}
-                  <Text
-                    semibold
-                    onPress={() => {
-                      Linking.openURL('https://www.creative-tim.com/terms');
-                    }}>
-                    {t('common.terms')}
-                  </Text>
+
+              {/* Error Message */}
+              {error ? (
+                <Text p color={colors.danger} center marginBottom={sizes.sm}>
+                  {error}
                 </Text>
-              </Block>
+              ) : null}
+
+              {/* Sign Up Button */}
               <Button
                 onPress={handleSignUp}
                 marginVertical={sizes.s}
                 marginHorizontal={sizes.sm}
                 gradient={gradients.primary}
-                disabled={Object.values(isValid).includes(false)}>
+                disabled={!selectedRole || !registration.name || !registration.password}>
                 <Text bold white transform="uppercase">
                   {t('common.signup')}
                 </Text>
               </Button>
+
+              {/* Sign In Button */}
               <Button
                 primary
                 outlined
