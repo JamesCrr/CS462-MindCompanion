@@ -13,7 +13,7 @@ import {
   EventDetails,
 } from "../components/";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { userJoinEvent } from "../../api/event";
+import { userJoinEvent, staffPublishEvent } from "../../api/event";
 import { UserContext } from "../hooks/userContext";
 
 const Rental = () => {
@@ -60,14 +60,11 @@ const Rental = () => {
   const handlePublish = async () => {
     // const userData = await retrieveIdentity();
     // console.log("userData", userData);
-    console.log("Identity:", identity);
-    const uid = identity ? JSON.parse(identity).uid : "";
-    console.log("email", uid);
-    console.log("selectedMeetUpLocation", selectedMeetUpLocation);
-    if (selectedMeetUpLocation) {
-      await userJoinEvent(eventId, uid, selectedMeetUpLocation, "yes");
-    } else {
-      console.log("Please select a meetup location.");
+    try {
+      const res = await staffPublishEvent(eventId);
+      console.log(res);
+    } catch (error) {
+      console.error("Error publishing event:", error);
     }
   };
   // init with optionId = 0
@@ -105,7 +102,11 @@ const Rental = () => {
         </Button>
       </Block>
       <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
-        <Button gradient={gradients.primary} disabled={article.published} onPress={() => handlePublish()}>
+        <Button
+          gradient={gradients.primary}
+          disabled={article.published}
+          onPress={() => handlePublish()}
+        >
           <Text white bold transform="uppercase">
             {t("event.publish")}
           </Text>
