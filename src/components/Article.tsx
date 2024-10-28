@@ -29,6 +29,7 @@ const Article = ({
   const {t} = useTranslation();
   const {colors, gradients, icons, sizes} = useTheme();
 
+  image = "https://images.unsplash.com/photo-1604998103924-89e012e5265a?fit=crop&w=450&q=80";
   // render card for Newest & Fashion
   if (category?.id !== 1) {
     return (
