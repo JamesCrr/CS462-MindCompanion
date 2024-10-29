@@ -26,6 +26,8 @@ import {
   EditEvent,
   ItemsPreCheck,
   AddEvent,
+  CaregiverCalendar,
+  ViewEvent
 } from "../screens";
 import { useNavigation } from "@react-navigation/native";
 
@@ -202,6 +204,16 @@ export default () => {
         component={EditEvent}
         options={{
           title: t("navigation.eventId"),
+        }}
+      />
+
+      <Stack.Screen name="CaregiverCalendar" component={CaregiverCalendar} />
+
+      <Stack.Screen
+        name="ViewEvent"
+        component={ViewEvent}
+        options={{
+          title: t("navigation.eventDetails"),
         }}
       />
 

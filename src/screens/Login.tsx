@@ -40,15 +40,21 @@ const Login = () => {
     }
 
     try {
-      // Update query to use type instead of role
+      console.log('Attempting login with:', {
+        name: loginData.name,
+        type: selectedType
+      });
+
       const usersRef = collection(db, 'users');
       const q = query(
         usersRef,
         where('name', '==', loginData.name),
-        where('type', '==', selectedType)  // Changed from role to type
+        where('type', '==', selectedType)
       );
       
       const querySnapshot = await getDocs(q);
+      
+      console.log('Query results:', querySnapshot.size);
       
       if (querySnapshot.empty) {
         setError('User not found with selected type');
@@ -57,25 +63,34 @@ const Login = () => {
 
       const userDoc = querySnapshot.docs[0];
       const userData = userDoc.data();
+      
+      console.log('Found user data:', userData);
 
       if (userData.password !== loginData.password) {
+        console.log('Password mismatch:', {
+          input: loginData.password,
+          stored: userData.password
+        });
         setError('Invalid password');
         return;
       }
 
-      // Update user object to use type
       const user = {
         name: userData.name,
-        type: userData.type,  // Changed from role to type
+        type: userData.type,
         id: userDoc.id,
+        uid: userDoc.id  // Add this line
       };
 
-      await login(user);
+      console.log('Login successful, user object:', user);
 
-      // Update switch statement to use type
-      switch (selectedType) {
-        default:
-          navigation.navigate('Home');
+      try {
+        await login(user);
+        navigation.replace('Home');
+      } catch (loginError) {
+        console.error('Error in login context:', loginError);
+        setError('Failed to save login session');
+        return;
       }
 
     } catch (error) {

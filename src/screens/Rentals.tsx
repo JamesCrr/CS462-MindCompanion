@@ -20,7 +20,7 @@ const RentalHeader = () => {
   const [viewCalendar, setViewCalendar] = useState(false);
   const navigation = useNavigation();
   const changeView = () => {
-    navigation.navigate("StaffCalendar");
+    navigation.navigate("CaregiverCalendar");
   };
   return (
     <>
