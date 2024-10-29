@@ -211,7 +211,8 @@
       "numberofclientspermonth": "Number of clients Per Month",
       "activitiesperMonth": "Activities Per Month",
       "averagedurationpermonth": "Average Duration Per Month",
-      "generatesheets": "Generate Sheets"
+      "generatesheets": "Generate Sheets",
+      "generating": "Generating"
     }
   }
 }

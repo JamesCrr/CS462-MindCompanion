@@ -1,11 +1,13 @@
-import { BarChart, LineChart, PieChart, PopulationPyramid } from "react-native-gifted-charts";
+import { LineChart, PieChart } from "react-native-gifted-charts";
 import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import { useData, useTheme, useTranslation } from "../hooks";
 import { Block, Button, Image, Product, Text, Article, EventDetails } from "../components";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserContext } from "../hooks/userContext";
+import * as XLSX from "xlsx";
+import * as FileSystem from "expo-file-system";
+import * as Sharing from "expo-sharing";
 
 /*
 - Number of clients / caregivers
@@ -42,12 +44,16 @@ const StaffCharts = () => {
   const [userCountPerMonth, setUserCountPerMonth] = useState<any[]>([]);
   const [activityCountPerMonth, setActivityCountPerMonth] = useState<any[]>([]);
   const [averageDurationPerMonth, setAverageDurationPerMonth] = useState<any[]>([]);
+  const [generatingSheet, setGeneratingSheets] = useState(false);
 
   // Constants
   const CARD_WIDTH = sizes.width - sizes.s;
   const hasSmallScreen = sizes.width < 414; // iPhone 11
   const SNAP_OFFSET = CARD_WIDTH - (hasSmallScreen ? 28 : 19) + sizes.s;
 
+  /**
+   * Fetches data and repopulate chart data with new data
+   */
   const populateChartData = async () => {
     // userCountThisMonth Chart
     setUserCountThisMonth([
@@ -118,6 +124,63 @@ const StaffCharts = () => {
     ]);
   };
 
+  const generateExcel = () => {
+    setGeneratingSheets(true);
+    let wb = XLSX.utils.book_new();
+
+    // Extracting labels and values
+    const userCountThisMonthLabels = userCountThisMonth.map((item) => item.label);
+    const userCountThisMonthValues = userCountThisMonth.map((item) => item.value);
+
+    const userCountPerMonthLabels = userCountPerMonth.map((item) => item.label);
+    const userCountPerMonthValues = userCountPerMonth.map((item) => item.value);
+
+    const activityCountPerMonthLabels = activityCountPerMonth.map((item) => item.label);
+    const activityCountPerMonthValues = activityCountPerMonth.map((item) => item.value);
+
+    const averageDurationPerMonthLabels = averageDurationPerMonth.map((item) => item.label);
+    const averageDurationPerMonthValues = averageDurationPerMonth.map((item) => item.value);
+
+    try {
+      let ws = XLSX.utils.aoa_to_sheet([
+        ["userCountThisMonth"],
+        [...userCountThisMonthLabels],
+        [...userCountThisMonthValues],
+
+        ["userCountPerMonth"],
+        [...userCountPerMonthLabels],
+        [...userCountPerMonthValues],
+
+        ["activityCountPerMonth"],
+        [...activityCountPerMonthLabels],
+        [...activityCountPerMonthValues],
+
+        ["averageDurationPerMonth"],
+        [...averageDurationPerMonthLabels],
+        [...averageDurationPerMonthValues],
+        // [5, 6, { t: 'n', v: 10, f: 'A4+B4'}]
+      ]);
+      XLSX.utils.book_append_sheet(wb, ws, "Results", true);
+
+      const base64 = XLSX.write(wb, { type: "base64" });
+      const filename = FileSystem.documentDirectory + "MindCompanionCharts.xlsx";
+      FileSystem.writeAsStringAsync(filename, base64, {
+        encoding: FileSystem.EncodingType.Base64,
+      }).then(() => {
+        Sharing.shareAsync(filename);
+      });
+    } catch (error) {
+      console.error(error);
+    }
+
+    setGeneratingSheets(false);
+  };
+
+  /**
+   * Helper function to render a line chart consistently
+   * @param data Data to render in the line chart
+   * @returns Component
+   */
   const renderLineChart = (data) => {
     return (
       <LineChart
@@ -207,10 +270,9 @@ const StaffCharts = () => {
       </Block>
 
       <Block marginTop={sizes.md}>
-        <Button gradient={gradients.primary} primary rounded>
+        <Button onPress={generateExcel} gradient={gradients.primary} primary rounded disabled={generatingSheet}>
           <Text bold white>
-            {" "}
-            {t("charts.staff.generatesheets")}
+            {generatingSheet ? t("charts.staff.generating") : t("charts.staff.generatesheets")}
           </Text>
         </Button>
       </Block>

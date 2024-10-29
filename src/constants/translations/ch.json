@@ -208,7 +208,8 @@
       "numberofclientspermonth": "每月客户数量",
       "activitiesperMonth": "每月活动",
       "averagedurationpermonth": "每月平均持续时间",
-      "generatesheets": "生成至表格"
+      "generatesheets": "生成至表格",
+      "generating": "正在生成"
     }
   }
 }
