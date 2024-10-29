@@ -9,12 +9,6 @@ import * as XLSX from "xlsx";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 
-/*
-- Number of clients / caregivers
-- Activites in month
-- Duration of activities
- - Average attendence (hours) per month
-*/
 const renderDot = (color) => {
   return (
     <View
@@ -53,6 +47,12 @@ const StaffCharts = () => {
 
   /**
    * Fetches data and repopulate chart data with new data
+   *
+   * Stats derived:
+   * - Number of clients / caregivers
+   * - Activites in month
+   * - Duration of activities
+   * - Average attendence (hours) per month
    */
   const populateChartData = async () => {
     // userCountThisMonth Chart
@@ -124,6 +124,9 @@ const StaffCharts = () => {
     ]);
   };
 
+  /**
+   * Generates an Excel file from the stats and shares it.
+   */
   const generateExcel = () => {
     setGeneratingSheets(true);
     let wb = XLSX.utils.book_new();
