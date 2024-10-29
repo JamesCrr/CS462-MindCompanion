@@ -21,4 +21,5 @@ export { default as MyEvent } from "./MyEvent";
 export { default as StaffCalendar } from "./StaffCalendar";
 export { default as EditEvent } from "./EditEvent";
 export { default as ItemsPreCheck } from "./ItemsPreCheck";
-export {default as AddEvent} from './AddEvent';
+export { default as AddEvent } from "./AddEvent";
+export { default as StaffCharts } from "./StaffCharts";

@@ -26,6 +26,7 @@ import {
   EditEvent,
   ItemsPreCheck,
   AddEvent,
+  StaffCharts,
 } from "../screens";
 import { useNavigation } from "@react-navigation/native";
 
@@ -60,7 +61,7 @@ export default () => {
   // Call retrieveIdentity when the component is mounted
   useEffect(() => {
     retrieveIdentity();
-    console.log('identity', identity);
+    console.log("identity", identity);
   }, []);
 
   return (
@@ -79,34 +80,26 @@ export default () => {
           ...screenOptions.profile,
           headerRight: () =>
             identity ? (
-              identity.type === 'Caregiver' ? (
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('MyEvents', { userId: identity.uid })}
-                >
-                  <Text style={{ color: 'blue', marginRight: 10 }}>My Events</Text>
+              identity.type === "Caregiver" ? (
+                <TouchableOpacity onPress={() => navigation.navigate("MyEvents", { userId: identity.uid })}>
+                  <Text style={{ color: "blue", marginRight: 10 }}>My Events</Text>
                 </TouchableOpacity>
-              ) : identity.type === 'Staff' ? (
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('AddEvent')}
-                >
-                  <Text style={{ color: 'blue', marginRight: 10 }}>{t('addEvent.title')}</Text>
+              ) : identity.type === "Staff" ? (
+                <TouchableOpacity onPress={() => navigation.navigate("AddEvent")}>
+                  <Text style={{ color: "blue", marginRight: 10 }}>{t("addEvent.title")}</Text>
                 </TouchableOpacity>
               ) : null
             ) : (
               <TouchableOpacity
                 onPress={() => navigation.navigate("Login")} // Navigate to Login screen
               >
-                <Text style={{ color: 'blue', marginRight: 10 }}>Log In</Text>
+                <Text style={{ color: "blue", marginRight: 10 }}>Log In</Text>
               </TouchableOpacity>
             ),
         }}
-      /> 
-
-      <Stack.Screen
-        name="AddEvent"
-        component={AddEvent}
-        options={{headerShown: false}}
       />
+
+      <Stack.Screen name="AddEvent" component={AddEvent} options={{ headerShown: false }} />
 
       <Stack.Screen
         name="MyEvents"
@@ -210,6 +203,20 @@ export default () => {
         component={ItemsPreCheck}
         options={{
           title: t("navigation.checklist"),
+          ...screenOptions.rental,
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Text style={{ color: "blue", marginRight: 10 }}>Back</Text>
+            </TouchableOpacity>
+          ),
+        }}
+      />
+
+      <Stack.Screen
+        name="StaffCharts"
+        component={StaffCharts}
+        options={{
+          title: t("navigation.staffcharts"),
           ...screenOptions.rental,
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
