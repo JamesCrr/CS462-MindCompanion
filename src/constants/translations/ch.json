@@ -95,7 +95,8 @@
     "login": "登录",
     "extra": "汽车",
     "shopping": "购物车",
-    "checklist": "物品清单"
+    "checklist": "物品清单",
+    "staffcharts": "事件图表"
   },
   "menu": {
     "started": "入门",
@@ -200,5 +201,15 @@
       "zero": "购物车小计（0 件商品）"
     },
     "alsoShopped": "购买您购物车中的商品的客户也购买了"
+  },
+  "charts": {
+    "staff": {
+      "numberofclientsthismonth": "本月客户数量",
+      "numberofclientspermonth": "每月客户数量",
+      "activitiesperMonth": "每月活动",
+      "averagedurationpermonth": "每月平均持续时间",
+      "generatesheets": "生成至表格",
+      "generating": "正在生成"
+    }
   }
 }

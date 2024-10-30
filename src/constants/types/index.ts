@@ -80,7 +80,7 @@ export interface IEvent2 {
   participants: string[];
   volunteers: string[];
   timestamp?: number;
-  published: boolean;
+  published?:boolean
   onPress?: (event?: any) => void;
 }
 
@@ -128,6 +128,7 @@ export interface IUseData {
   handleNotifications: (data?: INotification[]) => void;
   events: IEvent[];
   setEvents: (data?: IEvent[]) => void;
+  fetchEvents: () => Promise<void>;
 }
 
 export interface ITranslate {

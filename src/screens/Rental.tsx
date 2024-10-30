@@ -13,11 +13,15 @@ import {
   EventDetails,
 } from "../components/";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { userJoinEvent } from "../../api/event";
+import {
+  userJoinEvent,
+  staffPublishEvent,
+  staffDeleteEvent,
+} from "../../api/event";
 import { UserContext } from "../hooks/userContext";
 
 const Rental = () => {
-  const { article } = useData();
+  const { article, fetchEvents } = useData();
   const { t } = useTranslation();
   const navigation = useNavigation();
   const route = useRoute();
@@ -60,14 +64,26 @@ const Rental = () => {
   const handlePublish = async () => {
     // const userData = await retrieveIdentity();
     // console.log("userData", userData);
-    console.log("Identity:", identity);
-    const uid = identity ? JSON.parse(identity).uid : "";
-    console.log("email", uid);
-    console.log("selectedMeetUpLocation", selectedMeetUpLocation);
-    if (selectedMeetUpLocation) {
-      await userJoinEvent(eventId, uid, selectedMeetUpLocation, "yes");
-    } else {
-      console.log("Please select a meetup location.");
+    try {
+      const res = await staffPublishEvent(eventId);
+      console.log(res);
+      fetchEvents();
+      navigation.goBack();
+    } catch (error) {
+      console.error("Error publishing event:", error);
+    }
+  };
+
+  const handleDelete = async () => {
+    // const userData = await retrieveIdentity();
+    // console.log("userData", userData);
+    try {
+      const res = await staffDeleteEvent(eventId);
+      console.log(res);
+      fetchEvents();
+      navigation.goBack();
+    } catch (error) {
+      console.error("Error deleting event:", error);
     }
   };
   // init with optionId = 0
@@ -105,9 +121,58 @@ const Rental = () => {
         </Button>
       </Block>
       <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
-        <Button gradient={gradients.primary} disabled={article.published} onPress={() => handlePublish()}>
+        <Button
+          gradient={gradients.primary}
+          disabled={article.published}
+          onPress={() => handlePublish()}
+        >
           <Text white bold transform="uppercase">
             {t("event.publish")}
+          </Text>
+        </Button>
+      </Block>
+      <Block
+        paddingHorizontal={sizes.sm}
+        row
+        justify="space-between"
+        marginVertical={sizes.sm}
+      >
+        <Button
+          flex={1}
+          gradient={gradients.dark}
+          marginHorizontal={sizes.s}
+          onPress={() =>
+            navigation.navigate("EditEvent", {
+              eventId: eventId,
+            })
+          }
+        >
+          <Text white bold transform="uppercase" marginHorizontal={sizes.s}>
+            Edit
+          </Text>
+        </Button>
+        <Button
+          flex={1}
+          gradient={gradients.dark}
+          marginHorizontal={sizes.s}
+          onPress={() => handleDelete()}
+        >
+          <Text white bold transform="uppercase" marginHorizontal={sizes.s}>
+            Delete
+          </Text>
+        </Button>
+      </Block>
+      <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
+        <Button
+          gradient={gradients.primary}
+          onPress={() =>
+            navigation.navigate("StaffAttendanceLocations", {
+              eventId: eventId,
+            })
+          }
+        >
+          <Text white bold transform="uppercase">
+            {t("event.takeAttendance")}
           </Text>
         </Button>
       </Block>
