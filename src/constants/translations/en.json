@@ -180,7 +180,8 @@
     "notFound2": " in our app.",
     "moreOptions": "You can see more options from other categories.",
     "joinEvent": "Join Event",
-    "publish": "Publish Event"
+    "publish": "Publish Event",
+    "takeAttendance": "Take Attendace"
   },
   "profile": {
     "title": "Profile",

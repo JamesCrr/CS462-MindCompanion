@@ -13,7 +13,11 @@ import {
   EventDetails,
 } from "../components/";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { userJoinEvent, staffPublishEvent } from "../../api/event";
+import {
+  userJoinEvent,
+  staffPublishEvent,
+  staffDeleteEvent,
+} from "../../api/event";
 import { UserContext } from "../hooks/userContext";
 
 const Rental = () => {
@@ -67,6 +71,17 @@ const Rental = () => {
       console.error("Error publishing event:", error);
     }
   };
+
+  const handleDelete = async () => {
+    // const userData = await retrieveIdentity();
+    // console.log("userData", userData);
+    try {
+      const res = await staffDeleteEvent(eventId);
+      console.log(res);
+    } catch (error) {
+      console.error("Error deleting event:", error);
+    }
+  };
   // init with optionId = 0
   useEffect(() => {
     // setOptionId(article?.options?.[0]?.id);
@@ -109,6 +124,51 @@ const Rental = () => {
         >
           <Text white bold transform="uppercase">
             {t("event.publish")}
+          </Text>
+        </Button>
+      </Block>
+      <Block
+        paddingHorizontal={sizes.sm}
+        row
+        justify="space-between"
+        marginVertical={sizes.sm}
+      >
+        <Button
+          flex={1}
+          gradient={gradients.dark}
+          marginHorizontal={sizes.s}
+          onPress={() =>
+            navigation.navigate("EditEvent", {
+              eventId: eventId,
+            })
+          }
+        >
+          <Text white bold transform="uppercase" marginHorizontal={sizes.s}>
+            Edit
+          </Text>
+        </Button>
+        <Button
+          flex={1}
+          gradient={gradients.dark}
+          marginHorizontal={sizes.s}
+          onPress={() => handleDelete()}
+        >
+          <Text white bold transform="uppercase" marginHorizontal={sizes.s}>
+            Delete
+          </Text>
+        </Button>
+      </Block>
+      <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
+        <Button
+          gradient={gradients.primary}
+          onPress={() =>
+            navigation.navigate("StaffAttendanceLocations", {
+              eventId: eventId,
+            })
+          }
+        >
+          <Text white bold transform="uppercase">
+            {t("event.takeAttendance")}
           </Text>
         </Button>
       </Block>

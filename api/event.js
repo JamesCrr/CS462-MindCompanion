@@ -148,6 +148,22 @@ export const staffPublishEvent = async (eventId) => {
   }
 };
 
+export const staffDeleteEvent = async (eventId) => {
+  console.log("Deleting event ID:", eventId);
+
+  try {
+    const eventDoc = doc(db, "events", eventId);
+    console.log("Event Document Reference:", eventDoc);
+
+    await deleteDoc(eventDoc);
+
+    return "Event Deleted";
+  } catch (e) {
+    console.error("Error deleting event document: ", e.message);
+    throw new Error("Failed to delete event record");
+  }
+};
+
 // export async function updateEventRecord(docId, updatedPerformance, remarks) {
 //   try {
 //     const recordRef = doc(db, 'eventRecords', docId);
