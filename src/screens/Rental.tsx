@@ -21,7 +21,7 @@ import {
 import { UserContext } from "../hooks/userContext";
 
 const Rental = () => {
-  const { article } = useData();
+  const { article, fetchEvents } = useData();
   const { t } = useTranslation();
   const navigation = useNavigation();
   const route = useRoute();
@@ -67,6 +67,8 @@ const Rental = () => {
     try {
       const res = await staffPublishEvent(eventId);
       console.log(res);
+      fetchEvents();
+      navigation.goBack();
     } catch (error) {
       console.error("Error publishing event:", error);
     }
@@ -78,6 +80,8 @@ const Rental = () => {
     try {
       const res = await staffDeleteEvent(eventId);
       console.log(res);
+      fetchEvents();
+      navigation.goBack();
     } catch (error) {
       console.error("Error deleting event:", error);
     }
