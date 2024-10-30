@@ -27,7 +27,7 @@ import {
   ItemsPreCheck,
   AddEvent,
   CaregiverCalendar,
-  ViewEvent
+  ViewEvent,
   StaffCharts,
 } from "../screens";
 import { useNavigation } from "@react-navigation/native";
