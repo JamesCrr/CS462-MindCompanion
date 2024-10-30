@@ -98,7 +98,8 @@
     "login": "Login",
     "extra": "Automotive",
     "shopping": "Shopping Cart",
-    "checklist": "Items Checklist"
+    "checklist": "Items Checklist",
+    "staffcharts": "Charts"
   },
   "menu": {
     "started": "Getting Started",
@@ -180,7 +181,8 @@
     "notFound2": " in our app.",
     "moreOptions": "You can see more options from other categories.",
     "joinEvent": "Join Event",
-    "publish": "Publish Event"
+    "publish": "Publish Event",
+    "takeAttendance": "Take Attendace"
   },
   "profile": {
     "title": "Profile",
@@ -203,5 +205,15 @@
       "zero": "Cart subtotal (0 items)"
     },
     "alsoShopped": "Customers who shopped for items in your cart also shopped for"
+  },
+  "charts": {
+    "staff": {
+      "numberofclientsthismonth": "Number of clients this Month",
+      "numberofclientspermonth": "Number of clients Per Month",
+      "activitiesperMonth": "Activities Per Month",
+      "averagedurationpermonth": "Average Duration Per Month",
+      "generatesheets": "Generate Sheets",
+      "generating": "Generating"
+    }
   }
 }

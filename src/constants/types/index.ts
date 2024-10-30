@@ -80,7 +80,7 @@ export interface IEvent2 {
   participants: string[];
   volunteers: string[];
   timestamp?: number;
-  published: boolean;
+  published?:boolean
   onPress?: (event?: any) => void;
 }
 

@@ -1,11 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-  View,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-} from "react-native";
+import { View, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { Block, Button, Text } from "../components/";
 import { UserContext } from "../hooks/userContext";
@@ -83,20 +77,14 @@ const Home = () => {
     const getMonthDays = () => {
       const days: (Date | null)[] = [];
       const daysInMonth = getDaysInMonth(currentDate);
-      const firstDayOfMonth = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth(),
-        1
-      ).getDay();
+      const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
 
       for (let i = 0; i < firstDayOfMonth; i++) {
         days.push(null);
       }
 
       for (let i = 1; i <= daysInMonth; i++) {
-        days.push(
-          new Date(currentDate.getFullYear(), currentDate.getMonth(), i)
-        );
+        days.push(new Date(currentDate.getFullYear(), currentDate.getMonth(), i));
       }
 
       return days;
@@ -119,10 +107,7 @@ const Home = () => {
                 <ScrollView>
                   {events
                     .filter((event) => {
-                      return (
-                        formatDate(event.datetime.toISOString()) ===
-                        formatDate(day.toISOString())
-                      );
+                      return formatDate(event.datetime.toISOString()) === formatDate(day.toISOString());
                     })
                     .map((event) => (
                       <TouchableOpacity
@@ -134,12 +119,8 @@ const Home = () => {
                         <View style={styles.event}>
                           <Text style={styles.eventTitle}>{event.name}</Text>
                           <Text style={styles.eventTime}>
-                            {String(event.datetime.getHours()).padStart(2, "0")}
-                            :
-                            {String(event.datetime.getMinutes()).padStart(
-                              2,
-                              "0"
-                            )}
+                            {String(event.datetime.getHours()).padStart(2, "0")}:
+                            {String(event.datetime.getMinutes()).padStart(2, "0")}
                           </Text>
                         </View>
                       </TouchableOpacity>
@@ -154,15 +135,11 @@ const Home = () => {
   };
 
   const nextPeriod = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
-    );
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
   };
 
   const prevPeriod = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
-    );
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
   };
 
   return (
@@ -186,10 +163,7 @@ const Home = () => {
           {renderMonthView()}
           {/* Only show Add Event button for admin/organizer roles */}
           {identity && ["Staff", "organizer"].includes(identity.type) && (
-            <Button
-              style={styles.buttons}
-              onPress={() => navigation.navigate("AddEvent")}
-            >
+            <Button style={styles.buttons} onPress={() => navigation.navigate("AddEvent")}>
               <Text>Add event</Text>
             </Button>
           )}
