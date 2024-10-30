@@ -42,7 +42,7 @@ interface Event {
   itemsToBring?: string[];
   participants?: string[];
   volunteers?: string[];
-  particpiantAttendance?: string[];
+  participantAttendance?: string[];
   volunteerAttendance?: string[];
 }
 
@@ -74,7 +74,7 @@ export default function StaffAttendanceLocations() {
       itemsToBring: eventDoc.itemsToBring || [],
       participants: eventDoc.participants || [],
       volunteers: eventDoc.volunteers || [],
-      particpiantAttendance: eventDoc.particpiantAttendance || [],
+      participantAttendance: eventDoc.participantAttendance || [],
       volunteerAttendance: eventDoc.volunteerAttendance || [],
     };
   };
