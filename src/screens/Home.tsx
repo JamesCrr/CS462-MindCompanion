@@ -57,9 +57,6 @@ const Home = () => {
   };
 
   useEffect(() => {
-    navigation.navigate("StaffCharts", { eventId: "sad" });
-    return;
-
     const retrieveData = async () => {
       await retrieveAllEvents();
     };
