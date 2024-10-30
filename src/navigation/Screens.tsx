@@ -128,9 +128,7 @@ export default () => {
         component={AddEvent}
         options={{ headerShown: false }}
       />
-
-      <Stack.Screen name="AddEvent" component={AddEvent} options={{ headerShown: false }} />
-
+      
       <Stack.Screen
         name="MyEvents"
         component={MyEvents}

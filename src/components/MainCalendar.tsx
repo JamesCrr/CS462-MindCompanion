@@ -135,7 +135,7 @@ const MainCalendar = () => {
                           // navigation.navigate("Rental", {
                           //   eventId: event.id,
                           // })
-                          navigation.navigate("EditEvent", {
+                          navigation.navigate("Rental", {
                             eventId: event.id,
                           })
                         }
