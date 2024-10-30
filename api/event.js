@@ -123,6 +123,8 @@ import {
       console.log(eventpayload);
       eventpayload.participants = [];
       eventpayload.volunteers = [];
+      eventpayload.participantAttendance = [];
+      eventpayload.volunteerAttendance = [];
       eventpayload.published = false;
       const collectionRef = collection(db, "events");
   

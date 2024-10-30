@@ -287,6 +287,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
     setCategories,
     events, // Replace recommendations with events
     setEvents, // Add setEvents to context
+    fetchEvents, 
     recommendations,
     setRecommendations,
     articles,

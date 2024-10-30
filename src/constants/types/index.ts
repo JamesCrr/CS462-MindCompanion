@@ -128,6 +128,7 @@ export interface IUseData {
   handleNotifications: (data?: INotification[]) => void;
   events: IEvent[];
   setEvents: (data?: IEvent[]) => void;
+  fetchEvents: () => Promise<void>;
 }
 
 export interface ITranslate {

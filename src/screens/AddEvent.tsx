@@ -11,6 +11,7 @@ import { InsertEvent } from '../../api/event';
 const isAndroid = Platform.OS === 'android';
 
 const AddEvent = () => {
+  const { fetchEvents } = useData();
   const { isDark } = useData();
   const { t } = useTranslation();
   const navigation = useNavigation();
@@ -76,6 +77,7 @@ const AddEvent = () => {
 
       if (res) {
         console.log("response about adding event:", res);
+        fetchEvents();
         navigation.goBack();
       }
 
@@ -94,16 +96,16 @@ const AddEvent = () => {
       information: eventData.information.length > 0,
       meetupLocations: eventData.meetupLocations.length > 0,
       itemsToBring: eventData.itemsToBring.length > 0,
-      dateTime: eventData.datetime,
+      datetime: eventData.datetime,
     }));
   }, [eventData, setIsValid]);
 
   const handleDateChange = (event: any, selectedDate: Date | undefined) => {
     const currentDate = selectedDate || eventData.datetime;
     setShowDatePicker(false);
-  
+
     const time = new Date(eventData.datetime);
-    const dateTime = new Date(
+    const datetime = new Date(
       currentDate.getFullYear(),
       currentDate.getMonth(),
       currentDate.getDate(),
@@ -111,16 +113,16 @@ const AddEvent = () => {
       time.getMinutes(),
       time.getSeconds()
     );
-  
-    handleChange({ date: currentDate, dateTime });
+
+    handleChange({ datetime });
   };
-  
+
   const handleTimeChange = (event: any, selectedTime: Date | undefined) => {
     const currentTime = selectedTime || eventData.datetime;
     setShowTimePicker(false);
-  
+
     const date = new Date(eventData.datetime);
-    const dateTime = new Date(
+    const datetime = new Date(
       date.getFullYear(),
       date.getMonth(),
       date.getDate(),
@@ -128,8 +130,8 @@ const AddEvent = () => {
       currentTime.getMinutes(),
       currentTime.getSeconds()
     );
-  
-    handleChange({ time: currentTime, dateTime });
+
+    handleChange({ datetime });
   };
 
   const addMeetupLocation = () => {
