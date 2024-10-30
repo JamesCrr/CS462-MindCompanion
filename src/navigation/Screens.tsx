@@ -204,11 +204,11 @@ export default () => {
         options={{
           title: t("navigation.checklist"),
           ...screenOptions.rental,
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Text style={{ color: "blue", marginRight: 10 }}>Back</Text>
-            </TouchableOpacity>
-          ),
+          // headerLeft: () => (
+          //   <TouchableOpacity onPress={() => navigation.goBack()}>
+          //     <Text style={{ color: "blue", marginRight: 10 }}>Back</Text>
+          //   </TouchableOpacity>
+          // ),
         }}
       />
 
@@ -218,11 +218,11 @@ export default () => {
         options={{
           title: t("navigation.staffcharts"),
           ...screenOptions.rental,
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Text style={{ color: "blue", marginRight: 10 }}>Back</Text>
-            </TouchableOpacity>
-          ),
+          // headerLeft: () => (
+          //   <TouchableOpacity onPress={() => navigation.goBack()}>
+          //     <Text style={{ color: "blue", marginRight: 10 }}>Back</Text>
+          //   </TouchableOpacity>
+          // ),
         }}
       />
     </Stack.Navigator>
