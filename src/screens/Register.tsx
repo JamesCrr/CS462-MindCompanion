@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react';
-import {Platform} from 'react-native';
+import {Platform, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 import {useData, useTheme, useTranslation} from '../hooks/';
 import {Block, Button, Input, Image, Text} from '../components/';
@@ -32,7 +32,12 @@ const Register = () => {
 
   const handleSignUp = useCallback(async () => {
     if (!selectedType || !registration.name || !registration.password) {
-      setError('Please fill in all fields and select a type');
+      Alert.alert(
+        'Missing Information',
+        'Please fill in all fields and select a role',
+        [{text: 'OK'}]
+      );
+      setError('Please fill in all fields and select a role');
       return;
     }
 
@@ -48,7 +53,12 @@ const Register = () => {
       const querySnapshot = await getDocs(q);
       
       if (!querySnapshot.empty) {
-        setError('User already exists with this name and type');
+        Alert.alert(
+          'Registration Failed',
+          'A user already exists with this name and role. Please choose a different name or role.',
+          [{text: 'OK'}]
+        );
+        setError('User already exists with this name and role');
         return;
       }
 
@@ -59,11 +69,22 @@ const Register = () => {
         type: selectedType,
       });
 
-      // Navigate to login
-      navigation.navigate('Login');
+      Alert.alert(
+        'Success',
+        'Registration successful! Please login with your credentials.',
+        [{
+          text: 'OK',
+          onPress: () => navigation.navigate('Login')
+        }]
+      );
 
     } catch (error) {
       console.error('Error during registration:', error);
+      Alert.alert(
+        'Error',
+        'An error occurred during registration. Please try again.',
+        [{text: 'OK'}]
+      );
       setError('An error occurred during registration');
     }
   }, [registration, selectedType, navigation]);
@@ -125,7 +146,7 @@ const Register = () => {
               {/* Type Selection Buttons */}
               <Block paddingHorizontal={sizes.sm} marginBottom={sizes.sm}>
                 <Text p semibold marginBottom={sizes.sm}>
-                  Select your type:
+                  Select your role:
                 </Text>
                 <Block row flex={0} justify="space-between" marginBottom={sizes.sm}>
                   {['Staff', 'Caregiver', 'Volunteer'].map((type) => (

@@ -35,7 +35,7 @@ const Login = () => {
 
   const handleSignIn = useCallback(async () => {
     if (!selectedType || !loginData.name || !loginData.password) {
-      setError('Please fill in all fields and select a type');
+      setError('Please fill in all fields and select a role');
       return;
     }
 
@@ -57,7 +57,7 @@ const Login = () => {
       console.log('Query results:', querySnapshot.size);
       
       if (querySnapshot.empty) {
-        setError('User not found with selected type');
+        setError('User not found with selected role');
         return;
       }
 
@@ -156,7 +156,7 @@ const Login = () => {
               {/* Type Selection Buttons */}
               <Block paddingHorizontal={sizes.sm} marginBottom={sizes.sm}>
                 <Text p semibold marginBottom={sizes.sm}>
-                  Select your type:
+                  Select your role:
                 </Text>
                 <Block row flex={0} justify="space-between" marginBottom={sizes.sm}>
                   {['Staff', 'Caregiver', 'Volunteer'].map((type) => (
