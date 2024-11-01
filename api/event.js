@@ -123,13 +123,17 @@ export const InsertEvent = async (eventpayload) => {
     console.log(eventpayload);
     eventpayload.participants = [];
     eventpayload.volunteers = [];
-      eventpayload.participantAttendance = [];
-      eventpayload.volunteerAttendance = [];
+    eventpayload.participantAttendance = [];
+    eventpayload.volunteerAttendance = [];
     eventpayload.published = false;
     const collectionRef = collection(db, "events");
 
-    await addDoc(collectionRef, eventpayload);
-    return "doc added";
+    const res = await addDoc(collectionRef, eventpayload);
+    console.log("Document written with ID: ", res.id);
+
+    return res.id;
+    // return "doc added";
+
   } catch (e) {
     console.error("Error adding documents: ", e.message);
     throw new Error("Failed to add event records");

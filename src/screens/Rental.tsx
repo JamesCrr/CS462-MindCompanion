@@ -19,6 +19,7 @@ import {
   staffDeleteEvent,
 } from "../../api/event";
 import { UserContext } from "../hooks/userContext";
+import { deleteEventInEventRecords } from "../../api/eventRecords";
 
 const Rental = () => {
   const { article, fetchEvents } = useData();
@@ -79,6 +80,9 @@ const Rental = () => {
     // console.log("userData", userData);
     try {
       const res = await staffDeleteEvent(eventId);
+      if (res) {
+        await deleteEventInEventRecords(eventId);
+      }
       console.log(res);
       fetchEvents();
       navigation.goBack();

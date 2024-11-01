@@ -1,4 +1,4 @@
-import { collection, doc, addDoc, getDoc, getDocs, updateDoc, deleteDoc, query, where} from "firebase/firestore"; 
+import { collection, doc,setDoc, addDoc, getDoc, getDocs, updateDoc, deleteDoc, query, where} from "firebase/firestore"; 
 import { db } from "../config/firebaseConfig";
 
 
@@ -7,19 +7,97 @@ import { db } from "../config/firebaseConfig";
 
 
 // Function to add a new event record
-export async function addEventRecord(userId, eventId, achievements ,completion, rank, remarks) {
+export async function addNewEventRecord(eventId, name) {
+  console.log("Adding new event record for user: ", name);
   try {
-    const docRef = await addDoc(collection(db, 'eventRecords'), {
-      userId: userId,
-      eventId: eventId,
-      achievements: achievements,
-      completion: completion,
-      rank: rank,
-      remarks: remarks
-    });
-    console.log("Document successfully written with ID: ", docRef.id);
+    const eventDocRef = doc(db, "eventRecords", eventId);
+    const eventDoc = await getDoc(eventDocRef);
+
+    if (eventDoc.exists()) {
+      const eventData = eventDoc.data();
+      const userRecord = eventData.records.find(record => record[name]);
+      const eventStats = {
+        achievements: [],
+        completion: 0,
+        rank: 0,
+        remarks: ""
+      }
+      if (!userRecord) {
+        const updatedRecords = [...eventData.records, { [name]: eventStats }];
+        await updateDoc(eventDocRef, {
+          records: updatedRecords
+        });
+        console.log("Document successfully updated!");
+      } else {
+        console.log(`Record already exists for user: ${name}`);
+      }
+    } else {
+      console.log("No such document!");
+    }
   } catch (e) {
-    console.error("Error adding document: ", e);
+    console.error("Error adding document: ", e.message);
+  }
+}
+
+export async function updateEventRecord(eventId, name, eventStats) {
+  console.log("Updating new event record for user: ", name);
+  try {
+    const eventDocRef = doc(db, "eventRecords", eventId);
+    const eventDoc = await getDoc(eventDocRef);
+
+    if (eventDoc.exists()) {
+      const eventData = eventDoc.data();
+      const userRecord = eventData.records.find(record => record[name]);
+
+      if (userRecord) {
+        const updatedRecords = eventData.records.map(record => {
+          if (record[name]) {
+            return { [name]: eventStats };
+          } else {
+            return record;
+          }
+        });
+
+        await updateDoc(eventDocRef, {
+          records: updatedRecords
+        });
+        console.log("Document successfully updated!");
+      } else {
+        console.log(`No record found for user: ${name}`);
+      }
+    } else {
+      console.log("No such document!");
+    }
+  } catch (e) {
+    console.error("Error updating document: ", e.message);
+  }
+}
+
+
+export async function deleteEventRecord(eventId, name) {
+  console.log("Deleting new event record for user: ", name);
+  try {
+    const eventDocRef = doc(db, "eventRecords", eventId);
+    const eventDoc = await getDoc(eventDocRef);
+
+    if (eventDoc.exists()) {
+      const eventData = eventDoc.data();
+      const userRecord = eventData.records.find(record => record[name]);
+
+      if (userRecord) {
+        const updatedRecords = eventData.records.filter(record => !record[name]);
+        await updateDoc(eventDocRef, {
+          records: updatedRecords
+        });
+        console.log("Document successfully updated!");
+      } else {
+        console.log(`No record found for user: ${name}`);
+      }
+    } else {
+      console.log("No such document!");
+    }
+  } catch (e) {
+    console.error("Error deleting document: ", e.message);
   }
 }
 
@@ -89,6 +167,26 @@ export async function fetchAllEventsAndRecordsForUser(name) {
   } catch (e) {
     console.error("Error fetching documents: ", e.message);
     throw new Error("Failed to fetch events and records");
+  }
+}
+
+export async function addEventIntoEventRecords(id) {
+  try {
+    const docRef = doc(db, "eventRecords", id);
+    const res = await setDoc(docRef, { records: [] });
+    console.log("Document written with ID: ", docRef.id);
+    return res;
+  } catch (e) {
+    console.error("Error adding event into eventRecords: ", e);
+  }
+}
+
+export async function deleteEventInEventRecords(id) {
+  try {
+    await deleteDoc(doc(db, "eventRecords", id));
+    console.log("Document successfully deleted!");
+  } catch (e) {
+    console.error("Error deleting document: ", e);
   }
 }
 

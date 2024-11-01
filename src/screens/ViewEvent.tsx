@@ -13,6 +13,8 @@ import {
   TouchableWithoutFeedback,
   Alert,
 } from "react-native";
+
+import { deleteEventRecord, addNewEventRecord } from "../../api/eventRecords";
 import { useTheme } from "../hooks/";
 import { useContext } from 'react'; // Add this import
 import { UserContext } from '../hooks/userContext'; // Add this import
@@ -125,6 +127,9 @@ export default function ViewEvent() {
         }
 
         await updateEvent(eventId, updatedEvent);
+
+        await deleteEventRecord(eventId, identity.name);
+
         setEvent(updatedEvent);
       } catch (error) {
         console.error('Error withdrawing from event:', error);
@@ -160,6 +165,7 @@ export default function ViewEvent() {
 
         if (updatedEvent) {
           await updateEvent(eventId, updatedEvent);
+          await addNewEventRecord(eventId, identity.name);
           setEvent(updatedEvent);
           // Reset form after successful join
           setSelectedLocation('');
