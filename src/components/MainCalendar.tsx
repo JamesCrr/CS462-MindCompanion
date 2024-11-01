@@ -191,7 +191,6 @@ const MainCalendar = () => {
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.container}>
             <View style={styles.header}>
-              <Text h5>Calendar</Text>
               <View style={styles.navigationButtons}>
                 <Button gradient={gradients.dark} onPress={prevPeriod}>
                   <Text
@@ -204,7 +203,7 @@ const MainCalendar = () => {
                   </Text>
                 </Button>
 
-                <Text paddingHorizontal={sizes.xs}>
+                <Text h5 paddingHorizontal={sizes.xs}>
                   {format(currentDate, "MMMM yyyy")}
                 </Text>
                 <Button gradient={gradients.dark} onPress={nextPeriod}>
@@ -221,7 +220,7 @@ const MainCalendar = () => {
             </View>
             {renderMonthView()}
             {/* Only show Add Event button for admin/organizer roles */}
-            {identity && ["Staff", "organizer"].includes(identity.type) && (
+            {/* {identity && ["Staff", "organizer"].includes(identity.type) && (
               <Button
                 flex={1}
                 gradient={gradients.success}
@@ -237,7 +236,7 @@ const MainCalendar = () => {
               // >
               //   <Text>Add event</Text>
               // </Button>
-            )}
+            )} */}
           </View>
         </SafeAreaView>
       </Block>
@@ -264,8 +263,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   navigationButtons: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
   },
   monthGrid: {
     flexDirection: "row",
@@ -304,6 +305,10 @@ const styles = StyleSheet.create({
   },
   buttons: {
     margin: 5,
+  },  
+  dateText: {
+    fontSize: 18, // Adjust as needed
+    fontWeight: 'bold', // Make the date text bold
   },
 });
 

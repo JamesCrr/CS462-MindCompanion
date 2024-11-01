@@ -196,7 +196,6 @@ const CaregiverCalendarView = () => {
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.container}>
             <View style={styles.header}>
-              <Text h5>Calendar</Text>
               <View style={styles.navigationButtons}>
                 <Button gradient={gradients.dark} onPress={prevPeriod}>
                   <Text
@@ -209,7 +208,7 @@ const CaregiverCalendarView = () => {
                   </Text>
                 </Button>
 
-                <Text paddingHorizontal={sizes.xs}>
+                <Text h5 paddingHorizontal={sizes.xs}>
                   {format(currentDate, "MMMM yyyy")}
                 </Text>
                 <Button gradient={gradients.dark} onPress={nextPeriod}>
@@ -226,7 +225,7 @@ const CaregiverCalendarView = () => {
             </View>
             {renderMonthView()}
             {/* Only show Add Event button for admin/organizer roles */}
-            {identity && ["Staff", "organizer"].includes(identity.type) && (
+            {/* {identity && ["Staff", "organizer"].includes(identity.type) && (
               <Button
                 flex={1}
                 gradient={gradients.success}
@@ -236,7 +235,7 @@ const CaregiverCalendarView = () => {
                   Add Event
                 </Text>
               </Button>
-            )}
+            )} */}
           </View>
         </SafeAreaView>
       </Block>
@@ -263,8 +262,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   navigationButtons: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
   },
   monthGrid: {
     flexDirection: "row",

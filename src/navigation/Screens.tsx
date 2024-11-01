@@ -99,12 +99,12 @@ export default () => {
             identity ? (
               identity.type === "Caregiver" ? (
                 <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("MyEvents", { userId: identity.uid })
-                  }
+                  // onPress={() =>
+                  //   navigation.navigate("MyEvents", { userId: identity.uid })
+                  // }
                 >
                   <Text style={{ color: "black", marginRight: 10 }}>
-                    My Events
+                    
                   </Text>
                 </TouchableOpacity>
               ) : identity.type === "Staff" ? (
