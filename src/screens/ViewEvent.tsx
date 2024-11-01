@@ -14,27 +14,14 @@ import {
   Alert,
 } from "react-native";
 import { useTheme } from "../hooks/";
-import { useContext } from 'react'; // Add this import
-import { UserContext } from '../hooks/userContext'; // Add this import
+import { useContext } from "react"; // Add this import
+import { UserContext } from "../hooks/userContext"; // Add this import
 
 import { fetchEvent, updateEvent } from "../../api/event";
-import {
-  Block,
-  Button,
-  Image,
-  Product,
-  Switch,
-  Text,
-  Input,
-  Article,
-  EventDetails,
-  Modal,
-} from "../components/";
+import { Block, Button, Image, Product, Switch, Text, Input, Article, EventDetails, Modal } from "../components/";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from "@react-native-community/datetimepicker";
+import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { format } from "date-fns";
 
 interface Event {
@@ -94,9 +81,9 @@ export default function ViewEvent() {
 
   const isUserJoined = () => {
     if (!identity || !event) return false;
-    
+
     if (identity.type === "Caregiver") {
-      return event.participants?.some(participant => participant.split(',')[0] === identity.name);
+      return event.participants?.some((participant) => participant.split(",")[0] === identity.name);
     } else if (identity.type === "Volunteer") {
       return event.volunteers?.includes(identity.name);
     }
@@ -105,29 +92,27 @@ export default function ViewEvent() {
 
   const handleJoinEvent = async () => {
     if (!identity || !event) return;
-    
+
     const isCurrentlyJoined = isUserJoined();
-    
+
     if (isCurrentlyJoined) {
       // Withdrawal logic remains the same
       setIsWithdrawing(true);
       try {
         let updatedEvent = { ...event };
-        
+
         if (identity.type === "Caregiver") {
           updatedEvent.participants = event.participants?.filter(
-            participant => participant.split(',')[0] !== identity.name
+            (participant) => participant.split(",")[0] !== identity.name
           );
         } else if (identity.type === "Volunteer") {
-          updatedEvent.volunteers = event.volunteers?.filter(
-            volunteer => volunteer !== identity.name
-          );
+          updatedEvent.volunteers = event.volunteers?.filter((volunteer) => volunteer !== identity.name);
         }
 
         await updateEvent(eventId, updatedEvent);
         setEvent(updatedEvent);
       } catch (error) {
-        console.error('Error withdrawing from event:', error);
+        console.error("Error withdrawing from event:", error);
       } finally {
         setIsWithdrawing(false);
       }
@@ -146,7 +131,7 @@ export default function ViewEvent() {
       try {
         let updatedEvent;
         if (identity.type === "Caregiver") {
-          const newParticipant = `${identity.name},${selectedLocation},${caregiverComing ? 'yes' : 'no'}`;
+          const newParticipant = `${identity.name},${selectedLocation},${caregiverComing ? "yes" : "no"}`;
           updatedEvent = {
             ...event,
             participants: [...(event.participants || []), newParticipant],
@@ -162,11 +147,11 @@ export default function ViewEvent() {
           await updateEvent(eventId, updatedEvent);
           setEvent(updatedEvent);
           // Reset form after successful join
-          setSelectedLocation('');
+          setSelectedLocation("");
           setCaregiverComing(false);
         }
       } catch (error) {
-        console.error('Error joining event:', error);
+        console.error("Error joining event:", error);
       } finally {
         setIsJoining(false);
       }
@@ -174,7 +159,7 @@ export default function ViewEvent() {
   };
 
   // Add these state variables after the existing ones
-  const [selectedLocation, setSelectedLocation] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState("");
   const [caregiverComing, setCaregiverComing] = useState(false); // Default to false (not checked)
   const [showLocationModal, setShowLocationModal] = useState(false);
 
@@ -182,20 +167,20 @@ export default function ViewEvent() {
   const renderLocationModal = () => {
     return (
       <Modal visible={showLocationModal} onRequestClose={() => setShowLocationModal(false)}>
-        <Block 
+        <Block
           card
           padding={sizes.padding}
           marginHorizontal={sizes.sm}
           marginVertical={sizes.sm}
           flex={0}
           style={{
-            position: 'absolute',
-            top: '20%',
+            position: "absolute",
+            top: "20%",
             left: 0,
             right: 0,
             backgroundColor: colors.card,
             borderRadius: sizes.cardRadius,
-            maxHeight: '60%',
+            maxHeight: "60%",
           }}
         >
           <Block>
@@ -219,11 +204,7 @@ export default function ViewEvent() {
                 </Button>
               ))}
             </Block>
-            <Button
-              marginTop={sizes.sm}
-              onPress={() => setShowLocationModal(false)}
-              gradient={gradients.secondary}
-            >
+            <Button marginTop={sizes.sm} onPress={() => setShowLocationModal(false)} gradient={gradients.secondary}>
               <Text p white>
                 Cancel
               </Text>
@@ -236,11 +217,7 @@ export default function ViewEvent() {
 
   return (
     <Block safe>
-      <Block
-        scroll
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingVertical: sizes.padding }}
-      >
+      <Block scroll showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: sizes.padding }}>
         {loading ? (
           <Block center>
             <Text p>Loading event details...</Text>
@@ -271,10 +248,10 @@ export default function ViewEvent() {
 
             {/* Items to Bring Section */}
             <TouchableWithoutFeedback
-              onPress={() => 
-                navigation.navigate("ItemsPreCheck", { 
-                  eventId: eventId, 
-                  thingsToBring: event.itemsToBring 
+              onPress={() =>
+                navigation.navigate("ItemsPreCheck", {
+                  eventId: eventId,
+                  thingsToBring: event.itemsToBring,
                 })
               }
             >
@@ -311,8 +288,12 @@ export default function ViewEvent() {
                 const [name, location, caregiver] = participant.split(",");
                 return (
                   <Block key={index} card marginBottom={sizes.sm} padding={sizes.sm}>
-                    <Text p semibold>{name}</Text>
-                    <Text p color={colors.text}>Location: {location}</Text>
+                    <Text p semibold>
+                      {name}
+                    </Text>
+                    <Text p color={colors.text}>
+                      Location: {location}
+                    </Text>
                     <Text p color={colors.text}>
                       Caregiver: {caregiver === "yes" ? "Yes" : "No"}
                     </Text>
@@ -341,9 +322,9 @@ export default function ViewEvent() {
                 </Text>
                 <Block marginBottom={sizes.sm}>
                   <Text p semibold color={colors.primary} marginBottom={sizes.sm}>
-                    {selectedLocation || 'Please select a location below'}
+                    {selectedLocation || "Please select a location below"}
                   </Text>
-                  
+
                   {/* Location Options */}
                   {event?.meetUpLocations?.map((location, index) => (
                     <Button
@@ -352,11 +333,7 @@ export default function ViewEvent() {
                       onPress={() => setSelectedLocation(location)}
                       gradient={selectedLocation === location ? gradients.success : gradients.light}
                     >
-                      <Text 
-                        p 
-                        semibold 
-                        color={selectedLocation === location ? colors.white : colors.dark}
-                      >
+                      <Text p semibold color={selectedLocation === location ? colors.white : colors.dark}>
                         {location}
                       </Text>
                     </Button>
@@ -371,10 +348,7 @@ export default function ViewEvent() {
                 </Block>
                 <Block row align="center" justify="space-between">
                   <Text p>Is your caregiver coming?</Text>
-                  <Switch
-                    checked={caregiverComing}
-                    onPress={(checked) => setCaregiverComing(checked)}
-                  />
+                  <Switch checked={caregiverComing} onPress={(checked) => setCaregiverComing(checked)} />
                 </Block>
               </Block>
             )}
@@ -384,16 +358,19 @@ export default function ViewEvent() {
             {/* Join/Withdraw Event Button */}
             {identity && (
               <Button
-                gradient={gradients?.[isUserJoined() ? 'secondary' : 'primary']}
+                gradient={gradients?.[isUserJoined() ? "secondary" : "primary"]}
                 marginTop={sizes.sm}
                 onPress={handleJoinEvent}
-                disabled={isJoining || isWithdrawing}
+                disabled={isJoining || isWithdrawing || selectedLocation == ""}
               >
                 <Text white bold transform="uppercase">
-                  {isJoining ? 'Joining...' : 
-                   isWithdrawing ? 'Withdrawing...' :
-                   isUserJoined() ? 'Withdraw from Event' : 
-                   'Join Event'}
+                  {isJoining
+                    ? "Joining..."
+                    : isWithdrawing
+                    ? "Withdrawing..."
+                    : isUserJoined()
+                    ? "Withdraw from Event"
+                    : "Join Event"}
                 </Text>
               </Button>
             )}

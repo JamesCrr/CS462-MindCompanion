@@ -6,6 +6,7 @@ import { UserContext } from "../hooks/userContext";
 import { format, addDays } from "date-fns";
 import { collection, getDocs, DocumentData } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
+import { useTheme } from "../hooks";
 
 interface Event {
   name: string;
@@ -22,6 +23,7 @@ interface Event {
 const Home = () => {
   const navigation = useNavigation();
   const { identity } = useContext(UserContext);
+  const { gradients, sizes } = useTheme();
 
   // Calendar states
   const [events, setEvents] = useState<Event[]>([]);
@@ -29,12 +31,12 @@ const Home = () => {
   const [todayDate] = useState(new Date());
   const [view, setView] = useState<"month" | "week" | "day">("month");
 
-  useEffect(() => {
-    console.log("identity:", identity);
-    if (identity == null) {
-      navigation.replace("Login");
-    }
-  }, [identity]);
+  // useEffect(() => {
+  //   console.log("identity:", identity);
+  //   if (identity == null) {
+  //     navigation.replace("Login");
+  //   }
+  // }, [identity]);
 
   const retrieveAllEvents = async () => {
     var events: Event[] = [];
@@ -143,32 +145,54 @@ const Home = () => {
   };
 
   return (
-    <Block>
-      {identity && <Text h5={true}>Current role is {identity["type"]}</Text>}
-
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.title}>Calendar</Text>
-            <View style={styles.navigationButtons}>
-              <Button style={styles.buttons} onPress={prevPeriod}>
-                <Text>&lt;</Text>
-              </Button>
-              <Text>{format(currentDate, "MMMM yyyy")}</Text>
-              <Button style={styles.buttons} onPress={nextPeriod}>
-                <Text>&gt;</Text>
-              </Button>
-            </View>
-          </View>
-          {renderMonthView()}
-          {/* Only show Add Event button for admin/organizer roles */}
-          {identity && ["Staff", "organizer"].includes(identity.type) && (
-            <Button style={styles.buttons} onPress={() => navigation.navigate("AddEvent")}>
-              <Text>Add event</Text>
+    <Block
+      scroll
+      nestedScrollEnabled
+      paddingVertical={sizes.padding}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: sizes.padding * 1.5 }}
+    >
+      <Block center>
+        {identity && (
+          <Text h5={true} center>
+            Welcome back{" "}
+            <Text h5={true} center primary>
+              {identity["name"]}
+            </Text>
+            !
+          </Text>
+        )}
+      </Block>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Calendar</Text>
+          <View style={styles.navigationButtons}>
+            <Button style={styles.buttons} onPress={prevPeriod}>
+              <Text>&lt;</Text>
             </Button>
-          )}
+            <Text>{format(currentDate, "MMMM yyyy")}</Text>
+            <Button style={styles.buttons} onPress={nextPeriod}>
+              <Text>&gt;</Text>
+            </Button>
+          </View>
         </View>
-      </SafeAreaView>
+        {renderMonthView()}
+        {/* Only show Add Event button for admin/organizer roles */}
+        {identity && ["Staff", "organizer"].includes(identity.type) && (
+          <Block>
+            <Button gradient={gradients.primary} marginTop={sizes.sm} onPress={() => navigation.navigate("AddEvent")}>
+              <Text white>Add event</Text>
+            </Button>
+            <Button
+              gradient={gradients.primary}
+              marginTop={sizes.s}
+              onPress={() => navigation.navigate("StaffCharts", { eventId: "test" })}
+            >
+              <Text white>Statistics for Month</Text>
+            </Button>
+          </Block>
+        )}
+      </View>
     </Block>
   );
 };

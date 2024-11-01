@@ -23,6 +23,21 @@ const renderDot = (color) => {
   );
 };
 
+const emptyMonthsArray = [
+  { value: 0, label: "Jan" },
+  { value: 0, label: "Feb" },
+  { value: 0, label: "Mar" },
+  { value: 0, label: "April" },
+  { value: 0, label: "May" },
+  { value: 0, label: "June" },
+  { value: 0, label: "July" },
+  { value: 0, label: "Aug" },
+  { value: 0, label: "Sept" },
+  { value: 0, label: "Oct" },
+  { value: 0, label: "Nov" },
+  { value: 0, label: "Dec" },
+];
+
 const StaffCharts = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
@@ -34,10 +49,12 @@ const StaffCharts = () => {
   const { identity, retrieveIdentity } = useContext(UserContext);
 
   // Data for charts
-  const [userCountThisMonth, setUserCountThisMonth] = useState<any[]>([]);
-  const [userCountPerMonth, setUserCountPerMonth] = useState<any[]>([]);
-  const [activityCountPerMonth, setActivityCountPerMonth] = useState<any[]>([]);
-  const [averageDurationPerMonth, setAverageDurationPerMonth] = useState<any[]>([]);
+  const [userCountThisMonth, setUserCountThisMonth] = useState<any[]>([
+    { value: 100, name: "client", color: "#EA1C93" },
+  ]);
+  const [userCountPerMonth, setUserCountPerMonth] = useState<any[]>(emptyMonthsArray);
+  const [activityCountPerMonth, setActivityCountPerMonth] = useState<any[]>(emptyMonthsArray);
+  const [averageDurationPerMonth, setAverageDurationPerMonth] = useState<any[]>(emptyMonthsArray);
   const [generatingSheet, setGeneratingSheets] = useState(false);
 
   // Constants
@@ -62,33 +79,27 @@ const StaffCharts = () => {
     ]);
 
     // userCountPerMonth Chart
-    const monthsArray = [
-      { value: 0, label: "Jan" },
-      { value: 20, label: "Feb" },
-      { value: 18, label: "Mar" },
-      { value: 40, label: "April" },
-      { value: 36, label: "May" },
-      { value: 60, label: "June" },
-      { value: 54, label: "July" },
-      { value: 54, label: "Aug" },
-      { value: 54, label: "Sept" },
-      { value: 23, label: "Oct" },
-      { value: 67, label: "Nov" },
-      { value: 85, label: "Dec" },
-    ];
     setUserCountPerMonth([
-      { value: 0, label: "Jan", dataPointText: "0" },
-      { value: 20, label: "Feb" },
-      { value: 18, label: "Mar" },
-      { value: 40, label: "April" },
-      { value: 36, label: "May" },
-      { value: 60, label: "June" },
-      { value: 54, label: "July" },
-      { value: 54, label: "Aug" },
-      { value: 54, label: "Sept" },
-      { value: 23, label: "Oct" },
-      { value: 67, label: "Nov" },
-      { value: 85, label: "Dec", dataPointText: "85" },
+      {
+        value: Math.floor(Math.random() * 100),
+        label: "Jan",
+        dataPointText: Math.floor(Math.random() * 100).toString(),
+      },
+      { value: Math.floor(Math.random() * 100), label: "Feb" },
+      { value: Math.floor(Math.random() * 100), label: "Mar" },
+      { value: Math.floor(Math.random() * 100), label: "April" },
+      { value: Math.floor(Math.random() * 100), label: "May" },
+      { value: Math.floor(Math.random() * 100), label: "June" },
+      { value: Math.floor(Math.random() * 100), label: "July" },
+      { value: Math.floor(Math.random() * 100), label: "Aug" },
+      { value: Math.floor(Math.random() * 100), label: "Sept" },
+      { value: Math.floor(Math.random() * 100), label: "Oct" },
+      { value: Math.floor(Math.random() * 100), label: "Nov" },
+      {
+        value: Math.floor(Math.random() * 100),
+        label: "Dec",
+        dataPointText: Math.floor(Math.random() * 100).toString(),
+      },
     ]);
 
     // setActivityCountPerMonth Chart
@@ -109,18 +120,26 @@ const StaffCharts = () => {
 
     // setAverageDurationPerMonth Chart
     setAverageDurationPerMonth([
-      { value: 0, label: "Jan", dataPointText: "0" },
-      { value: 20, label: "Feb" },
-      { value: 18, label: "Mar" },
-      { value: 40, label: "April" },
-      { value: 36, label: "May" },
-      { value: 60, label: "June" },
-      { value: 54, label: "July" },
-      { value: 54, label: "Aug" },
-      { value: 54, label: "Sept" },
-      { value: 23, label: "Oct" },
-      { value: 67, label: "Nov" },
-      { value: 85, label: "Dec", dataPointText: "85" },
+      {
+        value: Math.floor(Math.random() * 100),
+        label: "Jan",
+        dataPointText: Math.floor(Math.random() * 100).toString(),
+      },
+      { value: Math.floor(Math.random() * 100), label: "Feb" },
+      { value: Math.floor(Math.random() * 100), label: "Mar" },
+      { value: Math.floor(Math.random() * 100), label: "April" },
+      { value: Math.floor(Math.random() * 100), label: "May" },
+      { value: Math.floor(Math.random() * 100), label: "June" },
+      { value: Math.floor(Math.random() * 100), label: "July" },
+      { value: Math.floor(Math.random() * 100), label: "Aug" },
+      { value: Math.floor(Math.random() * 100), label: "Sept" },
+      { value: Math.floor(Math.random() * 100), label: "Oct" },
+      { value: Math.floor(Math.random() * 100), label: "Nov" },
+      {
+        value: Math.floor(Math.random() * 100),
+        label: "Dec",
+        dataPointText: Math.floor(Math.random() * 100).toString(),
+      },
     ]);
   };
 
@@ -201,10 +220,10 @@ const StaffCharts = () => {
         // hideYAxisText
         // yAxisColor="#0BA5A4"
         xAxisColor="#a80062"
-        // isAnimated
-        // animateOnDataChange
-        // animationDuration={1000}
-        // onDataChangeAnimationDuration={300}
+        isAnimated
+        animateOnDataChange
+        animationDuration={1000}
+        onDataChangeAnimationDuration={1000}
         width={300}
         // adjustToWidth
       />
@@ -214,7 +233,7 @@ const StaffCharts = () => {
   useEffect(() => {
     // console.log("eventId", eventId);
 
-    populateChartData();
+    setTimeout(() => populateChartData(), 100);
   }, []);
 
   return (
@@ -228,6 +247,23 @@ const StaffCharts = () => {
       marginHorizontal={sizes.s}
     >
       <Block justify="center" align="center">
+        <Text h5>{t("charts.staff.numberofclientspermonth")}</Text>
+        {renderLineChart(userCountPerMonth)}
+      </Block>
+
+      <Block marginTop={sizes.md} justify="center" align="center">
+        <Text h5>{t("charts.staff.activitiesperMonth")}</Text>
+        {renderLineChart(activityCountPerMonth)}
+      </Block>
+
+      <Block marginTop={sizes.md} center justify="center" align="center">
+        <Text style={{ textAlign: "center" }} h5>
+          {t("charts.staff.averagedurationpermonth")}
+        </Text>
+        {renderLineChart(averageDurationPerMonth)}
+      </Block>
+
+      <Block marginTop={sizes.md} justify="center" align="center">
         <Text h5>{t("charts.staff.numberofclientsthismonth")}</Text>
         <PieChart data={userCountThisMonth} showText textColor="black" showValuesAsLabels textSize={20} isAnimated />
         {/* Legend */}
@@ -253,23 +289,6 @@ const StaffCharts = () => {
             })}
           </View>
         </View>
-      </Block>
-
-      <Block marginTop={sizes.md} justify="center" align="center">
-        <Text h5>{t("charts.staff.numberofclientspermonth")}</Text>
-        {renderLineChart(userCountPerMonth)}
-      </Block>
-
-      <Block marginTop={sizes.md} justify="center" align="center">
-        <Text h5>{t("charts.staff.activitiesperMonth")}</Text>
-        {renderLineChart(activityCountPerMonth)}
-      </Block>
-
-      <Block marginTop={sizes.md} center justify="center" align="center">
-        <Text style={{ textAlign: "center" }} h5>
-          {t("charts.staff.averagedurationpermonth")}
-        </Text>
-        {renderLineChart(averageDurationPerMonth)}
       </Block>
 
       <Block marginTop={sizes.md}>
