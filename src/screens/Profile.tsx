@@ -179,7 +179,7 @@ const Profile = () => {
           </Block>
           <Block align="center">
             <Text h5>{(identity?.stats?.score || 0)}</Text>
-            <Text>{t('profile.averageScore')}</Text>
+            <Text>{t('profile.totalScore')}</Text>
           </Block>
         </Block>
       </Block>
