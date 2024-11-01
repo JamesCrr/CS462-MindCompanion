@@ -95,10 +95,10 @@ const Profile = () => {
             source={{ uri: user?.avatar }}
           />
           <Text h5 center white>
-            {user?.name}
+            {identity?.name}
           </Text>
           <Text p center white>
-            {user?.department}
+            {identity?.type}
           </Text>
           <Block row marginVertical={sizes.m}>
             <Button
@@ -106,20 +106,21 @@ const Profile = () => {
               outlined
               shadow={false}
               radius={sizes.m}
-              onPress={() => {
-                alert(`Follow ${user?.name}`);
-              }}>
+              // onPress={() => {
+              //   alert(`Follow ${user?.name}`);
+              // }}
+              >
               <Block
                 justify="center"
                 radius={sizes.m}
                 paddingHorizontal={sizes.m}
                 color="rgba(255,255,255,0.2)">
                 <Text white bold transform="uppercase">
-                  {t('common.follow')}
+                  {t('common.healthRecords')}
                 </Text>
               </Block>
             </Button>
-            <Button
+            {/* <Button
               shadow={false}
               radius={sizes.m}
               marginHorizontal={sizes.sm}
@@ -143,7 +144,7 @@ const Profile = () => {
                 name="logo-dribbble"
                 color={colors.white}
               />
-            </Button>
+            </Button> */}
           </Block>
         </Block>
       </Image>
@@ -185,11 +186,11 @@ const Profile = () => {
       {/* profile: about me */}
       <Block paddingHorizontal={sizes.sm}>
         <Text h5 semibold marginBottom={sizes.s} marginTop={sizes.sm}>
-          {t('profile.aboutMe')}
+          {t('profile.eventRecords')}
         </Text>
-        <Text p lineHeight={26}>
+        {/* <Text p lineHeight={26}>
           {user?.about}
-        </Text>
+        </Text> */}
       </Block>
     </Block>
   );

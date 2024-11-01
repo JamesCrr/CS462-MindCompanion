@@ -13,6 +13,7 @@
     "viewall": "View All",
     "more": "More",
     "follow": "Follow",
+    "healthRecords": "My Health Records",
     "followed": "Followed",
     "search": "Search",
     "night": "night",
@@ -203,7 +204,8 @@
     "posts": "Posts",
     "followers": "Followers",
     "following": "Following",
-    "aboutMe": "About me"
+    "aboutMe": "About me",
+    "eventRecords": "My Event Records"
   },
   "notifications": {
     "title": "Notifications",

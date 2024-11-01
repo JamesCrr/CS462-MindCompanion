@@ -113,13 +113,13 @@ const Rental = () => {
         />
       </Block>
       {/* rentals recomendations */}
-      <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
+      {/* <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
         <Button gradient={gradients.primary} onPress={() => handleRegister()}>
           <Text white bold transform="uppercase">
             {t("event.joinEvent")}
           </Text>
         </Button>
-      </Block>
+      </Block> */}
       <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
         <Button
           gradient={gradients.primary}
@@ -140,7 +140,7 @@ const Rental = () => {
         <Button
           flex={1}
           gradient={gradients.dark}
-          marginHorizontal={sizes.s}
+          marginHorizontal={sizes.xs}
           onPress={() =>
             navigation.navigate("EditEvent", {
               eventId: eventId,
@@ -162,7 +162,7 @@ const Rental = () => {
           </Text>
         </Button>
       </Block>
-      <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
+      <Block paddingHorizontal={sizes.sm} marginTop={sizes.xs}>
         <Button
           gradient={gradients.primary}
           onPress={() =>
