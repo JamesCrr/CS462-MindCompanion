@@ -150,6 +150,7 @@ const Profile = () => {
       </Image>
 
       {/* profile: stats */}
+      {identity?.type === "Caregiver" && (
       <Block
         flex={0}
         radius={sizes.sm}
@@ -169,19 +170,49 @@ const Profile = () => {
           paddingVertical={sizes.sm}
           renderToHardwareTextureAndroid>
           <Block align="center">
-            <Text h5>{user?.stats?.posts}</Text>
-            <Text>{t('profile.posts')}</Text>
+            <Text h5>{identity?.stats?.medals}</Text>
+            <Text>{t('profile.noOfMedals')}</Text>
           </Block>
           <Block align="center">
-            <Text h5>{(user?.stats?.followers || 0) / 1000}k</Text>
-            <Text>{t('profile.followers')}</Text>
+            <Text h5>{(identity?.stats?.podiums || 0)}</Text>
+            <Text>{t('profile.noOfPodiums')}</Text>
           </Block>
           <Block align="center">
-            <Text h5>{(user?.stats?.following || 0) / 1000}k</Text>
-            <Text>{t('profile.following')}</Text>
+            <Text h5>{(identity?.stats?.score || 0)}</Text>
+            <Text>{t('profile.averageScore')}</Text>
           </Block>
         </Block>
       </Block>
+      )}
+
+      {identity?.type === "Volunteer" && (
+            <Block
+              flex={0}
+              radius={sizes.sm}
+              shadow={!isAndroid} // disabled shadow on Android due to blur overlay + elevation issue
+              marginTop={-sizes.l}
+              marginHorizontal="8%"
+              color="rgba(255,255,255,0.2)">
+              <Block
+                row
+                blur
+                flex={0}
+                intensity={100}
+                radius={sizes.sm}
+                overflow="hidden"
+                tint={colors.blurTint}
+                justify="space-evenly"
+                paddingVertical={sizes.sm}
+                renderToHardwareTextureAndroid>
+                <Block align="center">
+                  <Text h5>{identity?.stats?.noOfActivitiesAttended}</Text>
+                  <Text>{t('profile.noOfActivitiesAttended')}</Text>
+                </Block>
+              </Block>
+            </Block>
+            )}
+
+
 
       {/* profile: about me */}
       <Block paddingHorizontal={sizes.sm}>

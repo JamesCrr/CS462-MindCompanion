@@ -187,7 +187,10 @@
     "posts": "帖子",
     "followers": "粉丝",
     "following": "关注",
-    "aboutMe": "关于我"
+    "aboutMe": "关于我",
+    "noOfActivitiesAttended": "参加的活动",
+    "noOfPodiums": "领奖台",
+    "averageScore": "平均分数"
   },
   "notifications": {
     "title": "通知",

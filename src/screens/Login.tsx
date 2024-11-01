@@ -79,6 +79,7 @@ const Login = () => {
         name: userData.name,
         type: userData.type,
         id: userDoc.id,
+        stats: userData.stats,
         uid: userDoc.id  // Add this line
       };
 

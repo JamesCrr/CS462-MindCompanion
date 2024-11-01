@@ -205,7 +205,11 @@
     "followers": "Followers",
     "following": "Following",
     "aboutMe": "About me",
-    "eventRecords": "My Event Records"
+    "eventRecords": "My Event Records",
+    "noOfMedals": "Medals",
+    "noOfPodiums": "Podiums",
+    "averageScore": "Average Score",
+    "noOfActivitiesAttended": "Activities Attended",
   },
   "notifications": {
     "title": "Notifications",
