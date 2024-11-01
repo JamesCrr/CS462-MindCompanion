@@ -96,7 +96,8 @@
     "extra": "汽车",
     "shopping": "购物车",
     "checklist": "物品清单",
-    "staffcharts": "事件图表"
+    "staffcharts": "事件图表",
+    "eventRecords": "活动记录"
   },
   "menu": {
     "started": "入门",

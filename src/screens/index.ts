@@ -27,3 +27,4 @@ export { default as AddEvent } from "./AddEvent";
 export { default as StaffCharts } from "./StaffCharts";
 export { default as StaffAttendanceLocations } from "./StaffAttendanceLocations";
 export { default as StaffAttendanceLocation } from "./StaffAttendanceLocation";
+export { default as EventRecord } from "./EventRecord";

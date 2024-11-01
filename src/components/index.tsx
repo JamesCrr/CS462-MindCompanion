@@ -13,6 +13,7 @@ import EventDetails from './EventDetails';
 import MyEventCard from './MyEventCard';
 import MainCalendar from './MainCalendar';
 import Badge from './Badge';
+import EventRecordDetails from './EventRecordDetails';
 
 export {
   Block,
@@ -30,4 +31,5 @@ export {
   MyEventCard,
   MainCalendar, 
   Badge, 
+  EventRecordDetails, 
 };

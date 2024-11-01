@@ -127,6 +127,7 @@ export interface IUseData {
   notifications: INotification[];
   handleNotifications: (data?: INotification[]) => void;
   events: IEvent[];
+  eventRecords: any[];
   setEvents: (data?: IEvent[]) => void;
   fetchEvents: () => Promise<void>;
 }

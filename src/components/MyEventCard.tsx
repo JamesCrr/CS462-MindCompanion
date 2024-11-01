@@ -10,20 +10,12 @@ import {IArticle, IEvent2} from '../constants/types';
 
 const MyEventCard = ({
   title,
-  // description,
   information,
   image,
   category,
-  // rating,
   location,
   dateTime, 
-  thingsToBring,
-  meetUpLocations,
-  participants,
-  volunteers,
-  timestamp,
   // user,
-
   onPress,
 }: IEvent2) => {
   const {t} = useTranslation();
@@ -50,7 +42,7 @@ const MyEventCard = ({
           )} */}
 
           {/* article description */}
-          <Text p semibold>
+          <Text p semibold padding={sizes.s}>
             {title}
           </Text>
           {information && (

@@ -29,6 +29,7 @@ import {
   CaregiverCalendar,
   ViewEvent,
   StaffCharts,
+  EventRecord,
 } from "../screens";
 import { useNavigation } from "@react-navigation/native";
 
@@ -102,7 +103,7 @@ export default () => {
                     navigation.navigate("MyEvents", { userId: identity.uid })
                   }
                 >
-                  <Text style={{ color: "blue", marginRight: 10 }}>
+                  <Text style={{ color: "black", marginRight: 10 }}>
                     My Events
                   </Text>
                 </TouchableOpacity>
@@ -110,7 +111,7 @@ export default () => {
                 <TouchableOpacity
                   onPress={() => navigation.navigate("AddEvent")}
                 >
-                  <Text style={{ color: "blue", marginRight: 10 }}>
+                  <Text style={{ color: "black", marginRight: 10 }}>
                     {t("addEvent.title")}
                   </Text>
                 </TouchableOpacity>
@@ -119,10 +120,16 @@ export default () => {
               <TouchableOpacity
                 onPress={() => navigation.navigate("Login")} // Navigate to Login screen
               >
-                <Text style={{ color: "blue", marginRight: 10 }}>Log In</Text>
+                <Text style={{ color: "black", marginRight: 10 }}>Log In</Text>
               </TouchableOpacity>
             ),
         }}
+      />
+
+      <Stack.Screen
+        name="EventRecord"
+        component={EventRecord}
+        options={{ title: t("navigation.eventRecords"), ...screenOptions.back }}
       />
 
       <Stack.Screen
@@ -139,7 +146,7 @@ export default () => {
           ...screenOptions.profile,
           headerRight: () => (
             <TouchableOpacity onPress={() => navigation.navigate("Rentals")}>
-              <Text style={{ color: "blue", marginRight: 10 }}>My Events</Text>
+              <Text style={{ color: "black", marginRight: 10 }}>Our Events</Text>
             </TouchableOpacity>
           ),
         }}

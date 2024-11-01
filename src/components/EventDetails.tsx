@@ -60,7 +60,7 @@ const EventDetails = ({
         <Block card padding={sizes.sm} marginTop={sizes.sm}>
           <Image height={170} resizeMode="cover" source={{ uri: image }} />
           {/* article description */}
-          <Text p semibold>
+          <Text p semibold paddingTop={sizes.s} paddingBottom={sizes.s}>
             {title}
           </Text>
           {information && (

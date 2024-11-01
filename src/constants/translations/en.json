@@ -99,7 +99,8 @@
     "extra": "Automotive",
     "shopping": "Shopping Cart",
     "checklist": "Items Checklist",
-    "staffcharts": "Charts"
+    "staffcharts": "Charts",
+    "eventRecords": "Event Records"
   },
   "menu": {
     "started": "Getting Started",
@@ -183,6 +184,19 @@
     "joinEvent": "Join Event",
     "publish": "Publish Event",
     "takeAttendance": "Take Attendace"
+  },
+  "eventRecords": {
+    "title": "Event Records",
+    "event": "Event",
+    "date": "Date",
+    "duration": "Duration",
+    "status": "Status",
+    "view": "View",
+    "completion": "Completion",
+    "achievements": "Achievements",
+    "remarks": "Remarks",
+    "score": "Score",
+    "rank": "Rank"
   },
   "profile": {
     "title": "Profile",
