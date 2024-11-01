@@ -95,9 +95,9 @@ const MyEvents = () => {
     [handleArticle, navigation]
   );
 
-  const handleSearch = useCallback(() => {
-    setNotFound(true);
-  }, [setNotFound]);
+  // const handleSearch = useCallback(() => {
+  //   setNotFound(true);
+  // }, [setNotFound]);
 
   return (
     <Block>
@@ -114,7 +114,7 @@ const MyEvents = () => {
       </Block> */}
 
       {/* not found */}
-      {notFound && (
+      {/* {notFound && (
         <Block flex={0} padding={sizes.padding}>
           <Text p>
             {t("rentals.notFound1")}"
@@ -127,7 +127,7 @@ const MyEvents = () => {
             {t("rentals.moreOptions")}
           </Text>
         </Block>
-      )}
+      )} */}
       <MainCalendar />
       {/* rentals list */}
       <FlatList
