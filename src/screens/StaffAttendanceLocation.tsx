@@ -10,6 +10,8 @@ import {
   FlatList,
   TouchableOpacity,
   Platform,
+  PermissionsAndroid,
+  DeviceEventEmitter,
 } from "react-native";
 import { useTheme } from "../hooks/";
 
@@ -33,6 +35,8 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import { format } from "date-fns";
 
+import Beacons from "@hkpuits/react-native-beacons-manager";
+
 interface Event {
   name: string;
   location: string;
@@ -46,6 +50,35 @@ interface Event {
   volunteerAttendance?: string[];
 }
 
+const REGION: BeaconRegion = {
+  identifier: "event_attendance",
+  uuid: "",
+  major: 1,
+  minor: 6,
+};
+
+interface Beacon {
+  distance: number;
+  major: number;
+  minor: number;
+  proximity: string;
+  rssi: number;
+  uuid: string;
+}
+
+export interface BeaconRegion {
+  identifier: string;
+  uuid: string;
+  minor?: number;
+  major?: number;
+}
+
+interface BeaconsData {
+  beacons: Beacon[];
+  identifier: string;
+  uuid: string;
+}
+
 export default function StaffAttendanceLocation() {
   const navigation = useNavigation();
   const [event, setEvent] = useState<Event>();
@@ -56,6 +89,8 @@ export default function StaffAttendanceLocation() {
 
   const route = useRoute();
   const { eventId, location } = route.params;
+  const [isScanning, setIsScanning] = useState(true);
+
   console.log(eventId, location);
 
   // The route parameter, An optional search parameter.
@@ -64,6 +99,57 @@ export default function StaffAttendanceLocation() {
     fetchEventInfoFromDB();
   }, []);
 
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+      ).then((result) => {
+        console.log(
+          "PERMISSIONS::LOCATION",
+          result === PermissionsAndroid.RESULTS.GRANTED ? "yay" : "nay"
+        );
+      });
+
+      PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN
+      ).then((result) => {
+        console.log(
+          "PERIMISSIONS::BLUETOOTH",
+          result === PermissionsAndroid.RESULTS.GRANTED ? "yay" : "nay"
+        );
+      });
+    }
+
+    Beacons.init();
+    Beacons.detectIBeacons();
+  }, []);
+
+  useEffect(() => {
+    if (isScanning) {
+      try {
+        Beacons.startMonitoringForRegion(REGION);
+        Beacons.startRangingBeaconsInRegion(REGION);
+      } catch (err) {
+        console.log("ERROR:", err);
+      }
+
+      const beaconScanner = DeviceEventEmitter.addListener(
+        "beaconsDidRange",
+        (data: BeaconsData) => {
+          console.log("BEACONS:", data);
+        }
+      );
+
+      return () => {
+        beaconScanner.remove();
+        Beacons.stopMonitoringForRegion(REGION);
+        Beacons.stopRangingBeaconsInRegion(REGION);
+      };
+    } else {
+      Beacons.stopMonitoringForRegion(REGION);
+      Beacons.stopRangingBeaconsInRegion(REGION);
+    }
+  }, [isScanning]);
   // Map Firestore document to the Event type
   const mapFirestoreToEvent = (eventDoc: DocumentData): Event => {
     return {
@@ -110,29 +196,97 @@ export default function StaffAttendanceLocation() {
     }
   };
 
+  // Add new state for tracking intervals
+  const [intervalId, setIntervalId] = useState<NodeJS.Timer | null>(null);
+
+  // Add function to randomly select and add attendees
+  const addRandomAttendee = () => {
+    if (!event) return;
+
+    const randomParticipant =
+      event.participants?.[
+        Math.floor(Math.random() * event.participants.length)
+      ];
+    const randomVolunteer =
+      event.volunteers?.[Math.floor(Math.random() * event.volunteers.length)];
+
+    setEvent((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        participantAttendance: [
+          ...new Set([
+            ...(prev.participantAttendance || []),
+            randomParticipant,
+          ]),
+        ],
+        volunteerAttendance: [
+          ...new Set([...(prev.volunteerAttendance || []), randomVolunteer]),
+        ],
+      };
+    });
+  };
+
+  // Set up interval when component mounts
+  useEffect(() => {
+    const interval = setInterval(addRandomAttendee, 5000);
+    setIntervalId(interval);
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [event?.participants, event?.volunteers]);
+
   if (!event || !event.meetUpLocations) {
     return null; // or some fallback UI
   }
 
   return (
     <Block safe>
-      <View>
-        {event.meetUpLocations?.map((location, index) => (
-          <Block paddingVertical={sizes.padding} marginHorizontal={sizes.sm}>
-            <Button
-              key={index}
-              flex={1}
-              gradient={gradients.info}
-              marginBottom={sizes.base}
-              onPress={() => console.log(`Button for ${location} pressed`)}
-            >
-              <Text bold transform="uppercase">
-                {location}
+      <ScrollView>
+        <View>
+          {event.meetUpLocations?.map((location, index) => (
+            <Block paddingVertical={sizes.padding} marginHorizontal={sizes.sm}>
+              <Button
+                key={index}
+                flex={1}
+                gradient={gradients.info}
+                marginBottom={sizes.base}
+                onPress={() => console.log(`Button for ${location} pressed`)}
+              >
+                <Text bold transform="uppercase">
+                  {location}
+                </Text>
+              </Button>
+            </Block>
+          ))}
+        </View>
+
+        {/* Add attendance displays */}
+        <Block paddingHorizontal={sizes.sm}>
+          <Block card marginBottom={sizes.sm}>
+            <Text h5 marginBottom={sizes.s}>
+              Participants Attended ({event.participantAttendance?.length || 0})
+            </Text>
+            {event.participantAttendance?.map((participant, index) => (
+              <Text key={index} marginBottom={sizes.xs}>
+                {participant}
               </Text>
-            </Button>
+            ))}
           </Block>
-        ))}
-      </View>
+
+          <Block card>
+            <Text h5 marginBottom={sizes.s}>
+              Volunteers Attended ({event.volunteerAttendance?.length || 0})
+            </Text>
+            {event.volunteerAttendance?.map((volunteer, index) => (
+              <Text key={index} marginBottom={sizes.xs}>
+                {volunteer}
+              </Text>
+            ))}
+          </Block>
+        </Block>
+      </ScrollView>
     </Block>
   );
 }
