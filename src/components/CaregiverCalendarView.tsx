@@ -1,11 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-  View,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-} from "react-native";
+import { View, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { Block, Button, Text } from ".";
 import { UserContext } from "../hooks/userContext";
@@ -39,7 +33,6 @@ const CaregiverCalendarView = () => {
   const [view, setView] = useState<"month" | "week" | "day">("month");
 
   useEffect(() => {
-    console.log("identity:", identity);
     if (identity == null) {
       //   navigation.replace("Login");
     }
@@ -87,20 +80,14 @@ const CaregiverCalendarView = () => {
     const getMonthDays = () => {
       const days: (Date | null)[] = [];
       const daysInMonth = getDaysInMonth(currentDate);
-      const firstDayOfMonth = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth(),
-        1
-      ).getDay();
+      const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
 
       for (let i = 0; i < firstDayOfMonth; i++) {
         days.push(null);
       }
 
       for (let i = 1; i <= daysInMonth; i++) {
-        days.push(
-          new Date(currentDate.getFullYear(), currentDate.getMonth(), i)
-        );
+        days.push(new Date(currentDate.getFullYear(), currentDate.getMonth(), i));
       }
 
       return days;
@@ -123,10 +110,7 @@ const CaregiverCalendarView = () => {
                 <ScrollView>
                   {events
                     .filter((event) => {
-                      return (
-                        formatDate(event.datetime.toISOString()) ===
-                        formatDate(day.toISOString())
-                      );
+                      return formatDate(event.datetime.toISOString()) === formatDate(day.toISOString());
                     })
                     .map((event) => (
                       <TouchableOpacity
@@ -141,28 +125,25 @@ const CaregiverCalendarView = () => {
                           style={[
                             styles.event,
                             {
-                              backgroundColor: identity?.type === "Caregiver"
-                                ? event.participants?.some(
-                                    (participant) => participant.split(',')[0] === identity?.name
-                                  )
-                                  ? "lightblue"
-                                  : "lightgreen"
-                                : identity?.type === "Volunteer"
-                                ? event.volunteers?.includes(identity?.name)
-                                  ? "lightblue"
-                                  : "lightgreen"
-                                : "lightgreen", // default color for other types (e.g., Staff)
+                              backgroundColor:
+                                identity?.type === "Caregiver"
+                                  ? event.participants?.some(
+                                      (participant) => participant.split(",")[0] === identity?.name
+                                    )
+                                    ? "lightblue"
+                                    : "lightgreen"
+                                  : identity?.type === "Volunteer"
+                                  ? event.volunteers?.includes(identity?.name)
+                                    ? "lightblue"
+                                    : "lightgreen"
+                                  : "lightgreen", // default color for other types (e.g., Staff)
                             },
                           ]}
                         >
                           <Text style={styles.eventTitle}>{event.name}</Text>
                           <Text style={styles.eventTime}>
-                            {String(event.datetime.getHours()).padStart(2, "0")}
-                            :
-                            {String(event.datetime.getMinutes()).padStart(
-                              2,
-                              "0"
-                            )}
+                            {String(event.datetime.getHours()).padStart(2, "0")}:
+                            {String(event.datetime.getMinutes()).padStart(2, "0")}
                           </Text>
                         </View>
                       </TouchableOpacity>
@@ -177,15 +158,11 @@ const CaregiverCalendarView = () => {
   };
 
   const nextPeriod = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
-    );
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
   };
 
   const prevPeriod = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
-    );
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
   };
 
   return (
@@ -198,12 +175,7 @@ const CaregiverCalendarView = () => {
             <View style={styles.header}>
               <View style={styles.navigationButtons}>
                 <Button gradient={gradients.dark} onPress={prevPeriod}>
-                  <Text
-                    white
-                    bold
-                    transform="uppercase"
-                    marginHorizontal={sizes.sm}
-                  >
+                  <Text white bold transform="uppercase" marginHorizontal={sizes.sm}>
                     &lt;
                   </Text>
                 </Button>
@@ -212,12 +184,7 @@ const CaregiverCalendarView = () => {
                   {format(currentDate, "MMMM yyyy")}
                 </Text>
                 <Button gradient={gradients.dark} onPress={nextPeriod}>
-                  <Text
-                    white
-                    bold
-                    transform="uppercase"
-                    marginHorizontal={sizes.sm}
-                  >
+                  <Text white bold transform="uppercase" marginHorizontal={sizes.sm}>
                     &gt;
                   </Text>
                 </Button>
@@ -297,11 +264,11 @@ const styles = StyleSheet.create({
   },
   eventTitle: {
     color: "black", // Change to black for better visibility
-    fontSize: 8,    // Increase from 1 to 8
+    fontSize: 8, // Increase from 1 to 8
   },
   eventTime: {
     color: "black", // Change to black for better visibility
-    fontSize: 8,    // Increase from 1 to 8
+    fontSize: 8, // Increase from 1 to 8
   },
   buttons: {
     margin: 5,

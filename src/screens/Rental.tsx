@@ -3,21 +3,9 @@ import { useNavigation, useRoute } from "@react-navigation/core";
 
 import { IArticleOptions } from "../constants/types";
 import { useData, useTheme, useTranslation } from "../hooks/";
-import {
-  Block,
-  Button,
-  Image,
-  Product,
-  Text,
-  Article,
-  EventDetails,
-} from "../components/";
+import { Block, Button, Image, Product, Text, Article, EventDetails } from "../components/";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  userJoinEvent,
-  staffPublishEvent,
-  staffDeleteEvent,
-} from "../../api/event";
+import { userJoinEvent, staffPublishEvent, staffDeleteEvent } from "../../api/event";
 import { UserContext } from "../hooks/userContext";
 import { deleteEventInEventRecords } from "../../api/eventRecords";
 
@@ -31,9 +19,7 @@ const Rental = () => {
 
   // Retrieve rentalId from route parameters
   const { eventId } = route.params;
-  const [selectedMeetUpLocation, setSelectedMeetUpLocation] = useState<
-    string | null
-  >(null);
+  const [selectedMeetUpLocation, setSelectedMeetUpLocation] = useState<string | null>(null);
   const { identity, retrieveIdentity } = useContext(UserContext);
 
   // const retrieveIdentity = async () => {
@@ -51,7 +37,7 @@ const Rental = () => {
   const handleRegister = async () => {
     // const userData = await retrieveIdentity();
     // console.log("userData", userData);
-    console.log("Identity:", identity);
+    // console.log("Identity:", identity);
     const uid = identity ? JSON.parse(identity).uid : "";
     console.log("email", uid);
     console.log("selectedMeetUpLocation", selectedMeetUpLocation);
@@ -111,10 +97,7 @@ const Rental = () => {
       contentContainerStyle={{ paddingBottom: sizes.padding * 1.5 }}
     >
       <Block style={{ paddingHorizontal: sizes.padding }}>
-        <EventDetails
-          {...article}
-          onSelectMeetUpLocation={setSelectedMeetUpLocation}
-        />
+        <EventDetails {...article} onSelectMeetUpLocation={setSelectedMeetUpLocation} />
       </Block>
       {/* rentals recomendations */}
       {/* <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
@@ -125,22 +108,13 @@ const Rental = () => {
         </Button>
       </Block> */}
       <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
-        <Button
-          gradient={gradients.primary}
-          disabled={article.published}
-          onPress={() => handlePublish()}
-        >
+        <Button gradient={gradients.primary} disabled={article.published} onPress={() => handlePublish()}>
           <Text white bold transform="uppercase">
             {t("event.publish")}
           </Text>
         </Button>
       </Block>
-      <Block
-        paddingHorizontal={sizes.sm}
-        row
-        justify="space-between"
-        marginVertical={sizes.sm}
-      >
+      <Block paddingHorizontal={sizes.sm} row justify="space-between" marginVertical={sizes.sm}>
         <Button
           flex={1}
           gradient={gradients.dark}
@@ -155,12 +129,7 @@ const Rental = () => {
             Edit
           </Text>
         </Button>
-        <Button
-          flex={1}
-          gradient={gradients.dark}
-          marginHorizontal={sizes.s}
-          onPress={() => handleDelete()}
-        >
+        <Button flex={1} gradient={gradients.dark} marginHorizontal={sizes.s} onPress={() => handleDelete()}>
           <Text white bold transform="uppercase" marginHorizontal={sizes.s}>
             Delete
           </Text>

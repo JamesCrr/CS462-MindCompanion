@@ -1,15 +1,15 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { Linking, Platform } from 'react-native';
-import { useNavigation } from '@react-navigation/core';
-import { useData, useTheme, useTranslation } from '../hooks/';
-import { Block, Button, Input, Image, Text, Checkbox, Badge } from '../components/';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
-import { db } from '../../config/firebaseConfig';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { InsertEvent } from '../../api/event';
+import React, { useCallback, useState, useEffect } from "react";
+import { Linking, Platform } from "react-native";
+import { useNavigation } from "@react-navigation/core";
+import { useData, useTheme, useTranslation } from "../hooks/";
+import { Block, Button, Input, Image, Text, Checkbox, Badge } from "../components/";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { db } from "../../config/firebaseConfig";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { InsertEvent } from "../../api/event";
 import { addEventIntoEventRecords } from '../../api/eventRecords';
 
-const isAndroid = Platform.OS === 'android';
+const isAndroid = Platform.OS === "android";
 
 const AddEvent = () => {
   const { fetchEvents } = useData();
@@ -28,12 +28,12 @@ const AddEvent = () => {
     agreed: false,
   });
   const [eventData, setEventData] = useState({
-    name: '',
-    location: '',
-    information: '',
-    datetime: new Date(), 
-    meetUpLocations:[],
-    itemsToBring: []
+    name: "",
+    location: "",
+    information: "",
+    datetime: new Date(),
+    meetUpLocations: [],
+    itemsToBring: [],
   });
 
   const [meetUpLocations, setMeetUpLocations] = useState<string[]>([]);
@@ -41,8 +41,8 @@ const AddEvent = () => {
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [tempMeetUpLocation, setTempMeetUpLocation] = useState('');
-  const [tempItemsToBring, setTempItemsToBring] = useState('');
+  const [tempMeetUpLocation, setTempMeetUpLocation] = useState("");
+  const [tempItemsToBring, setTempItemsToBring] = useState("");
 
   const { assets, colors, gradients, sizes } = useTheme();
 
@@ -50,7 +50,7 @@ const AddEvent = () => {
     (value: any) => {
       setEventData((state) => ({ ...state, ...value }));
     },
-    [setEventData],
+    [setEventData]
   );
 
   const handleAddEvent = useCallback(async () => {
@@ -61,7 +61,7 @@ const AddEvent = () => {
         // itemsToBring: filteredItemstoBring,
       };
 
-      console.log('eventPayload:', eventPayload);
+      console.log("eventPayload:", eventPayload);
 
       const res = await InsertEvent(eventPayload);
       console.log("Event added successfully:", res);
@@ -83,11 +83,8 @@ const AddEvent = () => {
         fetchEvents();
         navigation.goBack();
       }
-
-
     } catch (error) {
-      console.error('Error adding event:', error);
-
+      console.error("Error adding event:", error);
     }
   }, [eventData, meetUpLocations, itemsToBring, navigation]);
 
@@ -181,7 +178,7 @@ const AddEvent = () => {
               flex={0}
               justify="flex-start"
               onPress={() => navigation.goBack()}
-              style={{ position: 'absolute', top: sizes.sm, left: sizes.sm }}
+              style={{ position: "absolute", top: sizes.sm, left: sizes.sm }}
             >
               <Image
                 radius={0}
@@ -189,30 +186,21 @@ const AddEvent = () => {
                 height={18}
                 color={colors.white}
                 source={assets.arrow}
-                transform={[{ rotate: '180deg' }]}
+                transform={[{ rotate: "180deg" }]}
               />
               <Text p white marginLeft={sizes.s}>
-                {t('common.goBack')}
+                {t("common.goBack")}
               </Text>
             </Button>
 
             <Text h4 center white marginBottom={sizes.md}>
-              {t('addEvent.title')}
+              {t("addEvent.title")}
             </Text>
           </Image>
         </Block>
         {/* event form */}
-        <Block
-          keyboard
-          marginTop={-(sizes.height * 0.2 - sizes.l)}
-          behavior={!isAndroid ? 'padding' : 'height'}
-        >
-          <Block
-            flex={0}
-            radius={sizes.sm}
-            marginHorizontal="8%"
-            shadow={!isAndroid}
-          >
+        <Block keyboard marginTop={-(sizes.height * 0.2 - sizes.l)} behavior={!isAndroid ? "padding" : "height"}>
+          <Block flex={0} radius={sizes.sm} marginHorizontal="8%" shadow={!isAndroid}>
             <Block
               blur
               flex={0}
@@ -226,28 +214,28 @@ const AddEvent = () => {
               {/* form inputs */}
               <Block paddingHorizontal={sizes.sm}>
                 <Input
-                  label={t('common.eventName')}
+                  label={t("common.eventName")}
                   autoCapitalize="none"
                   marginBottom={sizes.m}
-                  placeholder={t('common.eventNamePlaceholder')}
+                  placeholder={t("common.eventNamePlaceholder")}
                   success={Boolean(eventData.name && isValid.name)}
                   danger={Boolean(eventData.name && !isValid.name)}
                   onChangeText={(value) => handleChange({ name: value })}
                 />
                 <Input
-                  label={t('common.location')}
+                  label={t("common.location")}
                   autoCapitalize="none"
                   marginBottom={sizes.m}
-                  placeholder={t('common.locationPlaceholder')}
+                  placeholder={t("common.locationPlaceholder")}
                   success={Boolean(eventData.location && isValid.location)}
                   danger={Boolean(eventData.location && !isValid.location)}
                   onChangeText={(value) => handleChange({ location: value })}
                 />
                 <Input
-                  label={t('common.information')}
+                  label={t("common.information")}
                   autoCapitalize="none"
                   marginBottom={sizes.m}
-                  placeholder={t('common.informationPlaceholder')}
+                  placeholder={t("common.informationPlaceholder")}
                   success={Boolean(eventData.information && isValid.information)}
                   danger={Boolean(eventData.information && !isValid.information)}
                   onChangeText={(value) => handleChange({ information: value })}
@@ -255,10 +243,10 @@ const AddEvent = () => {
                 <Block row align="center">
                   <Block flex={1}>
                     <Input
-                      label={t('common.meetupLocation')}
+                      label={t("common.meetupLocation")}
                       autoCapitalize="none"
                       marginBottom={sizes.m}
-                      placeholder={t('common.meetupLocationPlaceholder')}
+                      placeholder={t("common.meetupLocationPlaceholder")}
                       success={Boolean(eventData.meetUpLocations && isValid.meetUpLocation)}
                       // danger={Boolean(eventData.meetupLocations && !isValid.meetupLocation)}
                       onChangeText={(value) => setTempMeetUpLocation(value)}
@@ -267,7 +255,9 @@ const AddEvent = () => {
                     />
                   </Block>
                   <Button onPress={addMeetupLocation} marginLeft={sizes.s}>
-                    <Text bold primary>+</Text>
+                    <Text bold primary>
+                      +
+                    </Text>
                   </Button>
                 </Block>
                 <Block row wrap="wrap">
@@ -282,10 +272,10 @@ const AddEvent = () => {
                 <Block row align="center">
                   <Block flex={1}>
                     <Input
-                      label={t('common.itemsToBring')}
+                      label={t("common.itemsToBring")}
                       autoCapitalize="none"
                       marginBottom={sizes.m}
-                      placeholder={t('common.itemsToBringPlaceholder')}
+                      placeholder={t("common.itemsToBringPlaceholder")}
                       success={Boolean(eventData.itemsToBring && isValid.itemsToBring)}
                       // danger={Boolean(eventData.itemsToBring && !isValid.itemsToBring)}
                       onChangeText={(value) => setTempItemsToBring(value)}
@@ -294,7 +284,9 @@ const AddEvent = () => {
                     />
                   </Block>
                   <Button onPress={addItemToBring} marginLeft={sizes.s}>
-                    <Text bold primary>+</Text>
+                    <Text bold primary>
+                      +
+                    </Text>
                   </Button>
                 </Block>
                 <Block row wrap="wrap">
@@ -314,7 +306,7 @@ const AddEvent = () => {
                 </Block>
                 <Block row>
                   <Block flex={1} paddingRight={sizes.s}>
-                    <Text>{t('common.date')}</Text>
+                    <Text>{t("common.date")}</Text>
                     <Button onPress={() => setShowDatePicker(true)}>
                       <Text>{eventData.datetime.toDateString()}</Text>
                     </Button>
@@ -328,7 +320,7 @@ const AddEvent = () => {
                     )}
                   </Block>
                   <Block flex={1} paddingLeft={sizes.s}>
-                    <Text>{t('common.time')}</Text>
+                    <Text>{t("common.time")}</Text>
                     <Button onPress={() => setShowTimePicker(true)}>
                       <Text>{eventData.datetime.toLocaleTimeString()}</Text>
                     </Button>
@@ -370,7 +362,7 @@ const AddEvent = () => {
                 // disabled={Object.values(isValid).includes(false)}
               >
                 <Text bold white transform="uppercase">
-                  {t('common.addEvent')}
+                  {t("common.addEvent")}
                 </Text>
               </Button>
             </Block>

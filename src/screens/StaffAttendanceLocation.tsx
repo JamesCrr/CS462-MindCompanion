@@ -10,6 +10,8 @@ import {
   FlatList,
   TouchableOpacity,
   Platform,
+  PermissionsAndroid,
+  DeviceEventEmitter,
 } from "react-native";
 import { useTheme } from "../hooks/";
 
@@ -33,6 +35,9 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import { format } from "date-fns";
 
+import Beacons from "@hkpuits/react-native-beacons-manager";
+import { getUserById, getAllUsers } from "../../api/users";
+
 interface Event {
   name: string;
   location: string;
@@ -46,17 +51,67 @@ interface Event {
   volunteerAttendance?: string[];
 }
 
+const REGION: BeaconRegion = {
+  identifier: "event_attendance",
+  uuid: "",
+  major: 1,
+  minor: 6,
+};
+
+interface Beacon {
+  distance: number;
+  major: number;
+  minor: number;
+  proximity: string;
+  rssi: number;
+  uuid: string;
+}
+
+export interface BeaconRegion {
+  identifier: string;
+  uuid: string;
+  minor?: number;
+  major?: number;
+}
+
+interface BeaconsData {
+  beacons: Beacon[];
+  identifier: string;
+  uuid: string;
+}
+
+interface User {
+  id: string;
+  name: string;
+  type: string;
+  uuid: string;
+  stats?: {
+    medals: number;
+    podium: number;
+    score: number;
+  };
+  coords?: {
+    lat: number;
+    long: number;
+    updatedAt: Date;
+  };
+}
+
 export default function StaffAttendanceLocation() {
   const navigation = useNavigation();
   const [event, setEvent] = useState<Event>();
   const [loading, setLoading] = useState<boolean>(false);
   const { assets, colors, gradients, sizes } = useTheme();
-
+  const [volunteerData, setVolunteerData] = useState<Set<string>>(new Set());
+  const [participantData, setParticipantData] = useState<Set<string>>(
+    new Set()
+  );
+  const [allUsers, setAllUsers] = useState<User[]>();
   useState<string>();
 
   const route = useRoute();
   const { eventId, location } = route.params;
-  console.log(eventId, location);
+  const [isScanning, setIsScanning] = useState(true);
 
   // The route parameter, An optional search parameter.
 
@@ -64,6 +119,115 @@ export default function StaffAttendanceLocation() {
     fetchEventInfoFromDB();
   }, []);
 
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+      ).then((result) => {
+        console.log(
+          "PERMISSIONS::LOCATION",
+          result === PermissionsAndroid.RESULTS.GRANTED ? "yay" : "nay"
+        );
+      });
+
+      PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN
+      ).then((result) => {
+        console.log(
+          "PERIMISSIONS::BLUETOOTH",
+          result === PermissionsAndroid.RESULTS.GRANTED ? "yay" : "nay"
+        );
+      });
+    }
+
+    Beacons.init();
+    Beacons.detectIBeacons();
+  }, []);
+
+  const [processedBeacons, setProcessedBeacons] = useState<Set<string>>(
+    new Set()
+  );
+
+  useEffect(() => {
+    let lastCall = 0;
+
+    if (isScanning && allUsers) {
+      try {
+        Beacons.startMonitoringForRegion(REGION);
+        Beacons.startRangingBeaconsInRegion(REGION);
+      } catch (err) {
+        console.log("ERROR:", err);
+      }
+
+      const beaconScanner = DeviceEventEmitter.addListener(
+        "beaconsDidRange",
+        (data: BeaconsData) => {
+          const now = Date.now();
+          if (now - lastCall > 10000) {
+            lastCall = now;
+
+            data.beacons.push({
+              uuid: "eac3c256-e797-406e-a47f-092e3f453a90",
+              major: 1,
+              minor: 6,
+              proximity: "near",
+              rssi: -65,
+              distance: 1.2,
+            });
+            console.log("BEACONS:", data);
+            // Process each detected beacon
+
+            for (const beacon of data.beacons) {
+              const beaconId = beacon.uuid;
+              console.log(beaconId, "beaconId");
+
+              // Only process new beacons
+              if (!processedBeacons.has(beaconId)) {
+                setProcessedBeacons((prev) => new Set([...prev, beaconId]));
+                try {
+                  const matchedUser = allUsers?.find(
+                    (user) => user.uuid == beaconId
+                  );
+                  console.log("HELLO");
+                  if (matchedUser) {
+                    console.log(matchedUser, "MATCHED USER");
+                    if (
+                      event?.participants?.some(p => p.split(',')[0] === matchedUser.name) ||
+                      event?.volunteers?.includes(matchedUser.name)
+                    ) {
+                      console.log("MATCHED USER IN EVENT");
+                      if (matchedUser.type == "Volunteer") {
+                        setVolunteerData(
+                          (prev) => new Set([...prev, matchedUser.id])
+                        );
+                      } else if (matchedUser.type === "Caregiver") {
+                        setParticipantData(
+                          (prev) => new Set([...prev, matchedUser.id])
+                        );
+                      }
+                    }
+                  }
+                } catch (error) {
+                  console.error("Error finding user:", error);
+                } finally {
+                  console.log("end task");
+                }
+              }
+            }
+          }
+        }
+      );
+
+      return () => {
+        beaconScanner.remove();
+        Beacons.stopMonitoringForRegion(REGION);
+        Beacons.stopRangingBeaconsInRegion(REGION);
+      };
+    } else {
+      Beacons.stopMonitoringForRegion(REGION);
+      Beacons.stopRangingBeaconsInRegion(REGION);
+    }
+  }, [isScanning, processedBeacons, allUsers]);
   // Map Firestore document to the Event type
   const mapFirestoreToEvent = (eventDoc: DocumentData): Event => {
     return {
@@ -90,6 +254,9 @@ export default function StaffAttendanceLocation() {
       }
       setEvent(mapFirestoreToEvent(event));
       console.log(event, "lololol");
+      const fetchedUsers = await getAllUsers();
+      console.log(fetchedUsers, "fetchedUsers");
+      setAllUsers(fetchedUsers);
     } catch (error) {
       if (error instanceof Error) {
         console.error(error.message);
@@ -110,29 +277,97 @@ export default function StaffAttendanceLocation() {
     }
   };
 
+  // Add new state for tracking intervals
+  const [intervalId, setIntervalId] = useState<NodeJS.Timer | null>(null);
+
+  // Add function to randomly select and add attendees
+  const addRandomAttendee = () => {
+    if (!event) return;
+
+    const randomParticipant =
+      event.participants?.[
+        Math.floor(Math.random() * event.participants.length)
+      ];
+    const randomVolunteer =
+      event.volunteers?.[Math.floor(Math.random() * event.volunteers.length)];
+
+    setEvent((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        participantAttendance: [
+          ...new Set([
+            ...(prev.participantAttendance || []),
+            randomParticipant,
+          ]),
+        ],
+        volunteerAttendance: [
+          ...new Set([...(prev.volunteerAttendance || []), randomVolunteer]),
+        ],
+      };
+    });
+  };
+
+  // Set up interval when component mounts
+  useEffect(() => {
+    const interval = setInterval(addRandomAttendee, 5000);
+    setIntervalId(interval);
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [event?.participants, event?.volunteers]);
+
   if (!event || !event.meetUpLocations) {
     return null; // or some fallback UI
   }
 
   return (
     <Block safe>
-      <View>
-        {event.meetUpLocations?.map((location, index) => (
-          <Block paddingVertical={sizes.padding} marginHorizontal={sizes.sm}>
-            <Button
-              key={index}
-              flex={1}
-              gradient={gradients.info}
-              marginBottom={sizes.base}
-              onPress={() => console.log(`Button for ${location} pressed`)}
-            >
-              <Text bold transform="uppercase">
-                {location}
+      <ScrollView>
+        <View>
+          {event.meetUpLocations?.map((location, index) => (
+            <Block paddingVertical={sizes.padding} marginHorizontal={sizes.sm}>
+              <Button
+                key={index}
+                flex={1}
+                gradient={gradients.info}
+                marginBottom={sizes.base}
+                onPress={() => console.log(`Button for ${location} pressed`)}
+              >
+                <Text bold transform="uppercase">
+                  {location}
+                </Text>
+              </Button>
+            </Block>
+          ))}
+        </View>
+
+        {/* Add attendance displays */}
+        <Block paddingHorizontal={sizes.sm}>
+          <Block card marginBottom={sizes.sm}>
+            <Text h5 marginBottom={sizes.s}>
+              Participants Attended ({event.participantAttendance?.length || 0})
+            </Text>
+            {event.participantAttendance?.map((participant, index) => (
+              <Text key={index} marginBottom={sizes.xs}>
+                {participant}
               </Text>
-            </Button>
+            ))}
           </Block>
-        ))}
-      </View>
+
+          <Block card>
+            <Text h5 marginBottom={sizes.s}>
+              Volunteers Attended ({event.volunteerAttendance?.length || 0})
+            </Text>
+            {event.volunteerAttendance?.map((volunteer, index) => (
+              <Text key={index} marginBottom={sizes.xs}>
+                {volunteer}
+              </Text>
+            ))}
+          </Block>
+        </Block>
+      </ScrollView>
     </Block>
   );
 }

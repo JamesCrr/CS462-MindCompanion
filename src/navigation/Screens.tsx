@@ -71,23 +71,14 @@ export default () => {
 
   return (
     <Stack.Navigator screenOptions={screenOptions.stack}>
-      <Stack.Screen
-        name="Home"
-        component={Home}
-        options={{ title: t("navigation.home") }}
-      />
+      <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+      <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
 
-      <Stack.Screen
-        name="Components"
-        component={Components}
-        options={screenOptions.components}
-      />
+      <Stack.Screen name="Home" component={Home} options={{ title: t("navigation.home") }} />
 
-      <Stack.Screen
-        name="Articles"
-        component={Articles}
-        options={{ title: t("navigation.articles") }}
-      />
+      <Stack.Screen name="Components" component={Components} options={screenOptions.components} />
+
+      <Stack.Screen name="Articles" component={Articles} options={{ title: t("navigation.articles") }} />
 
       <Stack.Screen
         name="Rentals"
@@ -173,17 +164,9 @@ export default () => {
         component={Booking}
         options={{ title: t("navigation.booking"), ...screenOptions.rental }}
       />
-      <Stack.Screen
-        name="Chat"
-        component={Chat}
-        options={{ title: t("navigation.chat"), ...screenOptions.chat }}
-      />
+      <Stack.Screen name="Chat" component={Chat} options={{ title: t("navigation.chat"), ...screenOptions.chat }} />
 
-      <Stack.Screen
-        name="Profile"
-        component={Profile}
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
 
       <Stack.Screen
         name="Settings"
@@ -211,28 +194,13 @@ export default () => {
         component={Agreement}
         options={{ title: t("navigation.agreement"), ...screenOptions.back }}
       />
-      <Stack.Screen
-        name="About"
-        component={About}
-        options={{ title: t("navigation.about"), ...screenOptions.back }}
-      />
+      <Stack.Screen name="About" component={About} options={{ title: t("navigation.about"), ...screenOptions.back }} />
       <Stack.Screen
         name="Privacy"
         component={Privacy}
         options={{ title: t("navigation.privacy"), ...screenOptions.back }}
       />
 
-      <Stack.Screen
-        name="Register"
-        component={Register}
-        options={{ headerShown: false }}
-      />
-
-      <Stack.Screen
-        name="Login"
-        component={Login}
-        options={{ headerShown: false }}
-      />
       <Stack.Screen name="StaffCalendar" component={StaffCalendar} />
 
       <Stack.Screen
@@ -255,13 +223,18 @@ export default () => {
         }}
       />
 
-      <Stack.Screen name="CaregiverCalendar" component={CaregiverCalendar} />
+      <Stack.Screen
+        name="CaregiverCalendar"
+        component={CaregiverCalendar}
+        options={{ title: t("navigation.caregivercalendar"), ...screenOptions.rental }}
+      />
 
       <Stack.Screen
         name="ViewEvent"
         component={ViewEvent}
         options={{
           title: t("navigation.eventDetails"),
+          ...screenOptions.rental,
         }}
       />
 
