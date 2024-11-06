@@ -1,5 +1,11 @@
 import { useNavigation, useRoute } from "@react-navigation/core";
-import { doc, DocumentData, setDoc, updateDoc, Timestamp } from "firebase/firestore";
+import {
+  doc,
+  DocumentData,
+  setDoc,
+  updateDoc,
+  Timestamp,
+} from "firebase/firestore";
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -38,8 +44,8 @@ import { format } from "date-fns";
 import Beacons from "@hkpuits/react-native-beacons-manager";
 import { getUserById, getAllUsers } from "../../api/users";
 
-import * as Location from 'expo-location';
-import { db } from '../../config/firebaseConfig';
+import * as Location from "expo-location";
+import { db } from "../../config/firebaseConfig";
 
 interface Event {
   name: string;
@@ -108,6 +114,12 @@ export default function StaffAttendanceLocation() {
     new Set()
   );
   const [allUsers, setAllUsers] = useState<User[]>();
+  const [notAttendedParticipants, setNotAttendedParticipants] = useState<
+    string[]
+  >([]);
+  const [notAttendedVolunteers, setNotAttendedVolunteers] = useState<string[]>(
+    []
+  );
   useState<string>();
 
   const route = useRoute();
@@ -151,8 +163,8 @@ export default function StaffAttendanceLocation() {
 
   useEffect(() => {
     let lastCall = 0;
-
-    if (isScanning && allUsers) {
+    let changed = false;
+    if (isScanning && allUsers && event) {
       try {
         Beacons.startMonitoringForRegion(REGION);
         Beacons.startRangingBeaconsInRegion(REGION);
@@ -181,7 +193,7 @@ export default function StaffAttendanceLocation() {
                 );
                 if (matchedUser) {
                   await updateUserLocation(matchedUser.id);
-                  console.log('Updated location for beacon:', beaconId);
+                  console.log("Updated location for beacon:", beaconId);
                 }
 
                 // Continue with existing attendance logic
@@ -192,19 +204,50 @@ export default function StaffAttendanceLocation() {
                     console.log(matchedUser, "MATCHED USER");
                     if (
                       event?.participants?.some(
-                        (p) => p.split(",")[0] === matchedUser.name
+                        (p) =>
+                          p.split(",")[0] === matchedUser.name &&
+                          p.split(",")[1] === location
                       ) ||
                       event?.volunteers?.includes(matchedUser.name)
                     ) {
                       console.log("MATCHED USER IN EVENT");
+                      changed = true;
                       if (matchedUser.type == "Volunteer") {
+                        const updatedEvent = {
+                          ...event,
+                          volunteerAttendance: Array.from(
+                            new Set([
+                              ...(event.volunteerAttendance || []),
+                              matchedUser.id,
+                            ])
+                          ),
+                        };
+                        setEvent(updatedEvent);
                         setVolunteerData(
-                          (prev) => new Set([...prev, matchedUser.id])
+                          (prev) => new Set([...prev, matchedUser.name])
                         );
+                        setNotAttendedVolunteers((prev) =>
+                          prev.filter((v) => v !== matchedUser.name)
+                        );
+                        await saveChanges(updatedEvent);
                       } else if (matchedUser.type === "Caregiver") {
+                        const updatedEvent = {
+                          ...event,
+                          participantAttendance: Array.from(
+                            new Set([
+                              ...(event.participantAttendance || []),
+                              matchedUser.id,
+                            ])
+                          ),
+                        };
+                        setEvent(updatedEvent);
                         setParticipantData(
-                          (prev) => new Set([...prev, matchedUser.id])
+                          (prev) => new Set([...prev, matchedUser.name])
                         );
+                        setNotAttendedParticipants((prev) =>
+                          prev.filter((p) => p !== matchedUser.name)
+                        );
+                        await saveChanges(updatedEvent);
                       }
                     }
                   }
@@ -253,10 +296,19 @@ export default function StaffAttendanceLocation() {
       if (event == null) {
         throw new Error("");
       }
-      setEvent(mapFirestoreToEvent(event));
-      console.log(event, "lololol");
+      const mappedEvent = mapFirestoreToEvent(event);
+      setEvent(mappedEvent);
+
+      // Initialize not-attended lists
+      const participants =
+        mappedEvent.participants
+          ?.filter((p) => p.split(",")[1] === location)
+          .map((p) => p.split(",")[0]) || [];
+      const volunteers = mappedEvent.volunteers || [];
+      setNotAttendedParticipants(participants);
+      setNotAttendedVolunteers(volunteers);
+
       const fetchedUsers = await getAllUsers();
-      console.log(fetchedUsers, "fetchedUsers");
       setAllUsers(fetchedUsers);
     } catch (error) {
       if (error instanceof Error) {
@@ -269,80 +321,38 @@ export default function StaffAttendanceLocation() {
     }
   };
 
-  const saveChanges = async () => {
+  const saveChanges = async (eventToSave: Event) => {
     try {
-      const res = await updateEvent(eventId, event);
-      console.log(res);
+      const res = await updateEvent(eventId, eventToSave);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // Add new state for tracking intervals
-  const [intervalId, setIntervalId] = useState<NodeJS.Timer | null>(null);
-
-  // Add function to randomly select and add attendees
-  const addRandomAttendee = () => {
-    if (!event) return;
-
-    const randomParticipant =
-      event.participants?.[
-        Math.floor(Math.random() * event.participants.length)
-      ];
-    const randomVolunteer =
-      event.volunteers?.[Math.floor(Math.random() * event.volunteers.length)];
-
-    setEvent((prev) => {
-      if (!prev) return prev;
-      return {
-        ...prev,
-        participantAttendance: [
-          ...new Set([
-            ...(prev.participantAttendance || []),
-            randomParticipant,
-          ]),
-        ],
-        volunteerAttendance: [
-          ...new Set([...(prev.volunteerAttendance || []), randomVolunteer]),
-        ],
-      };
-    });
-  };
-
-  // Set up interval when component mounts
-  useEffect(() => {
-    const interval = setInterval(addRandomAttendee, 5000);
-    setIntervalId(interval);
-
-    return () => {
-      if (intervalId) clearInterval(intervalId);
-    };
-  }, [event?.participants, event?.volunteers]);
-
   const updateUserLocation = async (userId: string) => {
     try {
       // Get current location
       const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        console.log('Location permission denied');
+      if (status !== "granted") {
+        console.log("Location permission denied");
         return;
       }
 
       const location = await Location.getCurrentPositionAsync({});
-      console.log('Got location:', location);
+      // console.log("Got location:", location);
 
       // Update user document
-      const userRef = doc(db, 'users', userId);
+      const userRef = doc(db, "users", userId);
       await updateDoc(userRef, {
         coords: {
           lat: location.coords.latitude,
           long: location.coords.longitude,
-          updatedAt: Timestamp.now()
-        }
+          updatedAt: Timestamp.now(),
+        },
       });
-      console.log('Updated location for user:', userId);
+      // console.log("Updated location for user:", userId);
     } catch (error) {
-      console.error('Error updating location:', error);
+      console.error("Error updating location:", error);
     }
   };
 
@@ -375,21 +385,44 @@ export default function StaffAttendanceLocation() {
         <Block paddingHorizontal={sizes.sm}>
           <Block card marginBottom={sizes.sm}>
             <Text h5 marginBottom={sizes.s}>
-              Participants Attended ({event.participantAttendance?.length || 0})
+              Participants Attended ({participantData.size || 0})
             </Text>
-            {event.participantAttendance?.map((participant, index) => (
+            {Array.from(participantData).map((participant, index) => (
               <Text key={index} marginBottom={sizes.xs}>
                 {participant}
               </Text>
             ))}
           </Block>
 
-          <Block card>
+          <Block card marginBottom={sizes.sm}>
             <Text h5 marginBottom={sizes.s}>
-              Volunteers Attended ({event.volunteerAttendance?.length || 0})
+              Volunteers Attended ({volunteerData.size || 0})
             </Text>
-            {event.volunteerAttendance?.map((volunteer, index) => (
+            {Array.from(volunteerData).map((volunteer, index) => (
               <Text key={index} marginBottom={sizes.xs}>
+                {volunteer}
+              </Text>
+            ))}
+          </Block>
+
+          {/* Not Attended Lists */}
+          <Block card marginBottom={sizes.sm}>
+            <Text h5 marginBottom={sizes.s} color={colors.danger}>
+              Participants Not Attended ({notAttendedParticipants.length})
+            </Text>
+            {notAttendedParticipants.map((participant, index) => (
+              <Text key={index} marginBottom={sizes.xs} color={colors.danger}>
+                {participant}
+              </Text>
+            ))}
+          </Block>
+
+          <Block card marginBottom={sizes.sm}>
+            <Text h5 marginBottom={sizes.s} color={colors.danger}>
+              Volunteers Not Attended ({notAttendedVolunteers.length})
+            </Text>
+            {notAttendedVolunteers.map((volunteer, index) => (
+              <Text key={index} marginBottom={sizes.xs} color={colors.danger}>
                 {volunteer}
               </Text>
             ))}
