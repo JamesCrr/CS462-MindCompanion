@@ -4,16 +4,7 @@ import { useNavigation } from "@react-navigation/core";
 
 import { useData, useTheme, useTranslation } from "../hooks";
 import { IArticle, IEvent2 } from "../constants/types";
-import {
-  Block,
-  Button,
-  Input,
-  Image,
-  Article,
-  Text,
-  MyEventCard,
-  MainCalendar,
-} from "../components";
+import { Block, Button, Input, Image, Article, Text, MyEventCard, MainCalendar } from "../components";
 import { useContext } from "react";
 import { UserContext } from "../hooks/userContext";
 import { fetchAllEventsOfUser } from "../../api/event";
@@ -23,13 +14,7 @@ const RentalHeader = () => {
   const { assets, gradients, sizes } = useTheme();
   return (
     <>
-      <Block
-        row
-        flex={0}
-        align="center"
-        justify="space-around"
-        marginVertical={sizes.s}
-      ></Block>
+      <Block row flex={0} align="center" justify="space-around" marginVertical={sizes.s}></Block>
       <Block row flex={0} align="center" justify="space-between">
         <Text h5 semibold>
           {/* {t('common.recommended')} */}
@@ -130,18 +115,6 @@ const MyEvents = () => {
       )}
       <MainCalendar />
       {/* rentals list */}
-      <FlatList
-        data={events}
-        // stickyHeaderIndices={[0]}
-        showsVerticalScrollIndicator={false}
-        keyExtractor={(item) => `${item?.id}`}
-        ListHeaderComponent={() => <RentalHeader />}
-        style={{ paddingHorizontal: sizes.padding }}
-        contentContainerStyle={{ paddingBottom: sizes.l }}
-        renderItem={({ item }) => (
-          <MyEventCard {...item} onPress={() => handleRental(item)} />
-        )}
-      />
     </Block>
   );
 };

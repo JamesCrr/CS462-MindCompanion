@@ -1,36 +1,30 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useContext } from "react";
 import { FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 
 import { useData, useTheme, useTranslation } from "../hooks/";
+import { UserContext } from "../hooks/userContext";
 import { IArticle, IEvent2 } from "../constants/types";
-import {
-  Block,
-  Button,
-  Input,
-  Image,
-  Article,
-  Text,
-  MainCalendar,
-} from "../components/";
+import { Block, Button, Input, Image, Article, Text, MainCalendar } from "../components/";
 
 const RentalHeader = () => {
   const { t } = useTranslation();
   const { assets, gradients, sizes } = useTheme();
   const [viewCalendar, setViewCalendar] = useState(false);
   const navigation = useNavigation();
+  const { identity } = useContext(UserContext);
+
   const changeView = () => {
-    navigation.navigate("CaregiverCalendar");
+    if (identity["type"] == "Caregiver") {
+      navigation.navigate("CaregiverCalendar");
+    } else {
+      navigation.navigate("StaffCalendar");
+    }
   };
+
   return (
     <>
-      <Block
-        row
-        flex={0}
-        align="center"
-        justify="space-around"
-        marginVertical={sizes.s}
-      >
+      <Block row flex={0} align="center" justify="space-around" marginVertical={sizes.s}>
         {/* <Block flex={0}>
           <Button
             flex={0}
@@ -163,9 +157,7 @@ const Rentals = () => {
         ListHeaderComponent={() => <RentalHeader />}
         style={{ paddingHorizontal: sizes.padding }}
         contentContainerStyle={{ paddingBottom: sizes.l }}
-        renderItem={({ item }) => (
-          <Article {...item} onPress={() => handleRental(item)} />
-        )}
+        renderItem={({ item }) => <Article {...item} onPress={() => handleRental(item)} />}
       />
     </Block>
   );

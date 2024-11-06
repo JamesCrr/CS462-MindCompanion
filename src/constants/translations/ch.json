@@ -96,7 +96,8 @@
     "extra": "汽车",
     "shopping": "购物车",
     "checklist": "物品清单",
-    "staffcharts": "事件图表"
+    "staffcharts": "事件图表",
+    "caregivercalendar": "Calendar"
   },
   "menu": {
     "started": "入门",
@@ -211,5 +212,9 @@
       "generatesheets": "生成至表格",
       "generating": "正在生成"
     }
+  },
+  "caregivercalendar": {
+    "title": "Calendar",
+    "addevent": "Add Event"
   }
 }

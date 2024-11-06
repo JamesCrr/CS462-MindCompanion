@@ -6,7 +6,7 @@ import { UserContext } from "../hooks/userContext";
 import { format, addDays } from "date-fns";
 import { collection, getDocs, DocumentData } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
-import { useTheme } from "../hooks";
+import { useTheme, useTranslation } from "../hooks";
 
 interface Event {
   name: string;
@@ -22,6 +22,7 @@ interface Event {
 }
 
 const CaregiverCalendarView = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const { identity } = useContext(UserContext);
   const { assets, colors, gradients, sizes } = useTheme();
@@ -166,40 +167,47 @@ const CaregiverCalendarView = () => {
   };
 
   return (
-    <Block row marginVertical={sizes.sm}>
-      <Block card marginHorizontal={sizes.xs}>
-        {/* {identity && <Text h5={true}>Current role is {identity["type"]}</Text>} */}
+    <Block scroll showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: sizes.padding }}>
+      <Block row marginVertical={sizes.sm}>
+        <Block card marginHorizontal={sizes.xs}>
+          {/* {identity && <Text h5={true}>Current role is {identity["type"]}</Text>} */}
 
-        <SafeAreaView style={styles.safeArea}>
-          <View style={styles.container}>
-            <View style={styles.header}>
-              <Text h5>Calendar</Text>
-              <View style={styles.navigationButtons}>
-                <Button gradient={gradients.dark} onPress={prevPeriod}>
-                  <Text white bold transform="uppercase" marginHorizontal={sizes.sm}>
-                    &lt;
-                  </Text>
-                </Button>
+          <SafeAreaView style={styles.safeArea}>
+            <View style={styles.container}>
+              <View style={styles.header}>
+                <Text h5>Calendar</Text>
+                <View style={styles.navigationButtons}>
+                  <Button gradient={gradients.primary} onPress={prevPeriod}>
+                    <Text white bold transform="uppercase" marginHorizontal={sizes.sm}>
+                      &lt;
+                    </Text>
+                  </Button>
 
-                <Text paddingHorizontal={sizes.xs}>{format(currentDate, "MMMM yyyy")}</Text>
-                <Button gradient={gradients.dark} onPress={nextPeriod}>
-                  <Text white bold transform="uppercase" marginHorizontal={sizes.sm}>
-                    &gt;
-                  </Text>
-                </Button>
+                  <Text paddingHorizontal={sizes.xs}>{format(currentDate, "MMMM yyyy")}</Text>
+                  <Button gradient={gradients.primary} onPress={nextPeriod}>
+                    <Text white bold transform="uppercase" marginHorizontal={sizes.sm}>
+                      &gt;
+                    </Text>
+                  </Button>
+                </View>
               </View>
+              {renderMonthView()}
+              {/* Only show Add Event button for admin/organizer roles */}
+              {identity && ["Staff", "organizer"].includes(identity.type) && (
+                <Button
+                  flex={1}
+                  gradient={gradients.primary}
+                  marginVertical={sizes.base}
+                  onPress={() => navigation.navigate("AddEvent")}
+                >
+                  <Text white bold transform="uppercase">
+                    {t("caregivercalendar.addevent")}
+                  </Text>
+                </Button>
+              )}
             </View>
-            {renderMonthView()}
-            {/* Only show Add Event button for admin/organizer roles */}
-            {identity && ["Staff", "organizer"].includes(identity.type) && (
-              <Button flex={1} gradient={gradients.success} marginVertical={sizes.base}>
-                <Text white bold transform="uppercase">
-                  Add Event
-                </Text>
-              </Button>
-            )}
-          </View>
-        </SafeAreaView>
+          </SafeAreaView>
+        </Block>
       </Block>
     </Block>
   );

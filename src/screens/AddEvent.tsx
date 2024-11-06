@@ -175,7 +175,7 @@ const AddEvent = () => {
               flex={0}
               justify="flex-start"
               onPress={() => navigation.goBack()}
-              style={{ position: "absolute", top: sizes.sm, left: sizes.sm }}
+              style={{ position: "absolute", top: sizes.sm, left: sizes.sm, zIndex: 2 }}
             >
               <Image
                 radius={0}
@@ -190,7 +190,7 @@ const AddEvent = () => {
               </Text>
             </Button>
 
-            <Text h4 center white marginBottom={sizes.md}>
+            <Text h4 center white marginTop={sizes.l}>
               {t("addEvent.title")}
             </Text>
           </Image>

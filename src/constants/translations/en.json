@@ -99,7 +99,8 @@
     "extra": "Automotive",
     "shopping": "Shopping Cart",
     "checklist": "Items Checklist",
-    "staffcharts": "Charts"
+    "staffcharts": "Charts",
+    "caregivercalendar": "Calendar"
   },
   "menu": {
     "started": "Getting Started",
@@ -215,5 +216,9 @@
       "generatesheets": "Generate Sheets",
       "generating": "Generating"
     }
+  },
+  "caregivercalendar": {
+    "title": "Calendar",
+    "addevent": "Add Event"
   }
 }

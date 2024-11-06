@@ -164,7 +164,7 @@ const Home = () => {
         )}
       </Block>
       <View style={styles.container}>
-        <View style={styles.header}>
+        {/* <View style={styles.header}>
           <Text style={styles.title}>Calendar</Text>
           <View style={styles.navigationButtons}>
             <Button style={styles.buttons} onPress={prevPeriod}>
@@ -176,8 +176,9 @@ const Home = () => {
             </Button>
           </View>
         </View>
-        {renderMonthView()}
-        {/* Only show Add Event button for admin/organizer roles */}
+        {renderMonthView()} */}
+
+        {/* Only show stuff for admin/organizer roles */}
         {identity && ["Staff", "organizer"].includes(identity.type) && (
           <Block>
             <Button gradient={gradients.primary} marginTop={sizes.sm} onPress={() => navigation.navigate("AddEvent")}>

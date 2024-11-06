@@ -50,6 +50,9 @@ const Rental = () => {
   const handlePublish = async () => {
     // const userData = await retrieveIdentity();
     // console.log("userData", userData);
+
+    if (article.published) return;
+
     try {
       const res = await staffPublishEvent(eventId);
       console.log(res);
@@ -97,11 +100,11 @@ const Rental = () => {
       </Block>
       {/* rentals recomendations */}
       <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
-        <Button gradient={gradients.primary} onPress={() => handleRegister()}>
+        {/* <Button gradient={gradients.primary} onPress={() => handleRegister()}>
           <Text white bold transform="uppercase">
             {t("event.joinEvent")}
           </Text>
-        </Button>
+        </Button> */}
       </Block>
       <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
         <Button gradient={gradients.primary} disabled={article.published} onPress={() => handlePublish()}>

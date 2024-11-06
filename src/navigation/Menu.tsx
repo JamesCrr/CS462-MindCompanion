@@ -113,7 +113,7 @@ const DrawerContent = (props: DrawerContentComponentProps) => {
   //   }
   // };
 
-  const retrieveDrawerMenuItems = () => {
+  const retrieveDrawerMenuItems = (identity) => {
     // screen list for Drawer menu
     return [
       { name: t("screens.home"), to: "Home", icon: assets.home },
@@ -123,7 +123,11 @@ const DrawerContent = (props: DrawerContentComponentProps) => {
       //   icon: assets.components,
       // },
       // { name: t("screens.articles"), to: "Articles", icon: assets.document },
-      { name: t("screens.event"), to: "Rentals", icon: assets.rental },
+      {
+        name: t("screens.event"),
+        to: identity?.type == "Caregiver" ? "CaregiverCalendar" : "Rentals",
+        icon: assets.rental,
+      },
       { name: t("screens.profile"), to: "Profile", icon: assets.profile },
       { name: t("screens.settings"), to: "Settings", icon: assets.settings },
       // {name: t('screens.login'), to: 'Register', icon: assets.register},
@@ -190,7 +194,7 @@ const DrawerContent = (props: DrawerContentComponentProps) => {
           </Block> */}
         </Block>
 
-        {retrieveDrawerMenuItems()
+        {retrieveDrawerMenuItems(identity)
           .filter((screen) => {
             // Replace 'Profile' with the screen name you want to conditionally exclude
             if (screen.to === "Profile" && !identity) {
