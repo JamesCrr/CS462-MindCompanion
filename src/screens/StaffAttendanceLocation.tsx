@@ -1,5 +1,5 @@
 import { useNavigation, useRoute } from "@react-navigation/core";
-import { doc, DocumentData, setDoc } from "firebase/firestore";
+import { doc, DocumentData, setDoc, updateDoc, Timestamp } from "firebase/firestore";
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -37,6 +37,9 @@ import { format } from "date-fns";
 
 import Beacons from "@hkpuits/react-native-beacons-manager";
 import { getUserById, getAllUsers } from "../../api/users";
+
+import * as Location from 'expo-location';
+import { db } from '../../config/firebaseConfig';
 
 interface Event {
   name: string;
@@ -159,7 +162,7 @@ export default function StaffAttendanceLocation() {
 
       const beaconScanner = DeviceEventEmitter.addListener(
         "beaconsDidRange",
-        (data: BeaconsData) => {
+        async (data: BeaconsData) => {
           const now = Date.now();
           if (now - lastCall > 10000) {
             lastCall = now;
@@ -171,13 +174,19 @@ export default function StaffAttendanceLocation() {
               const beaconId = beacon.uuid;
               console.log(beaconId, "beaconId");
 
-              // Only process new beacons
-              if (!processedBeacons.has(beaconId)) {
-                setProcessedBeacons((prev) => new Set([...prev, beaconId]));
-                try {
-                  const matchedUser = allUsers?.find(
-                    (user) => user.uuid == beaconId
-                  );
+              // Find matching user and update their location regardless of processing status
+              try {
+                const matchedUser = allUsers?.find(
+                  (user) => user.uuid == beaconId
+                );
+                if (matchedUser) {
+                  await updateUserLocation(matchedUser.id);
+                  console.log('Updated location for beacon:', beaconId);
+                }
+
+                // Continue with existing attendance logic
+                if (!processedBeacons.has(beaconId)) {
+                  setProcessedBeacons((prev) => new Set([...prev, beaconId]));
                   console.log("HELLO");
                   if (matchedUser) {
                     console.log(matchedUser, "MATCHED USER");
@@ -199,11 +208,11 @@ export default function StaffAttendanceLocation() {
                       }
                     }
                   }
-                } catch (error) {
-                  console.error("Error finding user:", error);
-                } finally {
-                  console.log("end task");
                 }
+              } catch (error) {
+                console.error("Error processing beacon:", error);
+              } finally {
+                console.log("end task");
               }
             }
           }
@@ -309,6 +318,33 @@ export default function StaffAttendanceLocation() {
       if (intervalId) clearInterval(intervalId);
     };
   }, [event?.participants, event?.volunteers]);
+
+  const updateUserLocation = async (userId: string) => {
+    try {
+      // Get current location
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Location permission denied');
+        return;
+      }
+
+      const location = await Location.getCurrentPositionAsync({});
+      console.log('Got location:', location);
+
+      // Update user document
+      const userRef = doc(db, 'users', userId);
+      await updateDoc(userRef, {
+        coords: {
+          lat: location.coords.latitude,
+          long: location.coords.longitude,
+          updatedAt: Timestamp.now()
+        }
+      });
+      console.log('Updated location for user:', userId);
+    } catch (error) {
+      console.error('Error updating location:', error);
+    }
+  };
 
   if (!event || !event.meetUpLocations) {
     return null; // or some fallback UI
