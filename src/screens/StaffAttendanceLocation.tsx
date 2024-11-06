@@ -53,7 +53,6 @@ interface Event {
 
 const REGION: BeaconRegion = {
   identifier: "event_attendance",
-  uuid: "",
   major: 1,
   minor: 6,
 };
@@ -69,7 +68,6 @@ interface Beacon {
 
 export interface BeaconRegion {
   identifier: string;
-  uuid: string;
   minor?: number;
   major?: number;
 }
@@ -77,7 +75,7 @@ export interface BeaconRegion {
 interface BeaconsData {
   beacons: Beacon[];
   identifier: string;
-  uuid: string;
+  uuid?: string;
 }
 
 interface User {
@@ -166,14 +164,6 @@ export default function StaffAttendanceLocation() {
           if (now - lastCall > 10000) {
             lastCall = now;
 
-            data.beacons.push({
-              uuid: "eac3c256-e797-406e-a47f-092e3f453a90",
-              major: 1,
-              minor: 6,
-              proximity: "near",
-              rssi: -65,
-              distance: 1.2,
-            });
             console.log("BEACONS:", data);
             // Process each detected beacon
 
@@ -192,7 +182,9 @@ export default function StaffAttendanceLocation() {
                   if (matchedUser) {
                     console.log(matchedUser, "MATCHED USER");
                     if (
-                      event?.participants?.some(p => p.split(',')[0] === matchedUser.name) ||
+                      event?.participants?.some(
+                        (p) => p.split(",")[0] === matchedUser.name
+                      ) ||
                       event?.volunteers?.includes(matchedUser.name)
                     ) {
                       console.log("MATCHED USER IN EVENT");
