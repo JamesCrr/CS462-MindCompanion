@@ -55,9 +55,9 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location.",
-          "isBackgroundLocationEnabled": true,
-          "isAndroidBackgroundLocationEnabled": true
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location for beacon detection.",
+          "locationAlwaysPermission": "Allow $(PRODUCT_NAME) to use your location in the background for beacon detection.",
+          "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ],
       [

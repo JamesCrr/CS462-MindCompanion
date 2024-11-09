@@ -3,11 +3,14 @@ import React from 'react';
 
 import {DataProvider} from './src/hooks';
 import AppNavigation from './src/navigation/App';
+import { BeaconProvider } from './src/context/BeaconContext';
 
 export default function App() {
   return (
-    <DataProvider>
-      <AppNavigation />
-    </DataProvider>
+    <BeaconProvider>
+      <DataProvider>
+        <AppNavigation />
+      </DataProvider>
+    </BeaconProvider>
   );
 }
