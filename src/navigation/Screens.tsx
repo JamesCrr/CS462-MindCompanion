@@ -38,6 +38,7 @@ import { UserContext } from "../hooks/userContext";
 import { useContext } from "react";
 import staffAttendanceLocations from "../screens/StaffAttendanceLocations";
 import staffAttendanceLocation from "../screens/StaffAttendanceLocation";
+import BgTask from "../screens/BgTask";
 
 const Stack = createStackNavigator();
 
@@ -229,6 +230,14 @@ export default () => {
         component={staffAttendanceLocation}
         options={{
           title: t("navigation.eventId"),
+        }}
+      />
+
+      <Stack.Screen
+        name="BgTask"
+        component={BgTask}
+        options={{
+          title: t("navigation.backgroundTracking") || "Background Location Tracking",
         }}
       />
 
