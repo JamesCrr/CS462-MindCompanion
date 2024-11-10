@@ -4,21 +4,9 @@ import { format } from "date-fns";
 
 import { IArticleOptions } from "../constants/types";
 import { useData, useTheme, useTranslation } from "../hooks/";
-import {
-  Block,
-  Button,
-  Image,
-  Product,
-  Text,
-  Article,
-  EventDetails,
-} from "../components/";
+import { Block, Button, Image, Product, Text, Article, EventDetails } from "../components/";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  userJoinEvent,
-  staffPublishEvent,
-  staffDeleteEvent,
-} from "../../api/event";
+import { userJoinEvent, staffPublishEvent, staffDeleteEvent } from "../../api/event";
 import { UserContext } from "../hooks/userContext";
 
 const Rental = () => {
@@ -48,7 +36,7 @@ const Rental = () => {
               itemsToBring: eventDoc.itemsToBring || [],
               participants: eventDoc.participants || [],
               volunteers: eventDoc.volunteers || [],
-              published: eventDoc.published
+              published: eventDoc.published,
             };
             handleArticle(formattedEvent);
           }
@@ -106,19 +94,12 @@ const Rental = () => {
       contentContainerStyle={{ paddingBottom: sizes.padding * 1.5 }}
     >
       <Block style={{ paddingHorizontal: sizes.padding }}>
-        <EventDetails
-          {...article}
-          onSelectMeetUpLocation={setSelectedMeetUpLocation}
-        />
+        <EventDetails {...article} onSelectMeetUpLocation={setSelectedMeetUpLocation} />
       </Block>
-      
+
       {!article.published && (
         <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
-          <Button
-            gradient={gradients.primary}
-            disabled={article.published}
-            onPress={() => handlePublish()}
-          >
+          <Button gradient={gradients.primary} disabled={article.published} onPress={() => handlePublish()}>
             <Text white bold transform="uppercase">
               {t("event.publish")}
             </Text>
@@ -143,12 +124,24 @@ const Rental = () => {
         </Block>
       )}
 
-      <Block
-        paddingHorizontal={sizes.sm}
-        row
-        justify="space-between"
-        marginVertical={sizes.sm}
-      >
+      {article.published && (
+        <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
+          <Button
+            gradient={gradients.primary}
+            onPress={() =>
+              navigation.navigate("TrackLocation", {
+                eventId: eventId,
+              })
+            }
+          >
+            <Text white bold transform="uppercase">
+              {t("event.tracklocation")}
+            </Text>
+          </Button>
+        </Block>
+      )}
+
+      <Block paddingHorizontal={sizes.sm} row justify="space-between" marginVertical={sizes.sm}>
         <Button
           flex={1}
           gradient={gradients.dark}
@@ -163,12 +156,7 @@ const Rental = () => {
             Edit
           </Text>
         </Button>
-        <Button
-          flex={1}
-          gradient={gradients.dark}
-          marginHorizontal={sizes.s}
-          onPress={() => handleDelete()}
-        >
+        <Button flex={1} gradient={gradients.dark} marginHorizontal={sizes.s} onPress={() => handleDelete()}>
           <Text white bold transform="uppercase" marginHorizontal={sizes.s}>
             Delete
           </Text>

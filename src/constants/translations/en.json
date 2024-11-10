@@ -105,7 +105,8 @@
     "backgroundTracking": "Background Tracking",
     "locationTracking": "Location Tracking",
     "locations": "Locations",
-    "takeAttendance": "Take Attendance"
+    "takeAttendance": "Take Attendance",
+    "tracklocation": "Check Participants Location"
   },
   "menu": {
     "started": "Getting Started",
@@ -117,6 +118,10 @@
     "title": "Soft UI",
     "following": "Following",
     "trending": "Trending"
+  },
+  "staffhome": {
+    "addevent": "Add Event",
+    "statistics": "Statistics for Month"
   },
   "extras": {
     "title1": "Want to try before",
@@ -188,7 +193,8 @@
     "moreOptions": "You can see more options from other categories.",
     "joinEvent": "Join Event",
     "publish": "Publish Event",
-    "takeAttendance": "Take Attendace"
+    "takeAttendance": "Take Attendace",
+    "tracklocation": "Check Participants Location"
   },
   "profile": {
     "title": "Profile",

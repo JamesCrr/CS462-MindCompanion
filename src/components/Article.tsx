@@ -88,17 +88,21 @@ const Article = ({
 
           {/* location & rating */}
           {(Boolean(location) || Boolean(dateTime)) && (
-            <Block row align="center">
-              <Image source={icons.location} marginRight={sizes.s} />
-              <Text p size={12} semibold>
-                {/* {location?.city}, {location?.country} */}
-                {location}
-              </Text>
-              <Text p bold marginHorizontal={sizes.s}></Text>
-              <Image source={icons.star} marginRight={sizes.s} />
-              <Text p size={12} semibold>
-                {dateTime}
-              </Text>
+            <Block wrap="wrap" row align="center">
+              <Block row align="center">
+                <Image source={icons.location} marginRight={sizes.s} />
+                <Text p size={12} semibold>
+                  {/* {location?.city}, {location?.country} */}
+                  {location}
+                </Text>
+              </Block>
+              {/* <Text p bold marginHorizontal={sizes.s}></Text> */}
+              <Block row align="center">
+                <Image source={icons.star} marginRight={sizes.s} />
+                <Text p size={12} semibold>
+                  {dateTime}
+                </Text>
+              </Block>
             </Block>
           )}
 

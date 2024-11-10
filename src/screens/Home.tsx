@@ -6,7 +6,7 @@ import { UserContext } from "../hooks/userContext";
 import { format, addDays } from "date-fns";
 import { collection, getDocs, DocumentData } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
-import { useTheme } from "../hooks";
+import { useTheme, useTranslation } from "../hooks";
 
 interface Event {
   name: string;
@@ -21,6 +21,7 @@ interface Event {
 }
 
 const Home = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const { identity } = useContext(UserContext);
   const { gradients, sizes } = useTheme();
@@ -182,14 +183,18 @@ const Home = () => {
         {identity && ["Staff", "organizer"].includes(identity.type) && (
           <Block>
             <Button gradient={gradients.primary} marginTop={sizes.sm} onPress={() => navigation.navigate("AddEvent")}>
-              <Text white>Add event</Text>
+              <Text bold white>
+                {t("staffhome.addevent")}
+              </Text>
             </Button>
             <Button
               gradient={gradients.primary}
               marginTop={sizes.s}
               onPress={() => navigation.navigate("StaffCharts", { eventId: "test" })}
             >
-              <Text white>Statistics for Month</Text>
+              <Text bold white>
+                {t("staffhome.statistics")}
+              </Text>
             </Button>
           </Block>
         )}
