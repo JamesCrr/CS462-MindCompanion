@@ -13,12 +13,13 @@ interface Event {
   location: string;
   information: string;
   datetime: Date;
-  published: boolean;
-  id?: string;
   meetUpLocations?: string[];
   itemsToBring?: string[];
   participants?: string[];
   volunteers?: string[];
+  participantAttendance?: string[];
+  volunteerAttendance?: string[];
+  published?: boolean;
 }
 
 const CaregiverCalendarView = () => {
@@ -53,6 +54,8 @@ const CaregiverCalendarView = () => {
         itemsToBring: doc.data().itemsToBring || [],
         participants: doc.data().participants || [],
         volunteers: doc.data().volunteers || [],
+        participantAttendance: doc.data().participantAttendance || [],
+        volunteerAttendance: doc.data().volunteerAttendance || [],
         published: doc.data().published,
       };
       events.push(event);
@@ -67,6 +70,17 @@ const CaregiverCalendarView = () => {
     retrieveData();
     setCurrentDate(new Date());
   }, []);
+
+  // Add a new useEffect to listen for focus events
+  useEffect(() => {
+    // Add listener for when the screen comes into focus
+    const unsubscribe = navigation.addListener('focus', () => {
+      retrieveAllEvents(); // Re-fetch events when screen is focused
+    });
+
+    // Cleanup subscription on unmount
+    return unsubscribe;
+  }, [navigation]);
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -111,7 +125,8 @@ const CaregiverCalendarView = () => {
                 <ScrollView>
                   {events
                     .filter((event) => {
-                      return formatDate(event.datetime.toISOString()) === formatDate(day.toISOString());
+                      return formatDate(event.datetime.toISOString()) === formatDate(day.toISOString()) 
+                        && event.published === true;
                     })
                     .map((event) => (
                       <TouchableOpacity
@@ -166,12 +181,25 @@ const CaregiverCalendarView = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
   };
 
+  const renderLegend = () => {
+    return (
+      <View style={styles.legend}>
+        <View style={styles.legendItem}>
+          <View style={[styles.legendColor, { backgroundColor: 'lightgreen' }]} />
+          <Text>Available Events</Text>
+        </View>
+        <View style={styles.legendItem}>
+          <View style={[styles.legendColor, { backgroundColor: 'lightblue' }]} />
+          <Text>Joined Events</Text>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <Block scroll showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: sizes.padding }}>
       <Block row marginVertical={sizes.sm}>
         <Block card marginHorizontal={sizes.xs}>
-          {/* {identity && <Text h5={true}>Current role is {identity["type"]}</Text>} */}
-
           <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
               <View style={styles.header}>
@@ -191,6 +219,7 @@ const CaregiverCalendarView = () => {
                   </Button>
                 </View>
               </View>
+              {renderLegend()}
               {renderMonthView()}
               {/* Only show Add Event button for admin/organizer roles */}
               {identity && ["Staff", "organizer"].includes(identity.type) && (
@@ -273,6 +302,22 @@ const styles = StyleSheet.create({
   },
   buttons: {
     margin: 5,
+  },
+  legend: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 10,
+    gap: 20,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  legendColor: {
+    width: 16,
+    height: 16,
+    borderRadius: 4,
   },
 });
 
