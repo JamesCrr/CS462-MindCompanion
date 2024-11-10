@@ -130,7 +130,7 @@ const DrawerContent = (props: DrawerContentComponentProps) => {
       },
       { name: t("screens.profile"), to: "Profile", icon: assets.profile },
       { name: t("screens.settings"), to: "Settings", icon: assets.settings },
-      { name: t("screens.test"), to: "BgTask", icon: assets.settings },
+      { name: t("screens.locationTracking"), to: "BgTask", icon: assets.settings },
       // {name: t('screens.login'), to: 'Register', icon: assets.register},
       // { name: t("screens.extra"), to: "Extra", icon: assets.extras },
       // {name: 'Bookings', to: 'Booking', icon: assets.register},

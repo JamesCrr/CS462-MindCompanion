@@ -114,7 +114,7 @@ export default function StaffAttendanceLocations() {
   }
 
   return (
-    <Block safe marginTop={sizes.mdd}>
+    <Block safe marginTop={sizes.md}>
       <View>
         {event.meetUpLocations?.map((location, index) => (
           <Button

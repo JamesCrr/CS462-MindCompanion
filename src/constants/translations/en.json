@@ -77,7 +77,8 @@
     "profile": "Profile",
     "settings": "Settings",
     "register": "Create account",
-    "extra": "Extra - Automotive"
+    "extra": "Extra - Automotive",
+    "locationTracking": "Location Tracking"
   },
   "navigation": {
     "home": "Home",
@@ -100,7 +101,11 @@
     "shopping": "Shopping Cart",
     "checklist": "Items Checklist",
     "staffcharts": "Charts",
-    "caregivercalendar": "Calendar"
+    "caregivercalendar": "Calendar",
+    "backgroundTracking": "Background Tracking",
+    "locationTracking": "Location Tracking",
+    "locations": "Locations",
+    "takeAttendance": "Take Attendance"
   },
   "menu": {
     "started": "Getting Started",

@@ -111,25 +111,38 @@ const Rental = () => {
           onSelectMeetUpLocation={setSelectedMeetUpLocation}
         />
       </Block>
-      {/* rentals recomendations */}
-      <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
-        {/* <Button gradient={gradients.primary} onPress={() => handleRegister()}>
-          <Text white bold transform="uppercase">
-            {t("event.joinEvent")}
-          </Text>
-        </Button> */}
-      </Block>
-      <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
-        <Button
-          gradient={gradients.primary}
-          disabled={article.published}
-          onPress={() => handlePublish()}
-        >
-          <Text white bold transform="uppercase">
-            {t("event.publish")}
-          </Text>
-        </Button>
-      </Block>
+      
+      {!article.published && (
+        <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
+          <Button
+            gradient={gradients.primary}
+            disabled={article.published}
+            onPress={() => handlePublish()}
+          >
+            <Text white bold transform="uppercase">
+              {t("event.publish")}
+            </Text>
+          </Button>
+        </Block>
+      )}
+
+      {article.published && (
+        <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
+          <Button
+            gradient={gradients.primary}
+            onPress={() =>
+              navigation.navigate("StaffAttendanceLocations", {
+                eventId: eventId,
+              })
+            }
+          >
+            <Text white bold transform="uppercase">
+              {t("event.takeAttendance")}
+            </Text>
+          </Button>
+        </Block>
+      )}
+
       <Block
         paddingHorizontal={sizes.sm}
         row
@@ -158,20 +171,6 @@ const Rental = () => {
         >
           <Text white bold transform="uppercase" marginHorizontal={sizes.s}>
             Delete
-          </Text>
-        </Button>
-      </Block>
-      <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
-        <Button
-          gradient={gradients.primary}
-          onPress={() =>
-            navigation.navigate("StaffAttendanceLocations", {
-              eventId: eventId,
-            })
-          }
-        >
-          <Text white bold transform="uppercase">
-            {t("event.takeAttendance")}
           </Text>
         </Button>
       </Block>

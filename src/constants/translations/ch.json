@@ -73,7 +73,8 @@
     "profile": "个人资料",
     "settings": "设置",
     "register": "创建账户",
-    "extra": "额外 - 汽车"
+    "extra": "额外 - 汽车",
+    "locationTracking": "位置追踪"
   },
   "navigation": {
     "home": "家",
@@ -97,7 +98,10 @@
     "shopping": "购物车",
     "checklist": "物品清单",
     "staffcharts": "事件图表",
-    "caregivercalendar": "Calendar"
+    "caregivercalendar": "Calendar",
+    "locationTracking": "位置追踪",
+    "locations": "地点",
+    "takeAttendance": "签到"
   },
   "menu": {
     "started": "入门",
