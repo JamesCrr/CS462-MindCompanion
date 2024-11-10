@@ -143,7 +143,6 @@ const EventDetails = ({
             <Block row align="center">
               <Image source={icons.location} marginRight={sizes.s} />
               <Text p size={12} semibold>
-                {/* {location?.city}, {location?.country} */}
                 {location}
               </Text>
               <Text p bold marginHorizontal={sizes.s}>
@@ -151,7 +150,7 @@ const EventDetails = ({
               </Text>
               <Image source={icons.star} marginRight={sizes.s} />
               <Text p size={12} semibold>
-                {dateTime}
+                {typeof dateTime === 'string' ? dateTime : dayjs(new Date(dateTime)).format("MMM dd, yyyy hh:mm a")}
               </Text>
             </Block>
           )}

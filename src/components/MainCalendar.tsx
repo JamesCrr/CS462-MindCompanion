@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import {
   View,
   ScrollView,
@@ -12,15 +12,16 @@ import { UserContext } from "../hooks/userContext";
 import { format, addDays } from "date-fns";
 import { collection, getDocs, DocumentData } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
-import { useTheme } from "../hooks/";
+import { useData, useTheme } from "../hooks/";
+import { IArticle, IEvent2 } from "../constants/types";
 
 interface Event {
+  id?: string;
   name: string;
   location: string;
   information: string;
   datetime: Date;
   published: boolean;
-  id?: string;
   meetUpLocations?: string[];
   itemsToBring?: string[];
   participants?: string[];
@@ -37,6 +38,9 @@ const MainCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [todayDate] = useState(new Date());
   const [view, setView] = useState<"month" | "week" | "day">("month");
+  const data = useData();
+
+  const { handleArticle } = data;
 
   useEffect(() => {
     console.log("identity:", identity);
@@ -44,6 +48,26 @@ const MainCalendar = () => {
       //   navigation.replace("Login");
     }
   }, [identity]);
+
+  const handleRental = useCallback(
+    (event: Event) => {
+      const formattedEvent = {
+        id: event.id,
+        title: event.name,
+        location: event.location,
+        information: event.information,
+        dateTime: format(event.datetime, "MMM dd, yyyy hh:mm a"),
+        meetUpLocations: event.meetUpLocations,
+        itemsToBring: event.itemsToBring,
+        participants: event.participants,
+        volunteers: event.volunteers,
+        published: event.published
+      };
+      handleArticle(formattedEvent);
+      navigation.navigate("Rental", { eventId: event.id });
+    },
+    [handleArticle, navigation]
+  );
 
   const retrieveAllEvents = async () => {
     var events: Event[] = [];
@@ -131,14 +155,7 @@ const MainCalendar = () => {
                     .map((event) => (
                       <TouchableOpacity
                         key={event.id}
-                        onPress={() =>
-                          // navigation.navigate("Rental", {
-                          //   eventId: event.id,
-                          // })
-                          navigation.navigate("Rental", {
-                            eventId: event.id,
-                          })
-                        }
+                        onPress={() => handleRental(event)}
                       >
                         <View
                           style={[
@@ -227,11 +244,21 @@ const MainCalendar = () => {
 
               <View style={styles.legend}>
                 <View style={styles.legendItem}>
-                  <View style={[styles.legendColor, { backgroundColor: 'lightgreen' }]} />
+                  <View
+                    style={[
+                      styles.legendColor,
+                      { backgroundColor: "lightgreen" },
+                    ]}
+                  />
                   <Text>Published Events</Text>
                 </View>
                 <View style={styles.legendItem}>
-                  <View style={[styles.legendColor, { backgroundColor: 'lightblue' }]} />
+                  <View
+                    style={[
+                      styles.legendColor,
+                      { backgroundColor: "lightblue" },
+                    ]}
+                  />
                   <Text>Unpublished Events</Text>
                 </View>
               </View>
@@ -328,14 +355,14 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   legend: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginBottom: 10,
     gap: 20,
   },
   legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 5,
   },
   legendColor: {

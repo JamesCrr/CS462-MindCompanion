@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/core";
+import { format } from "date-fns";
 
 import { IArticleOptions } from "../constants/types";
 import { useData, useTheme, useTranslation } from "../hooks/";
@@ -26,31 +27,40 @@ const Rental = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { gradients, sizes } = useTheme();
-  // const [optionId, setOptionId] = useState<IArticleOptions['id']>(0);
-
-  // Retrieve rentalId from route parameters
   const { eventId } = route.params;
-  const [selectedMeetUpLocation, setSelectedMeetUpLocation] = useState<
-    string | null
-  >(null);
-  const { identity, retrieveIdentity } = useContext(UserContext);
+  const [selectedMeetUpLocation, setSelectedMeetUpLocation] = useState<string | null>(null);
+  const { identity } = useContext(UserContext);
 
-  // const retrieveIdentity = async () => {
-  //   try {
-  //     const userData = await AsyncStorage.getItem("user");
-  //     if (!userData) {
-  //       throw new Error("User not found");
-  //     }
-  //     return userData;
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // };
+  useEffect(() => {
+    if (!article) {
+      // If article is not available in state, fetch it
+      const fetchEventData = async () => {
+        try {
+          const eventDoc = await fetchEvent(eventId);
+          if (eventDoc) {
+            const formattedEvent = {
+              id: eventId,
+              title: eventDoc.name,
+              location: eventDoc.location,
+              information: eventDoc.information,
+              dateTime: format(eventDoc.datetime.toDate(), "MMM dd, yyyy hh:mm a"),
+              meetUpLocations: eventDoc.meetUpLocations || [],
+              itemsToBring: eventDoc.itemsToBring || [],
+              participants: eventDoc.participants || [],
+              volunteers: eventDoc.volunteers || [],
+              published: eventDoc.published
+            };
+            handleArticle(formattedEvent);
+          }
+        } catch (error) {
+          console.error("Error fetching event:", error);
+        }
+      };
+      fetchEventData();
+    }
+  }, [eventId]);
 
   const handleRegister = async () => {
-    // const userData = await retrieveIdentity();
-    // console.log("userData", userData);
-    // console.log("Identity:", identity);
     const uid = identity ? JSON.parse(identity).uid : "";
     console.log("email", uid);
     console.log("selectedMeetUpLocation", selectedMeetUpLocation);
@@ -62,8 +72,6 @@ const Rental = () => {
   };
 
   const handlePublish = async () => {
-    // const userData = await retrieveIdentity();
-    // console.log("userData", userData);
     if (article.published) return;
     try {
       const res = await staffPublishEvent(eventId);
@@ -75,8 +83,6 @@ const Rental = () => {
   };
 
   const handleDelete = async () => {
-    // const userData = await retrieveIdentity();
-    // console.log("userData", userData);
     try {
       const res = await staffDeleteEvent(eventId);
       console.log(res);
@@ -86,11 +92,6 @@ const Rental = () => {
       console.error("Error deleting event:", error);
     }
   };
-  // init with optionId = 0
-  useEffect(() => {
-    console.log("eventId", eventId);
-    console.log(article);
-  }, [article]);
 
   const CARD_WIDTH = sizes.width - sizes.s;
   const hasSmallScreen = sizes.width < 414; // iPhone 11
