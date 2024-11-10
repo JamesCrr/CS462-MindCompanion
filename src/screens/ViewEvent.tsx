@@ -33,6 +33,9 @@ interface Event {
   itemsToBring?: string[];
   participants?: string[];
   volunteers?: string[];
+  participantAttendance?: string[];
+  volunteerAttendance?: string[];
+  published: boolean;
 }
 
 export default function ViewEvent() {
@@ -61,6 +64,9 @@ export default function ViewEvent() {
       itemsToBring: eventDoc.itemsToBring || [],
       participants: eventDoc.participants || [],
       volunteers: eventDoc.volunteers || [],
+      participantAttendance: eventDoc.participantAttendance || [],
+      volunteerAttendance: eventDoc.volunteerAttendance || [],
+      published: eventDoc.published,
     };
   };
 
@@ -96,7 +102,6 @@ export default function ViewEvent() {
     const isCurrentlyJoined = isUserJoined();
 
     if (isCurrentlyJoined) {
-      // Withdrawal logic remains the same
       setIsWithdrawing(true);
       try {
         let updatedEvent = { ...event };
@@ -111,18 +116,18 @@ export default function ViewEvent() {
 
         await updateEvent(eventId, updatedEvent);
         setEvent(updatedEvent);
+        navigation.goBack();
       } catch (error) {
         console.error("Error withdrawing from event:", error);
       } finally {
         setIsWithdrawing(false);
       }
     } else {
-      // Modified join logic with custom alert
       if (identity.type === "Caregiver" && !selectedLocation) {
         Alert.alert(
-          "Location Required", // Title of the alert
-          "Please select a meet-up location before joining the event", // Message of the alert
-          [{ text: "OK", onPress: () => console.log("OK Pressed") }] // Button configuration
+          "Location Required",
+          "Please select a meet-up location before joining the event",
+          [{ text: "OK", onPress: () => console.log("OK Pressed") }]
         );
         return;
       }
@@ -146,9 +151,9 @@ export default function ViewEvent() {
         if (updatedEvent) {
           await updateEvent(eventId, updatedEvent);
           setEvent(updatedEvent);
-          // Reset form after successful join
           setSelectedLocation("");
           setCaregiverComing(false);
+          navigation.goBack();
         }
       } catch (error) {
         console.error("Error joining event:", error);
@@ -158,12 +163,10 @@ export default function ViewEvent() {
     }
   };
 
-  // Add these state variables after the existing ones
   const [selectedLocation, setSelectedLocation] = useState("");
-  const [caregiverComing, setCaregiverComing] = useState(false); // Default to false (not checked)
+  const [caregiverComing, setCaregiverComing] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
 
-  // Update the renderLocationModal function
   const renderLocationModal = () => {
     return (
       <Modal visible={showLocationModal} onRequestClose={() => setShowLocationModal(false)}>
@@ -224,7 +227,6 @@ export default function ViewEvent() {
           </Block>
         ) : event ? (
           <Block paddingHorizontal={sizes.padding}>
-            {/* Event Basic Details Section */}
             <Block card marginBottom={sizes.sm}>
               <Text h5 semibold marginBottom={sizes.sm}>
                 Event Details
@@ -246,7 +248,6 @@ export default function ViewEvent() {
               </Text>
             </Block>
 
-            {/* Items to Bring Section */}
             <TouchableWithoutFeedback
               onPress={() =>
                 navigation.navigate("ItemsPreCheck", {
@@ -267,7 +268,6 @@ export default function ViewEvent() {
               </Block>
             </TouchableWithoutFeedback>
 
-            {/* Meet-up Locations Section */}
             <Block card marginBottom={sizes.sm}>
               <Text h5 semibold marginBottom={sizes.sm}>
                 Meet-up Locations
@@ -279,42 +279,6 @@ export default function ViewEvent() {
               ))}
             </Block>
 
-            {/* Participants Section */}
-            <Block card marginBottom={sizes.sm}>
-              <Text h5 semibold marginBottom={sizes.sm}>
-                Participants
-              </Text>
-              {event.participants?.map((participant, index) => {
-                const [name, location, caregiver] = participant.split(",");
-                return (
-                  <Block key={index} card marginBottom={sizes.sm} padding={sizes.sm}>
-                    <Text p semibold>
-                      {name}
-                    </Text>
-                    <Text p color={colors.text}>
-                      Location: {location}
-                    </Text>
-                    <Text p color={colors.text}>
-                      Caregiver: {caregiver === "yes" ? "Yes" : "No"}
-                    </Text>
-                  </Block>
-                );
-              })}
-            </Block>
-
-            {/* Volunteers Section */}
-            <Block card marginBottom={sizes.sm}>
-              <Text h5 semibold marginBottom={sizes.sm}>
-                Volunteers
-              </Text>
-              {event.volunteers?.map((volunteer, index) => (
-                <Block key={index} card marginBottom={sizes.sm} padding={sizes.s}>
-                  <Text p>{volunteer}</Text>
-                </Block>
-              ))}
-            </Block>
-
-            {/* Join Event Form */}
             {identity?.type === "Caregiver" && !isUserJoined() && (
               <Block card marginBottom={sizes.sm}>
                 <Text h5 semibold marginBottom={sizes.sm}>
@@ -325,7 +289,6 @@ export default function ViewEvent() {
                     {selectedLocation || "Please select a location below"}
                   </Text>
 
-                  {/* Location Options */}
                   {event?.meetUpLocations?.map((location, index) => (
                     <Button
                       key={index}
@@ -355,13 +318,16 @@ export default function ViewEvent() {
 
             {renderLocationModal()}
 
-            {/* Join/Withdraw Event Button */}
             {identity && (
               <Button
                 gradient={gradients?.[isUserJoined() ? "secondary" : "primary"]}
                 marginTop={sizes.sm}
                 onPress={handleJoinEvent}
-                disabled={isJoining || isWithdrawing || selectedLocation == ""}
+                disabled={
+                  isJoining || 
+                  isWithdrawing || 
+                  (!isUserJoined() && identity.type === "Caregiver" && !selectedLocation)
+                }
               >
                 <Text white bold transform="uppercase">
                   {isJoining
