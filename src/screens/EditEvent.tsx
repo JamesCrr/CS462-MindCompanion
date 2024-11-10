@@ -124,6 +124,8 @@ export default function EditEvent() {
   const saveChanges = async () => {
     try {
       const res = await updateEvent(eventId, event);
+      fetchEvents();
+      navigation.navigate("Rentals");
       console.log(res);
     } catch (error) {
       console.log(error);
