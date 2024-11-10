@@ -33,11 +33,11 @@ const AddEvent = () => {
     location: "",
     information: "",
     datetime: new Date(),
-    meetupLocations: [],
+    meetUpLocations: [],
     itemsToBring: [],
   });
 
-  const [meetupLocations, setMeetupLocations] = useState<string[]>([]);
+  const [meetUpLocations, setMeetupLocations] = useState<string[]>([]);
   const [itemsToBring, setItemsToBring] = useState<string[]>([]);
 
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -76,7 +76,7 @@ const AddEvent = () => {
         location: "",
         information: "",
         datetime: new Date(), // Initialize with current date
-        meetupLocations: [],
+        meetUpLocations: [],
         itemsToBring: [],
       });
 
@@ -90,7 +90,7 @@ const AddEvent = () => {
     } catch (error) {
       console.error("Error adding event:", error);
     }
-  }, [eventData, meetupLocations, itemsToBring, navigation]);
+  }, [eventData, meetUpLocations, itemsToBring, navigation]);
 
   const handleDateChange = (event: any, selectedDate: Date | undefined) => {
     const currentDate = selectedDate || eventData.datetime;
@@ -127,9 +127,9 @@ const AddEvent = () => {
   };
 
   const addMeetupLocation = () => {
-    if (eventData.meetupLocations) {
-      setMeetupLocations([...meetupLocations, tempMeetupLocation]);
-      handleChange({ meetupLocations: [...meetupLocations, tempMeetupLocation] });
+    if (eventData.meetUpLocations) {
+      setMeetupLocations([...meetUpLocations, tempMeetupLocation]);
+      handleChange({ meetUpLocations: [...meetUpLocations, tempMeetupLocation] });
     }
   };
 
@@ -142,7 +142,7 @@ const AddEvent = () => {
   };
 
   const removeMeetupLocation = (index: number) => {
-    const newMeetupLocations = [...meetupLocations];
+    const newMeetupLocations = [...meetUpLocations];
     newMeetupLocations.splice(index, 1);
     setMeetupLocations(newMeetupLocations);
   };
@@ -198,7 +198,7 @@ const AddEvent = () => {
       name: eventData.name.length > 0,
       location: eventData.location.length > 0,
       information: eventData.information.length > 0,
-      meetupLocations: eventData.meetupLocations.length > 0,
+      meetUpLocations: eventData.meetUpLocations.length > 0,
       itemsToBring: eventData.itemsToBring.length > 0,
       datetime: eventData.datetime,
     }));
@@ -305,10 +305,10 @@ const AddEvent = () => {
                       autoCapitalize="none"
                       marginBottom={sizes.m}
                       placeholder={t("common.meetupLocationPlaceholder")}
-                      success={Boolean(eventData.meetupLocations && isValid.meetupLocation)}
-                      // danger={Boolean(eventData.meetupLocations && !isValid.meetupLocation)}
+                      success={Boolean(eventData.meetUpLocations && isValid.meetupLocation)}
+                      // danger={Boolean(eventData.meetUpLocations && !isValid.meetupLocation)}
                       onChangeText={(value) => setTempMeetupLocation(value)}
-                      // value={eventData.meetupLocations}
+                      // value={eventData.meetUpLocations}
                       value={tempMeetupLocation}
                     />
                   </Block>
@@ -319,7 +319,7 @@ const AddEvent = () => {
                   </Button>
                 </Block>
                 <Block row wrap="wrap">
-                  {meetupLocations.map((location, index) => (
+                  {meetUpLocations.map((location, index) => (
                     <Block key={index} marginRight={sizes.s} marginBottom={sizes.s}>
                       <Badge onPress={() => removeMeetupLocation(index)}>
                         <Text>{location}</Text>

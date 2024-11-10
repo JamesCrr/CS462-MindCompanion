@@ -114,27 +114,26 @@ export default function StaffAttendanceLocations() {
   }
 
   return (
-    <Block safe>
+    <Block safe marginTop={sizes.mdd}>
       <View>
         {event.meetUpLocations?.map((location, index) => (
-          <Block paddingVertical={sizes.padding} marginHorizontal={sizes.sm}>
-            <Button
-              key={index}
-              flex={1}
-              gradient={gradients.info}
-              marginBottom={sizes.base}
-              onPress={() =>
-                navigation.navigate("StaffAttendanceLocation", {
-                  eventId: eventId,
-                  location: location,
-                })
-              }
-            >
-              <Text bold transform="uppercase">
-                {location}
-              </Text>
-            </Button>
-          </Block>
+          <Button
+            key={index}
+            flex={1}
+            gradient={gradients.info}
+            marginBottom={sizes.sm}
+            onPress={() =>
+              navigation.navigate("StaffAttendanceLocation", {
+                eventId: eventId,
+                location: location,
+              })
+            }
+            marginHorizontal={sizes.sm}
+          >
+            <Text bold transform="uppercase">
+              {location}
+            </Text>
+          </Button>
         ))}
       </View>
     </Block>

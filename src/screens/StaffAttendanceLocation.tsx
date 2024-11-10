@@ -363,7 +363,7 @@ export default function StaffAttendanceLocation() {
   return (
     <Block safe>
       <ScrollView>
-        <View>
+        {/* <View>
           {event.meetUpLocations?.map((location, index) => (
             <Block paddingVertical={sizes.padding} marginHorizontal={sizes.sm}>
               <Button
@@ -379,10 +379,9 @@ export default function StaffAttendanceLocation() {
               </Button>
             </Block>
           ))}
-        </View>
-
+        </View> */}
         {/* Add attendance displays */}
-        <Block paddingHorizontal={sizes.sm}>
+        <Block marginTop={sizes.sm} paddingHorizontal={sizes.sm}>
           <Block card marginBottom={sizes.sm}>
             <Text h5 marginBottom={sizes.s}>
               Participants Attended ({participantData.size || 0})

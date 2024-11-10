@@ -50,9 +50,7 @@ const Rental = () => {
   const handlePublish = async () => {
     // const userData = await retrieveIdentity();
     // console.log("userData", userData);
-
     if (article.published) return;
-
     try {
       const res = await staffPublishEvent(eventId);
       console.log(res);

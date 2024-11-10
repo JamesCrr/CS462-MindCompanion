@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+} from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { Block, Button, Text } from ".";
 import { UserContext } from "../hooks/userContext";
@@ -81,14 +87,20 @@ const MainCalendar = () => {
     const getMonthDays = () => {
       const days: (Date | null)[] = [];
       const daysInMonth = getDaysInMonth(currentDate);
-      const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
+      const firstDayOfMonth = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        1
+      ).getDay();
 
       for (let i = 0; i < firstDayOfMonth; i++) {
         days.push(null);
       }
 
       for (let i = 1; i <= daysInMonth; i++) {
-        days.push(new Date(currentDate.getFullYear(), currentDate.getMonth(), i));
+        days.push(
+          new Date(currentDate.getFullYear(), currentDate.getMonth(), i)
+        );
       }
 
       return days;
@@ -111,7 +123,10 @@ const MainCalendar = () => {
                 <ScrollView>
                   {events
                     .filter((event) => {
-                      return formatDate(event.datetime.toISOString()) === formatDate(day.toISOString());
+                      return (
+                        formatDate(event.datetime.toISOString()) ===
+                        formatDate(day.toISOString())
+                      );
                     })
                     .map((event) => (
                       <TouchableOpacity
@@ -129,14 +144,20 @@ const MainCalendar = () => {
                           style={[
                             styles.event,
                             {
-                              backgroundColor: event.published ? "lightgreen" : "lightblue",
+                              backgroundColor: event.published
+                                ? "lightgreen"
+                                : "lightblue",
                             },
                           ]}
                         >
                           <Text style={styles.eventTitle}>{event.name}</Text>
                           <Text style={styles.eventTime}>
-                            {String(event.datetime.getHours()).padStart(2, "0")}:
-                            {String(event.datetime.getMinutes()).padStart(2, "0")}
+                            {String(event.datetime.getHours()).padStart(2, "0")}
+                            :
+                            {String(event.datetime.getMinutes()).padStart(
+                              2,
+                              "0"
+                            )}
                           </Text>
                         </View>
                       </TouchableOpacity>
@@ -151,15 +172,23 @@ const MainCalendar = () => {
   };
 
   const nextPeriod = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+    );
   };
 
   const prevPeriod = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+    );
   };
 
   return (
-    <Block scroll showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: sizes.padding }}>
+    <Block
+      scroll
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingVertical: sizes.padding }}
+    >
       <Block row marginVertical={sizes.sm}>
         <Block card marginHorizontal={sizes.xs}>
           {/* {identity && <Text h5={true}>Current role is {identity["type"]}</Text>} */}
@@ -170,24 +199,56 @@ const MainCalendar = () => {
                 <Text h5>Calendar</Text>
                 <View style={styles.navigationButtons}>
                   <Button gradient={gradients.primary} onPress={prevPeriod}>
-                    <Text white bold transform="uppercase" marginHorizontal={sizes.sm}>
+                    <Text
+                      white
+                      bold
+                      transform="uppercase"
+                      marginHorizontal={sizes.sm}
+                    >
                       &lt;
                     </Text>
                   </Button>
 
-                  <Text paddingHorizontal={sizes.xs}>{format(currentDate, "MMMM yyyy")}</Text>
+                  <Text paddingHorizontal={sizes.xs}>
+                    {format(currentDate, "MMMM yyyy")}
+                  </Text>
                   <Button gradient={gradients.primary} onPress={nextPeriod}>
-                    <Text white bold transform="uppercase" marginHorizontal={sizes.sm}>
+                    <Text
+                      white
+                      bold
+                      transform="uppercase"
+                      marginHorizontal={sizes.sm}
+                    >
                       &gt;
                     </Text>
                   </Button>
                 </View>
               </View>
+
+              <View style={styles.legend}>
+                <View style={styles.legendItem}>
+                  <View style={[styles.legendColor, { backgroundColor: 'lightgreen' }]} />
+                  <Text>Published Events</Text>
+                </View>
+                <View style={styles.legendItem}>
+                  <View style={[styles.legendColor, { backgroundColor: 'lightblue' }]} />
+                  <Text>Unpublished Events</Text>
+                </View>
+              </View>
+
               {renderMonthView()}
               {/* Only show Add Event button for admin/organizer roles */}
               {identity && ["Staff", "organizer"].includes(identity.type) && (
-                <Button flex={1} gradient={gradients.primary} marginVertical={sizes.base}>
-                  <Text white bold transform="uppercase" onPress={() => navigation.navigate("AddEvent")}>
+                <Button
+                  flex={1}
+                  gradient={gradients.primary}
+                  marginVertical={sizes.base}
+                  onPress={() => {
+                    console.log("HELLO");
+                    navigation.navigate("AddEvent");
+                  }}
+                >
+                  <Text white bold transform="uppercase">
                     Add Event
                   </Text>
                 </Button>
@@ -265,6 +326,22 @@ const styles = StyleSheet.create({
   },
   buttons: {
     margin: 5,
+  },
+  legend: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 10,
+    gap: 20,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  legendColor: {
+    width: 16,
+    height: 16,
+    borderRadius: 4,
   },
 });
 
