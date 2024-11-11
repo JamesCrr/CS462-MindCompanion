@@ -11,7 +11,7 @@ import { fetchEvent } from "../../api/event";
 import { getAllUsers } from "../../api/users";
 
 // Initialize the geocoder with your Google Maps API key
-Geocoder.init("AIzaSyBuTcv191asWrM2tL5X4VL5pPh-ApCRPQY");
+Geocoder.init("AIzaSyANdSwW4wICVd0GxxLcFozyFyR63DFaq9k");
 
 interface Event {
   name: string;
@@ -89,7 +89,7 @@ const TrackLocation = () => {
         throw new Error("");
       }
       setEvent(mapFirestoreToEvent(fetchedEvent));
-      console.log(fetchedEvent);
+      // console.log(fetchedEvent);
     } catch (error) {
       if (error instanceof Error) {
         console.error(error.message);
@@ -133,7 +133,7 @@ const TrackLocation = () => {
       return;
     }
 
-    console.log(foundUsers);
+    // console.log(foundUsers);
     setUsers(foundUsers);
     setLoading(false);
   };
@@ -186,6 +186,7 @@ const TrackLocation = () => {
                   return (
                     <Marker
                       key={index}
+                      title={item["name"]}
                       coordinate={{
                         latitude: item["coords"]["lat"],
                         longitude: item["coords"]["long"],
