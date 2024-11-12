@@ -460,7 +460,9 @@ export default function StaffAttendanceLocation() {
             ))}
           </Block>
         </Block>
-        <Text onPress={() => setLoadingData(true)}>FS</Text>
+        <TouchableOpacity onPress={() => setLoadingData(true)} style={{ opacity: 0 }}>
+          <Text>FS</Text>
+        </TouchableOpacity>
       </ScrollView>
     </Block>
   );

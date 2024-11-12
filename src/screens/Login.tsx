@@ -54,6 +54,7 @@ const Login = () => {
       console.log("Query results:", querySnapshot.size);
       if (querySnapshot.empty) {
         setError("User not found with selected role");
+        setLoading(false);
         return;
       }
 
@@ -66,6 +67,7 @@ const Login = () => {
           stored: userData.password,
         });
         setError("Invalid password");
+        setLoading(false);
         return;
       }
 
@@ -185,7 +187,7 @@ const Login = () => {
                 marginVertical={sizes.s}
                 marginHorizontal={sizes.sm}
                 gradient={gradients.primary}
-                disabled={!selectedType || !loginData.name || !loginData.password || loading}
+                disabled={!selectedType || !loginData.name || !loginData.password}
               >
                 <Text bold white transform="uppercase">
                   {t("common.signin")}
