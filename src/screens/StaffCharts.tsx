@@ -5,6 +5,8 @@ import { useNavigation, useRoute } from "@react-navigation/core";
 import { useData, useTheme, useTranslation } from "../hooks";
 import { Block, Button, Image, Product, Text, Article, EventDetails } from "../components";
 import { UserContext } from "../hooks/userContext";
+import { fetchAllEvents } from "../../api/event";
+import { getAllUsers } from "../../api/users";
 import * as XLSX from "xlsx";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
@@ -37,6 +39,20 @@ const emptyMonthsArray = [
   { value: 0, label: "Nov" },
   { value: 0, label: "Dec" },
 ];
+let emptyMonthsMap = {
+  Jan: 0,
+  Feb: 0,
+  Mar: 0,
+  April: 0,
+  May: 0,
+  June: 0,
+  July: 0,
+  Aug: 0,
+  Sept: 0,
+  Oct: 0,
+  Nov: 0,
+  Dec: 0,
+};
 
 const StaffCharts = () => {
   const { t } = useTranslation();
@@ -54,7 +70,7 @@ const StaffCharts = () => {
   const [userCountPerMonth, setUserCountPerMonth] = useState<any[]>([...emptyMonthsArray]);
   const [activityCountPerMonth, setActivityCountPerMonth] = useState<any[]>([...emptyMonthsArray]);
   const [averageDurationPerMonth, setAverageDurationPerMonth] = useState<any[]>([...emptyMonthsArray]);
-  const [loadingCharts, setLoadingCharts] = useState(true);
+  const [loadingCharts, setLoadingCharts] = useState(false);
   const [generatingSheet, setGeneratingSheets] = useState(false);
 
   // Constants
@@ -72,6 +88,95 @@ const StaffCharts = () => {
    * - Average attendence (hours) per month
    */
   const populateChartData = async () => {
+    if (loadingCharts) return;
+    setLoadingCharts(true);
+
+    // Fetch all events & users
+    const eventsFireStore = await fetchAllEvents();
+    const usersFireStore = await getAllUsers();
+    let usersMap: { [key: string]: any } = {};
+    for (let u of usersFireStore) {
+      usersMap[u["name"]] = u;
+    }
+    let monthsMap: { [key: string]: any } = {
+      Jan: [],
+      Feb: [],
+      Mar: [],
+      April: [],
+      May: [],
+      June: [],
+      July: [],
+      Aug: [],
+      Sept: [],
+      Oct: [],
+      Nov: [],
+      Dec: [],
+    };
+
+    // userCountThisMonth Chart
+    const usersSet = new Set();
+    let volunteerCount = 0,
+      clientCount = 0;
+    for (let event of eventsFireStore) {
+      for (let pStr of event["participants"]) {
+        let pArr = pStr.split(",");
+        const pName = pArr[0];
+        usersSet.add(pName);
+
+        if (!(pName in usersMap)) continue;
+        if (usersMap[pName]["type"].toLowerCase() == "caregiver") {
+          clientCount++;
+        } else if (usersMap[pName]["type"].toLowerCase() == "volunteer") {
+          volunteerCount++;
+        }
+      }
+      // Get event date
+      const eventDate = event["datetime"].toDate();
+      monthsMap[mapMonthToString(eventDate)].push(event);
+    }
+    setUserCountThisMonth([
+      { value: volunteerCount, name: "volunteer", color: "#A24CCC" },
+      { value: clientCount, name: "client", color: "#EA1C93" },
+    ]);
+
+    // userCountPerMonth Chart
+    let attendencePerMonth: { [key: string]: any } = { ...emptyMonthsMap };
+    for (let monthKey in monthsMap) {
+      for (let eventInMonth of monthsMap[monthKey]) {
+        attendencePerMonth[monthKey] += eventInMonth["participants"].length;
+      }
+    }
+    setUserCountPerMonth(convertMapToStateArray(attendencePerMonth));
+
+    // setActivityCountPerMonth Chart
+    let activityCountPerMonth: { [key: string]: any } = { ...emptyMonthsMap };
+    for (let monthKey in monthsMap) {
+      activityCountPerMonth[monthKey] += monthsMap[monthKey].length;
+    }
+    setActivityCountPerMonth(convertMapToStateArray(activityCountPerMonth));
+
+    // setAverageDurationPerMonth Chart
+    let averageDurationPerMonth: { [key: string]: any } = { ...emptyMonthsMap };
+    for (let monthKey in monthsMap) {
+      averageDurationPerMonth[monthKey] += monthsMap[monthKey].length;
+    }
+    setAverageDurationPerMonth(convertMapToStateArray(averageDurationPerMonth));
+
+    // Done with all charts
+    setLoadingCharts(false);
+  };
+
+  /**
+   * Populate chart with fake data
+   *
+   * Stats derived:
+   * - Number of clients / caregivers
+   * - Activites in month
+   * - Duration of activities
+   * - Average attendence (hours) per month
+   */
+  const populateFakeChartData = async () => {
+    if (loadingCharts) return;
     setLoadingCharts(true);
 
     // userCountThisMonth Chart
@@ -84,68 +189,13 @@ const StaffCharts = () => {
     ]);
 
     // userCountPerMonth Chart
-    setUserCountPerMonth([
-      {
-        value: Math.floor(Math.random() * 100),
-        label: "Jan",
-        dataPointText: Math.floor(Math.random() * 100).toString(),
-      },
-      { value: Math.floor(Math.random() * 100), label: "Feb" },
-      { value: Math.floor(Math.random() * 100), label: "Mar" },
-      { value: Math.floor(Math.random() * 100), label: "April" },
-      { value: Math.floor(Math.random() * 100), label: "May" },
-      { value: Math.floor(Math.random() * 100), label: "June" },
-      { value: Math.floor(Math.random() * 100), label: "July" },
-      { value: Math.floor(Math.random() * 100), label: "Aug" },
-      { value: Math.floor(Math.random() * 100), label: "Sept" },
-      { value: Math.floor(Math.random() * 100), label: "Oct" },
-      { value: Math.floor(Math.random() * 100), label: "Nov" },
-      {
-        value: Math.floor(Math.random() * 100),
-        label: "Dec",
-        dataPointText: Math.floor(Math.random() * 100).toString(),
-      },
-    ]);
+    setUserCountPerMonth(generateRandomMonthStateArray());
 
     // setActivityCountPerMonth Chart
-    setActivityCountPerMonth([
-      { value: 0, label: "Jan", dataPointText: "0" },
-      { value: 20, label: "Feb" },
-      { value: 18, label: "Mar" },
-      { value: 40, label: "April" },
-      { value: 36, label: "May" },
-      { value: 60, label: "June" },
-      { value: 54, label: "July" },
-      { value: 54, label: "Aug" },
-      { value: 54, label: "Sept" },
-      { value: 23, label: "Oct" },
-      { value: 67, label: "Nov" },
-      { value: 85, label: "Dec", dataPointText: "85" },
-    ]);
+    setActivityCountPerMonth(generateRandomMonthStateArray());
 
     // setAverageDurationPerMonth Chart
-    setAverageDurationPerMonth([
-      {
-        value: Math.floor(Math.random() * 100),
-        label: "Jan",
-        dataPointText: Math.floor(Math.random() * 100).toString(),
-      },
-      { value: Math.floor(Math.random() * 100), label: "Feb" },
-      { value: Math.floor(Math.random() * 100), label: "Mar" },
-      { value: Math.floor(Math.random() * 100), label: "April" },
-      { value: Math.floor(Math.random() * 100), label: "May" },
-      { value: Math.floor(Math.random() * 100), label: "June" },
-      { value: Math.floor(Math.random() * 100), label: "July" },
-      { value: Math.floor(Math.random() * 100), label: "Aug" },
-      { value: Math.floor(Math.random() * 100), label: "Sept" },
-      { value: Math.floor(Math.random() * 100), label: "Oct" },
-      { value: Math.floor(Math.random() * 100), label: "Nov" },
-      {
-        value: Math.floor(Math.random() * 100),
-        label: "Dec",
-        dataPointText: Math.floor(Math.random() * 100).toString(),
-      },
-    ]);
+    setAverageDurationPerMonth(generateRandomMonthStateArray());
 
     setLoadingCharts(false);
   };
@@ -237,6 +287,161 @@ const StaffCharts = () => {
     );
   };
 
+  /**
+   * Maps month of Date to common string format
+   * @param date Date object
+   * @returns String month of the date
+   */
+  const mapMonthToString = (date: any) => {
+    let monthIndex = date.getMonth() + 1;
+    switch (monthIndex) {
+      case 1:
+        return "Jan";
+      case 2:
+        return "Feb";
+      case 3:
+        return "Mar";
+      case 4:
+        return "April";
+      case 5:
+        return "May";
+      case 6:
+        return "June";
+      case 7:
+        return "July";
+      case 8:
+        return "Aug";
+      case 9:
+        return "Sept";
+      case 10:
+        return "Oct";
+      case 11:
+        return "Nov";
+      case 12:
+        return "Dec";
+      default:
+        return "Jan";
+    }
+  };
+
+  /**
+   * Maps obj to array to create the chart state
+   * @param obj
+   * @returns
+   */
+  const convertMapToStateArray = (obj: any) => {
+    const res: any = [];
+    for (let key in obj) {
+      res.push({ label: key, value: obj[key], dataPointText: obj[key].toString() });
+    }
+    return res;
+  };
+
+  /**
+   *
+   * @returns Month array with random numerical values
+   */
+  const generateRandomMonthStateArray = () => {
+    return [
+      (() => {
+        const randomValue = Math.floor(Math.random() * 100);
+        return {
+          value: randomValue,
+          label: "Jan",
+          dataPointText: randomValue.toString(),
+        };
+      })(),
+      (() => {
+        const randomValue = Math.floor(Math.random() * 100);
+        return {
+          value: randomValue,
+          label: "Feb",
+          dataPointText: randomValue.toString(),
+        };
+      })(),
+      (() => {
+        const randomValue = Math.floor(Math.random() * 100);
+        return {
+          value: randomValue,
+          label: "Mar",
+          dataPointText: randomValue.toString(),
+        };
+      })(),
+      (() => {
+        const randomValue = Math.floor(Math.random() * 100);
+        return {
+          value: randomValue,
+          label: "April",
+          dataPointText: randomValue.toString(),
+        };
+      })(),
+      (() => {
+        const randomValue = Math.floor(Math.random() * 100);
+        return {
+          value: randomValue,
+          label: "May",
+          dataPointText: randomValue.toString(),
+        };
+      })(),
+      (() => {
+        const randomValue = Math.floor(Math.random() * 100);
+        return {
+          value: randomValue,
+          label: "June",
+          dataPointText: randomValue.toString(),
+        };
+      })(),
+      (() => {
+        const randomValue = Math.floor(Math.random() * 100);
+        return {
+          value: randomValue,
+          label: "July",
+          dataPointText: randomValue.toString(),
+        };
+      })(),
+      (() => {
+        const randomValue = Math.floor(Math.random() * 100);
+        return {
+          value: randomValue,
+          label: "Aug",
+          dataPointText: randomValue.toString(),
+        };
+      })(),
+      (() => {
+        const randomValue = Math.floor(Math.random() * 100);
+        return {
+          value: randomValue,
+          label: "Sept",
+          dataPointText: randomValue.toString(),
+        };
+      })(),
+      (() => {
+        const randomValue = Math.floor(Math.random() * 100);
+        return {
+          value: randomValue,
+          label: "Oct",
+          dataPointText: randomValue.toString(),
+        };
+      })(),
+      (() => {
+        const randomValue = Math.floor(Math.random() * 100);
+        return {
+          value: randomValue,
+          label: "Nov",
+          dataPointText: randomValue.toString(),
+        };
+      })(),
+      (() => {
+        const randomValue = Math.floor(Math.random() * 100);
+        return {
+          value: randomValue,
+          label: "Dec",
+          dataPointText: randomValue.toString(),
+        };
+      })(),
+    ];
+  };
+
   useEffect(() => {
     // console.log("eventId", eventId);
     setTimeout(() => populateChartData(), 200);
@@ -259,6 +464,14 @@ const StaffCharts = () => {
         </Block>
       ) : (
         <Block>
+          <Block flex={1} row justify="flex-end" marginBottom={sizes.md}>
+            <Button gradient={gradients.warning} onPress={() => populateFakeChartData()} paddingHorizontal={sizes.s}>
+              <Text center white bold>
+                Fake Data
+              </Text>
+            </Button>
+          </Block>
+
           <Block justify="center" align="center">
             <Text h5>{t("charts.staff.numberofclientspermonth")}</Text>
             {renderLineChart(userCountPerMonth)}
@@ -291,23 +504,25 @@ const StaffCharts = () => {
               style={{
                 flexDirection: "row",
                 justifyContent: "center",
+                alignItems: "center",
                 marginBottom: 10,
               }}
             >
-              <View>
-                {userCountThisMonth.map((item, i) => {
-                  return (
-                    <View key={item["name"]} style={{ flexDirection: "row", alignItems: "center", width: 120 }}>
-                      {renderDot(item["color"])}
+              {userCountThisMonth.map((item, i) => {
+                return (
+                  <View
+                    key={item["name"]}
+                    style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: 120 }}
+                  >
+                    {renderDot(item["color"])}
 
-                      <Text style={{ color: "white" }}>
-                        {/* {item["name"]}: {item["value"]} */}
-                        {item["name"]}
-                      </Text>
-                    </View>
-                  );
-                })}
-              </View>
+                    <Text style={{ color: "white" }}>
+                      {/* {item["name"]}: {item["value"]} */}
+                      {item["name"]}
+                    </Text>
+                  </View>
+                );
+              })}
             </View>
           </Block>
 

@@ -156,7 +156,7 @@ const Home = () => {
       <Block center>
         {identity && (
           <Text h5={true} center>
-            Welcome back{" "}
+            {t("home.welcome") + " "}
             <Text h5={true} center primary>
               {identity["name"]}
             </Text>

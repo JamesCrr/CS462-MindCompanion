@@ -13,7 +13,7 @@ import {
   arrayRemove,
 } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
-  import { IEvent2 } from "../src/constants/types";
+import { IEvent2 } from "../src/constants/types";
 
 export async function fetchEvent(eventId = "") {
   try {
@@ -52,7 +52,7 @@ export const fetchAllEvents = async () => {
     const eventsCollection = collection(db, "events");
     const querySnapshot = await getDocs(eventsCollection);
     const events = querySnapshot.docs.map((doc) => ({
-      dateTime: doc.data().dateTime,
+      datetime: doc.data().datetime,
       eventId: doc.id,
       information: doc.data().information,
       itemsToBring: doc.data().itemsToBring,
@@ -71,12 +71,13 @@ export const fetchAllEvents = async () => {
 
 
 
-  export const fetchEvents = async () => {
-    try {
-      const eventsCollection = collection(db, "events");
-      const eventsSnapshot = await getDocs(eventsCollection);
-  
-      const eventList = eventsSnapshot.docs.map((doc) => {
+export const fetchEvents = async () => {
+  try {
+    const eventsCollection = collection(db, "events");
+    const eventsSnapshot = await getDocs(eventsCollection);
+
+    const eventList = eventsSnapshot.docs
+      .map((doc) => {
         try {
           const data = doc.data();
           // Check if datetime exists and is valid
@@ -94,7 +95,7 @@ export const fetchAllEvents = async () => {
               })
               .replace(",", " -"); // Format the date and time
           }
-  
+
           const event: IEvent2 = {
             id: doc.id,
             title: data.name ?? "Untitled Event",
@@ -116,13 +117,14 @@ export const fetchAllEvents = async () => {
           console.error(`Error processing event with ID ${doc.id}:`, eventError);
           return null; // Return null if there is an error
         }
-      }).filter(event => event !== null); // Filter out null values
-  
-      setEvents(eventList);
-    } catch (error) {
-      console.error("Error fetching events: ", error);
-    }
+      })
+      .filter((event) => event !== null); // Filter out null values
+
+    setEvents(eventList);
+  } catch (error) {
+    console.error("Error fetching events: ", error);
   }
+};
 
 export const updateEvent = async (eventId = "", eventpayload) => {
   try {
@@ -161,10 +163,7 @@ export const InsertEvent = async (eventpayload) => {
 export const fetchAllEventsOfUser = async (userId) => {
   try {
     const eventsCollection = collection(db, "events");
-    const q = query(
-      eventsCollection,
-      where("participants", "array-contains", userId)
-    );
+    const q = query(eventsCollection, where("participants", "array-contains", userId));
     const querySnapshot = await getDocs(q);
     const events = querySnapshot.docs.map((doc) => ({
       dateTime: doc.data().dateTime,
@@ -183,12 +182,7 @@ export const fetchAllEventsOfUser = async (userId) => {
   }
 };
 
-export const userJoinEvent = async (
-  eventId,
-  userName,
-  meetingLocation,
-  comingWithCaregiver
-) => {
+export const userJoinEvent = async (eventId, userName, meetingLocation, comingWithCaregiver) => {
   try {
     const eventDoc = doc(db, "events", eventId);
     console.log("EventDOc", eventDoc);
@@ -198,9 +192,7 @@ export const userJoinEvent = async (
      * arrayRemove() removes all instances of each given element.
      */
     await updateDoc(eventDoc, {
-      participants: arrayUnion(
-        `${userName},${meetingLocation},${comingWithCaregiver}`
-      ),
+      participants: arrayUnion(`${userName},${meetingLocation},${comingWithCaregiver}`),
     });
 
     return true;

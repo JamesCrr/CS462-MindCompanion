@@ -128,10 +128,10 @@ const Login = () => {
               {/* Type Selection Buttons */}
               <Block paddingHorizontal={sizes.sm} marginBottom={sizes.sm}>
                 <Text p semibold marginBottom={sizes.sm}>
-                  Select your role:
+                  {t("login.roleselection")}
                 </Text>
                 <Block row flex={0} justify="space-between" marginBottom={sizes.sm}>
-                  {["Staff", "Caregiver", "Volunteer"].map((type) => (
+                  {["Staff", "Participant", "Volunteer"].map((type) => (
                     <Button
                       key={type}
                       flex={0}
@@ -142,11 +142,11 @@ const Login = () => {
                     >
                       <Text
                         bold
-                        size={13}
+                        size={11}
                         transform="uppercase"
                         color={selectedType === type ? colors.white : colors.primary}
                       >
-                        {type}
+                        {t(`login.${type.toLowerCase()}`)}
                       </Text>
                     </Button>
                   ))}
@@ -156,18 +156,18 @@ const Login = () => {
               {/* Login Form */}
               <Block paddingHorizontal={sizes.sm}>
                 <Input
-                  label="Name"
+                  label={t("login.namefield")}
                   autoCapitalize="none"
                   marginBottom={sizes.m}
-                  placeholder="Enter your name"
+                  placeholder={t("login.namefieldplaceholder")}
                   onChangeText={(value) => handleChange({ name: value })}
                 />
                 <Input
                   secureTextEntry
-                  label="Password"
+                  label={t("login.passwordfield")}
                   autoCapitalize="none"
                   marginBottom={sizes.m}
-                  placeholder="Enter your password"
+                  placeholder={t("login.passwordfieldplaceholder")}
                   onChangeText={(value) => handleChange({ password: value })}
                 />
               </Block>
