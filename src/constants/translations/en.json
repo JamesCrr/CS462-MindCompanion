@@ -117,7 +117,8 @@
   "home": {
     "title": "Soft UI",
     "following": "Following",
-    "trending": "Trending"
+    "trending": "Trending",
+    "welcome": "Welcome back"
   },
   "staffhome": {
     "addevent": "Add Event",
@@ -142,7 +143,15 @@
   },
   "login": {
     "title": "Welcome",
-    "subtitle": "Sign In with"
+    "subtitle": "Sign In with",
+    "roleselection": "Select role",
+    "staff": "Staff",
+    "participant": "Participant",
+    "volunteer": "Volunteer",
+    "namefield": "Name",
+    "namefieldplaceholder": "Enter your name",
+    "passwordfield": "Password",
+    "passwordfieldplaceholder": "Enter your password"
   },
   "addEvent": {
     "title": "Add Event",
@@ -220,8 +229,8 @@
   },
   "charts": {
     "staff": {
-      "numberofclientsthismonth": "Number of clients this Month",
-      "numberofclientspermonth": "Number of clients Per Month",
+      "numberofclientsthismonth": "Attendance this Month",
+      "numberofclientspermonth": "Attendance Per Month",
       "activitiesperMonth": "Activities Per Month",
       "averagedurationpermonth": "Average Duration Per Month",
       "generatesheets": "Generate Sheets",

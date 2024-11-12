@@ -113,7 +113,8 @@
   "home": {
     "title": "软用户界面",
     "following": "关注",
-    "trending": "趋势"
+    "trending": "趋势",
+    "welcome": "欢迎回来"
   },
   "staffhome": {
     "addevent": "添加事件",
@@ -138,7 +139,15 @@
   },
   "login": {
     "title": "欢迎",
-    "subtitle": "登录"
+    "subtitle": "登录",
+    "roleselection": "选择您的角色",
+    "staff": "职员",
+    "participant": "参加者",
+    "volunteer": "志愿者",
+    "namefield": "姓名",
+    "namefieldplaceholder": "输入你的名字",
+    "passwordfield": "密码",
+    "passwordfieldplaceholder": "输入您的密码"
   },
   "addEvent": {
     "title": "添加活动",

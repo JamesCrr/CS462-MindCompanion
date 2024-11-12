@@ -8,24 +8,18 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splashnew.png",
+      "image": "./assets/splashnewnew.png",
       "resizeMode": "cover",
       "backgroundColor": "#CB0C9F"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": [
-          "location",
-          "fetch",
-          "bluetooth-central"
-        ]
+        "UIBackgroundModes": ["location", "fetch", "bluetooth-central"]
       }
     },
     "android": {
@@ -55,10 +49,7 @@
         }
       }
     },
-    "platforms": [
-      "ios",
-      "android"
-    ],
+    "platforms": ["ios", "android"],
     "web": {
       "favicon": "./assets/favicon.png"
     },
