@@ -57,11 +57,10 @@ const EventDetails = ({
     navigation.navigate("Participants", { eventId: id, participants }); 
   }
 
-
-
   // render card for Newest & Fashion
   if (category?.id !== 1) {
     console.log("EventId:", id);
+    console.log("Participants:", participants);
     return (
       <TouchableWithoutFeedback onPress={onPress}>
         <Block card padding={sizes.sm} marginTop={sizes.sm}>

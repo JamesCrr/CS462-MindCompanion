@@ -58,6 +58,8 @@ const CaregiverCalendarView = () => {
         volunteerAttendance: doc.data().volunteerAttendance || [],
         published: doc.data().published,
       };
+
+      console.log("Each Event:", event);
       events.push(event);
     });
     setEvents(events);
@@ -197,7 +199,7 @@ const CaregiverCalendarView = () => {
   };
 
   return (
-    <Block scroll showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: sizes.padding }}>
+    <Block scroll showsVerticalScrollIndicator={false}>
       <Block row marginVertical={sizes.sm}>
         <Block card marginHorizontal={sizes.xs}>
           <SafeAreaView style={styles.safeArea}>
@@ -221,7 +223,7 @@ const CaregiverCalendarView = () => {
               {renderLegend()}
               {renderMonthView()}
               {/* Only show Add Event button for admin/organizer roles */}
-              {identity && ["Staff", "organizer"].includes(identity.type) && (
+              {/* {identity && ["Staff", "organizer"].includes(identity.type) && (
                 <Button
                   flex={1}
                   gradient={gradients.primary}
@@ -232,7 +234,7 @@ const CaregiverCalendarView = () => {
                     {t("caregivercalendar.addevent")}
                   </Text>
                 </Button>
-              )}
+              )} */}
             </View>
           </SafeAreaView>
         </Block>

@@ -166,7 +166,7 @@ const Rental = () => {
           </Text>
         </Button>
       </Block>
-      <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
+      {/* <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
         <Button
           gradient={gradients.primary}
           onPress={() =>
@@ -179,7 +179,7 @@ const Rental = () => {
             {t("event.takeAttendance")}
           </Text>
         </Button>
-      </Block>
+      </Block> */}
     </Block>
   );
 };

@@ -6,6 +6,7 @@ import { useData, useTheme, useTranslation } from "../hooks/";
 import { UserContext } from "../hooks/userContext";
 import { IArticle, IEvent2 } from "../constants/types";
 import { Block, Button, Input, Image, Article, Text, MainCalendar } from "../components/";
+import CaregiverCalendarView from "../components/CaregiverCalendarView";
 
 const RentalHeader = ({ viewMode, onToggleView }) => {
   const { t } = useTranslation();
@@ -29,7 +30,6 @@ const RentalHeader = ({ viewMode, onToggleView }) => {
         flex={0}
         align="center"
         justify="space-around"
-        margin={sizes.xs}
         padding={sizes.xs}
       >
         {/* Your existing buttons block - commented out in original */}
@@ -44,7 +44,11 @@ const RentalHeader = ({ viewMode, onToggleView }) => {
             {viewMode === 'list' ? 'View Calendar' : 'View Events'}
           </Text>
         </Button>
-        ) : null}
+        ) : <Button onPress={onToggleView}>
+        <Text p primary semibold>
+        {viewMode === 'list' ? 'View Calendar' : 'View Events'}
+      </Text>
+    </Button>}
       </Block>
     </>
   );
@@ -78,6 +82,7 @@ const Rentals = () => {
 
   // init events list
   useEffect(() => {
+    console.log("view mode:", viewMode);
     setEvents(data?.events);
 
   }, [data?.events]);
@@ -118,7 +123,7 @@ const Rentals = () => {
       )} */}
 
       {/* Content */}
-      <Block flex={1} paddingVertical={sizes.padding}>
+      <Block flex={1}>
         {viewMode === 'list' ? (
           <EventsList 
             events={events}
