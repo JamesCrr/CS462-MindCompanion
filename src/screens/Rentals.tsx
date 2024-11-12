@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState, useContext } from "react";
-import React, { useCallback, useEffect, useState, useContext } from "react";
 import { FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 
@@ -14,7 +13,6 @@ const RentalHeader = ({ viewMode, onToggleView }) => {
   const { assets, gradients, sizes } = useTheme();
   const [viewCalendar, setViewCalendar] = useState(false);
   const navigation = useNavigation();
-  const { identity } = useContext(UserContext);
 
   const changeView = () => {
     if (identity["type"] == "Caregiver") {

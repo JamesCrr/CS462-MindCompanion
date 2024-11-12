@@ -203,7 +203,6 @@ const CaregiverCalendarView = () => {
           <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
               <View style={styles.header}>
-                <Text h5>Calendar</Text>
                 <View style={styles.navigationButtons}>
                   <Button gradient={gradients.primary} onPress={prevPeriod}>
                     <Text white bold transform="uppercase" marginHorizontal={sizes.sm}>
