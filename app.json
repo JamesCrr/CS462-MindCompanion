@@ -15,11 +15,17 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": ["location", "fetch", "bluetooth-central"]
+        "UIBackgroundModes": [
+          "location",
+          "fetch",
+          "bluetooth-central"
+        ]
       }
     },
     "android": {
@@ -35,9 +41,6 @@
         "android.permission.BLUETOOTH_ADMIN",
         "android.permission.BLUETOOTH_SCAN",
         "android.permission.BLUETOOTH_CONNECT",
-        "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.ACCESS_BACKGROUND_LOCATION",
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_LOCATION",
         "android.permission.RECORD_AUDIO"
@@ -49,7 +52,10 @@
         }
       }
     },
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "web": {
       "favicon": "./assets/favicon.png"
     },
@@ -71,7 +77,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "eb23d270-0bc9-4c3c-befb-bf87e027657d"
+        "projectId": "631b06fb-113a-4f86-b0ea-cb05adee0341"
       }
     }
   }
