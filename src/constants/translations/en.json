@@ -79,7 +79,8 @@
     "settings": "Settings",
     "register": "Create account",
     "extra": "Extra - Automotive",
-    "locationTracking": "Location Tracking"
+    "locationTracking": "Location Tracking",
+    "Register": "Register"
   },
   "navigation": {
     "home": "Home",

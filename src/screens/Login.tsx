@@ -195,7 +195,7 @@ const Login = () => {
               </Button>
 
               {/* Register Button */}
-              <Button
+              {/* <Button
                 primary
                 outlined
                 shadow={!isAndroid}
@@ -206,7 +206,7 @@ const Login = () => {
                 <Text bold primary transform="uppercase">
                   {t("common.signup")}
                 </Text>
-              </Button>
+              </Button> */}
             </Block>
           </Block>
         </Block>

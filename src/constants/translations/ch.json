@@ -75,7 +75,8 @@
     "settings": "设置",
     "register": "创建账户",
     "extra": "额外 - 汽车",
-    "locationTracking": "位置追踪"
+    "locationTracking": "位置追踪",
+    "Register": "注册"
   },
   "navigation": {
     "home": "家",

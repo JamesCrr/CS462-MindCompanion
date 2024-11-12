@@ -71,10 +71,10 @@ const Register = () => {
 
       Alert.alert(
         'Success',
-        'Registration successful! Please login with your credentials.',
+        'Registration successful!',
         [{
           text: 'OK',
-          onPress: () => navigation.navigate('Login')
+          onPress: () => navigation.goBack()
         }]
       );
 
@@ -208,7 +208,7 @@ const Register = () => {
               </Button>
 
               {/* Sign In Button */}
-              <Button
+              {/* <Button
                 primary
                 outlined
                 shadow={!isAndroid}
@@ -218,7 +218,7 @@ const Register = () => {
                 <Text bold primary transform="uppercase">
                   {t('common.signin')}
                 </Text>
-              </Button>
+              </Button> */}
             </Block>
           </Block>
         </Block>

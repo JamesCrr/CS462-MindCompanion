@@ -145,41 +145,35 @@ const Rental = () => {
         </Block>
       )}
 
-      <Block paddingHorizontal={sizes.sm} row justify="space-between" marginVertical={sizes.sm}>
-        <Button
-          flex={1}
-          gradient={gradients.dark}
-          marginHorizontal={sizes.xs}
-          onPress={() =>
-            navigation.navigate("EditEvent", {
-              eventId: eventId,
-            })
-          }
-        >
-          <Text white bold transform="uppercase" marginHorizontal={sizes.s}>
-            Edit
-          </Text>
-        </Button>
-        <Button flex={1} gradient={gradients.dark} marginHorizontal={sizes.s} onPress={() => handleDelete()}>
-          <Text white bold transform="uppercase" marginHorizontal={sizes.s}>
-            Delete
-          </Text>
-        </Button>
-      </Block>
-      {/* <Block paddingHorizontal={sizes.sm} marginTop={sizes.sm}>
-        <Button
-          gradient={gradients.primary}
-          onPress={() =>
-            navigation.navigate("StaffAttendanceLocations", {
-              eventId: eventId,
-            })
-          }
-        >
-          <Text white bold transform="uppercase">
-            {t("event.takeAttendance")}
-          </Text>
-        </Button>
-      </Block> */}
+      {/* Edit and Delete buttons */}
+      {identity?.type !== "Volunteer" && (  // Only show for non-volunteer users
+        <Block paddingHorizontal={sizes.sm} row justify="space-between" marginVertical={sizes.sm}>
+          <Button
+            flex={1}
+            gradient={gradients.dark}
+            marginHorizontal={sizes.xs}
+            onPress={() =>
+              navigation.navigate("EditEvent", {
+                eventId: eventId,
+              })
+            }
+          >
+            <Text white bold transform="uppercase" marginHorizontal={sizes.s}>
+              Edit
+            </Text>
+          </Button>
+          <Button 
+            flex={1} 
+            gradient={gradients.dark} 
+            marginHorizontal={sizes.s} 
+            onPress={() => handleDelete()}
+          >
+            <Text white bold transform="uppercase" marginHorizontal={sizes.s}>
+              Delete
+            </Text>
+          </Button>
+        </Block>
+      )}
     </Block>
   );
 };
