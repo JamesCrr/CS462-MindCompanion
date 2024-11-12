@@ -4,6 +4,7 @@ export { default as Articles } from "./Articles";
 export { default as Chat } from "./Chat";
 export { default as Components } from "./Components";
 export { default as Extras } from "./Extras";
+export { default as Participants } from "./Participants";
 export { default as Home } from "./Home";
 export { default as Notifications } from "./Notifications";
 export { default as NotificationsSettings } from "./NotificationsSettings";
@@ -29,3 +30,4 @@ export { default as StaffAttendanceLocations } from "./StaffAttendanceLocations"
 export { default as StaffAttendanceLocation } from "./StaffAttendanceLocation";
 export { default as EventRecord } from "./EventRecord";
 export { default as TrackLocation } from "./TrackLocation";
+export { default as FeedbackParticipant } from "./FeedbackParticipant";

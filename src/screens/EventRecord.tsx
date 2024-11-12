@@ -64,6 +64,7 @@ const EventRecord = () => {
       <Block style={{ paddingHorizontal: sizes.padding }}>
         <EventDetails
           {...eventDetails}
+          leaveFeedback={false}
           onSelectMeetUpLocation={setSelectedMeetUpLocation}
         />
       </Block>

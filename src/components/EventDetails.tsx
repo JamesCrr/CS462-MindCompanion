@@ -10,6 +10,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useTheme, useTranslation } from "../hooks/";
 import { IArticle, IEvent2 } from "../constants/types";
 import { userJoinEvent } from "../../api/event";
+import { Button } from "../components/";
 
 interface EventDetailsProp extends IEvent2 {
   onSelectMeetUpLocation: (location: string) => void;
@@ -31,10 +32,10 @@ const EventDetails = ({
   volunteers,
   timestamp,
   // user,
-
+  leaveFeedback,
   onPress,
   onSelectMeetUpLocation,
-}: EventDetailsProp) => {
+}: any) => {
   const { t } = useTranslation();
   const navigation = useNavigation();
 
@@ -51,6 +52,12 @@ const EventDetails = ({
     console.log("Things to bring:", thingsToBring);
     navigation.navigate("ItemsPreCheck", { eventId: id, thingsToBring });
   };
+
+  const handleNavigateParticipants = () => {
+    navigation.navigate("Participants", { eventId: id, participants }); 
+  }
+
+
 
   // render card for Newest & Fashion
   if (category?.id !== 1) {
@@ -134,7 +141,22 @@ const EventDetails = ({
 
           {Array.isArray(participants) && participants.length > 0 && (
             <Block justify="center" paddingBottom={sizes.s}>
-              <Text semibold>No of Participants: {participants.length + 1}</Text>
+                {leaveFeedback ? (
+                  <Text semibold>No of Participants: {participants.length}</Text>
+                ) : (
+                  <Button
+                    style={{
+                      backgroundColor: colors.gray, // Set the button fill color to light grey
+                      padding: sizes.sm,
+                      borderRadius: sizes.cardRadius,
+                      borderWidth: 1, // Add border width
+                      borderColor: colors.black,
+                    }}
+                    onPress={handleNavigateParticipants}
+                  >
+                    <Text semibold>No of Participants: {participants.length}</Text>
+                  </Button>
+                )}
             </Block>
           )}
 

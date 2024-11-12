@@ -8,6 +8,8 @@ import {
   Chat,
   Components,
   Extras,
+  Participants,
+  FeedbackParticipant,
   Home,
   Notifications,
   Privacy,
@@ -126,6 +128,12 @@ export default () => {
       />
 
       <Stack.Screen
+        name="FeedbackParticipant"
+        component={FeedbackParticipant}
+        options={{ title: t("navigation.eventRecords"), ...screenOptions.back }}
+      />
+
+      <Stack.Screen
         name="AddEvent"
         component={AddEvent}
         options={{ headerShown: false }}
@@ -209,6 +217,12 @@ export default () => {
         name="Extra"
         component={Extras}
         options={{ title: t("navigation.extra"), headerRight: () => null }}
+      />
+
+      <Stack.Screen
+        name="Participants"
+        component={Participants}
+        options={{ title: t("navigation.extra"), ...screenOptions.back, }}
       />
 
       <Stack.Screen

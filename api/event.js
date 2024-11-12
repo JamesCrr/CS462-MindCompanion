@@ -31,6 +31,22 @@ export async function fetchEvent(eventId = "") {
   return null;
 }
 
+export async function fetchEventById(eventId) {
+  try {
+    const docRef = doc(db, "events", eventId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return docSnap.data();
+    }
+    // docSnap.data() will be undefined in this case
+  } catch (e) {
+    console.error("Error fetching documents: ", e.message);
+    throw new Error("Failed to fetch event records");
+  }
+  return null;
+}
+
 export const fetchAllEvents = async () => {
   try {
     const eventsCollection = collection(db, "events");
@@ -51,6 +67,9 @@ export const fetchAllEvents = async () => {
     throw new Error("Failed to fetch event records");
   }
 };
+
+
+
 
   export const fetchEvents = async () => {
     try {

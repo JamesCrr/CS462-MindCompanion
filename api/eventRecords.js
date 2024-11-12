@@ -5,6 +5,30 @@ import { db } from "../config/firebaseConfig";
 // Function to fetch all event 
 
 
+export async function fetchEventRecordUsingParticipantName(eventId, name) {
+  try {
+    const eventDocRef = doc(db, "eventRecords", eventId);
+    const eventDoc = await getDoc(eventDocRef);
+
+    if (eventDoc.exists()) {
+      const eventData = eventDoc.data();
+      const userRecord = eventData.records.find(record => record[name]);
+
+      if (userRecord) {
+        return userRecord[name];
+      } else {
+        console.log(`No record found for user: ${name}`);
+        return null;
+      }
+    } else {
+      console.log("No such document!");
+      return null;
+    }
+  } catch (e) {
+    console.error("Error fetching document: ", e.message);
+    throw new Error("Failed to fetch event record");
+  }
+}
 
 // Function to add a new event record
 export async function addNewEventRecord(eventId, name) {
@@ -20,6 +44,7 @@ export async function addNewEventRecord(eventId, name) {
         achievements: [],
         completion: 0,
         rank: 0,
+        score: 0,
         remarks: ""
       }
       if (!userRecord) {

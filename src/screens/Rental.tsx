@@ -98,7 +98,7 @@ const Rental = () => {
       contentContainerStyle={{ paddingBottom: sizes.padding * 1.5 }}
     >
       <Block style={{ paddingHorizontal: sizes.padding }}>
-        <EventDetails {...article} onSelectMeetUpLocation={setSelectedMeetUpLocation} />
+        <EventDetails leaveFeedback={false} {...article} onSelectMeetUpLocation={setSelectedMeetUpLocation} />
       </Block>
 
       {!article.published && (
