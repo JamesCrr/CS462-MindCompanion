@@ -44,17 +44,17 @@ const StaffCharts = () => {
   const route = useRoute();
   const { gradients, sizes } = useTheme();
 
-  // Retrieve rentalId from route parameters
+  // Retrieve eventId from route parameters
   const { eventId } = route.params;
-  const { identity, retrieveIdentity } = useContext(UserContext);
 
   // Data for charts
   const [userCountThisMonth, setUserCountThisMonth] = useState<any[]>([
     { value: 100, name: "client", color: "#EA1C93" },
   ]);
-  const [userCountPerMonth, setUserCountPerMonth] = useState<any[]>(emptyMonthsArray);
-  const [activityCountPerMonth, setActivityCountPerMonth] = useState<any[]>(emptyMonthsArray);
-  const [averageDurationPerMonth, setAverageDurationPerMonth] = useState<any[]>(emptyMonthsArray);
+  const [userCountPerMonth, setUserCountPerMonth] = useState<any[]>([...emptyMonthsArray]);
+  const [activityCountPerMonth, setActivityCountPerMonth] = useState<any[]>([...emptyMonthsArray]);
+  const [averageDurationPerMonth, setAverageDurationPerMonth] = useState<any[]>([...emptyMonthsArray]);
+  const [loadingCharts, setLoadingCharts] = useState(true);
   const [generatingSheet, setGeneratingSheets] = useState(false);
 
   // Constants
@@ -72,10 +72,15 @@ const StaffCharts = () => {
    * - Average attendence (hours) per month
    */
   const populateChartData = async () => {
+    setLoadingCharts(true);
+
     // userCountThisMonth Chart
+    const total = 100;
+    const basket1 = Math.floor(Math.random() * (total + 1)); // Random integer between 0 and 100
+    const basket2 = total - basket1;
     setUserCountThisMonth([
-      { value: 40, name: "volunteer", color: "#A24CCC" },
-      { value: 60, name: "client", color: "#EA1C93" },
+      { value: basket1, name: "volunteer", color: "#A24CCC" },
+      { value: basket2, name: "client", color: "#EA1C93" },
     ]);
 
     // userCountPerMonth Chart
@@ -141,6 +146,8 @@ const StaffCharts = () => {
         dataPointText: Math.floor(Math.random() * 100).toString(),
       },
     ]);
+
+    setLoadingCharts(false);
   };
 
   /**
@@ -232,8 +239,7 @@ const StaffCharts = () => {
 
   useEffect(() => {
     // console.log("eventId", eventId);
-
-    setTimeout(() => populateChartData(), 100);
+    setTimeout(() => populateChartData(), 200);
   }, []);
 
   return (
@@ -243,61 +249,77 @@ const StaffCharts = () => {
       paddingVertical={sizes.padding}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingBottom: sizes.padding * 1.5 }}
-      marginBottom={sizes.l}
       marginHorizontal={sizes.s}
     >
-      <Block justify="center" align="center">
-        <Text h5>{t("charts.staff.numberofclientspermonth")}</Text>
-        {renderLineChart(userCountPerMonth)}
-      </Block>
-
-      <Block marginTop={sizes.md} justify="center" align="center">
-        <Text h5>{t("charts.staff.activitiesperMonth")}</Text>
-        {renderLineChart(activityCountPerMonth)}
-      </Block>
-
-      <Block marginTop={sizes.md} center justify="center" align="center">
-        <Text style={{ textAlign: "center" }} h5>
-          {t("charts.staff.averagedurationpermonth")}
-        </Text>
-        {renderLineChart(averageDurationPerMonth)}
-      </Block>
-
-      <Block marginTop={sizes.md} justify="center" align="center">
-        <Text h5>{t("charts.staff.numberofclientsthismonth")}</Text>
-        <PieChart data={userCountThisMonth} showText textColor="black" showValuesAsLabels textSize={20} isAnimated />
-        {/* Legend */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            marginBottom: 10,
-          }}
-        >
-          <View>
-            {userCountThisMonth.map((item, i) => {
-              return (
-                <View key={item["name"]} style={{ flexDirection: "row", alignItems: "center", width: 120 }}>
-                  {renderDot(item["color"])}
-
-                  <Text style={{ color: "white" }}>
-                    {/* {item["name"]}: {item["value"]} */}
-                    {item["name"]}
-                  </Text>
-                </View>
-              );
-            })}
-          </View>
-        </View>
-      </Block>
-
-      <Block marginTop={sizes.md}>
-        <Button onPress={generateExcel} gradient={gradients.primary} primary rounded disabled={generatingSheet}>
-          <Text bold white>
-            {generatingSheet ? t("charts.staff.generating") : t("charts.staff.generatesheets")}
+      {loadingCharts ? (
+        <Block flex={1} justify="center" align="center">
+          <Text h4 bold>
+            Loading...
           </Text>
-        </Button>
-      </Block>
+        </Block>
+      ) : (
+        <Block>
+          <Block justify="center" align="center">
+            <Text h5>{t("charts.staff.numberofclientspermonth")}</Text>
+            {renderLineChart(userCountPerMonth)}
+          </Block>
+
+          <Block marginTop={sizes.md} justify="center" align="center">
+            <Text h5>{t("charts.staff.activitiesperMonth")}</Text>
+            {renderLineChart(activityCountPerMonth)}
+          </Block>
+
+          <Block marginTop={sizes.md} center justify="center" align="center">
+            <Text style={{ textAlign: "center" }} h5>
+              {t("charts.staff.averagedurationpermonth")}
+            </Text>
+            {renderLineChart(averageDurationPerMonth)}
+          </Block>
+
+          <Block marginTop={sizes.md} justify="center" align="center">
+            <Text h5>{t("charts.staff.numberofclientsthismonth")}</Text>
+            <PieChart
+              data={userCountThisMonth}
+              showText
+              textColor="black"
+              showValuesAsLabels
+              textSize={20}
+              isAnimated
+            />
+            {/* Legend */}
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                marginBottom: 10,
+              }}
+            >
+              <View>
+                {userCountThisMonth.map((item, i) => {
+                  return (
+                    <View key={item["name"]} style={{ flexDirection: "row", alignItems: "center", width: 120 }}>
+                      {renderDot(item["color"])}
+
+                      <Text style={{ color: "white" }}>
+                        {/* {item["name"]}: {item["value"]} */}
+                        {item["name"]}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+          </Block>
+
+          <Block marginVertical={sizes.md} marginHorizontal={sizes.s}>
+            <Button onPress={generateExcel} gradient={gradients.primary} primary rounded disabled={generatingSheet}>
+              <Text bold white>
+                {generatingSheet ? t("charts.staff.generating") : t("charts.staff.generatesheets")}
+              </Text>
+            </Button>
+          </Block>
+        </Block>
+      )}
     </Block>
   );
 };

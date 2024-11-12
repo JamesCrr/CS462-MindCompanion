@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import {
   View,
   ScrollView,
@@ -12,15 +12,16 @@ import { UserContext } from "../hooks/userContext";
 import { format, addDays } from "date-fns";
 import { collection, getDocs, DocumentData } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
-import { useTheme } from "../hooks/";
+import { useData, useTheme } from "../hooks/";
+import { IArticle, IEvent2 } from "../constants/types";
 
 interface Event {
+  id?: string;
   name: string;
   location: string;
   information: string;
   datetime: Date;
   published: boolean;
-  id?: string;
   meetUpLocations?: string[];
   itemsToBring?: string[];
   participants?: string[];
@@ -37,6 +38,9 @@ const MainCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [todayDate] = useState(new Date());
   const [view, setView] = useState<"month" | "week" | "day">("month");
+  const data = useData();
+
+  const { handleArticle } = data;
 
   useEffect(() => {
     console.log("identity:", identity);
@@ -44,6 +48,26 @@ const MainCalendar = () => {
       //   navigation.replace("Login");
     }
   }, [identity]);
+
+  const handleRental = useCallback(
+    (event: Event) => {
+      const formattedEvent = {
+        id: event.id,
+        title: event.name,
+        location: event.location,
+        information: event.information,
+        dateTime: format(event.datetime, "MMM dd, yyyy hh:mm a"),
+        meetUpLocations: event.meetUpLocations,
+        itemsToBring: event.itemsToBring,
+        participants: event.participants,
+        volunteers: event.volunteers,
+        published: event.published
+      };
+      handleArticle(formattedEvent);
+      navigation.navigate("Rental", { eventId: event.id });
+    },
+    [handleArticle, navigation]
+  );
 
   const retrieveAllEvents = async () => {
     var events: Event[] = [];
@@ -131,14 +155,7 @@ const MainCalendar = () => {
                     .map((event) => (
                       <TouchableOpacity
                         key={event.id}
-                        onPress={() =>
-                          // navigation.navigate("Rental", {
-                          //   eventId: event.id,
-                          // })
-                          navigation.navigate("Rental", {
-                            eventId: event.id,
-                          })
-                        }
+                        onPress={() => handleRental(event)}
                       >
                         <View
                           style={[
@@ -184,61 +201,94 @@ const MainCalendar = () => {
   };
 
   return (
-    <Block row marginVertical={sizes.sm}>
-      <Block card marginHorizontal={sizes.xs}>
-        {/* {identity && <Text h5={true}>Current role is {identity["type"]}</Text>} */}
+    <Block
+      scroll
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingVertical: sizes.padding }}
+    >
+      <Block row marginVertical={sizes.sm}>
+        <Block card marginHorizontal={sizes.xs}>
+          {/* {identity && <Text h5={true}>Current role is {identity["type"]}</Text>} */}
 
-        <SafeAreaView style={styles.safeArea}>
-          <View style={styles.container}>
-            <View style={styles.header}>
-              <View style={styles.navigationButtons}>
-                <Button gradient={gradients.dark} onPress={prevPeriod}>
-                  <Text
-                    white
-                    bold
-                    transform="uppercase"
-                    marginHorizontal={sizes.sm}
-                  >
-                    &lt;
-                  </Text>
-                </Button>
+          <SafeAreaView style={styles.safeArea}>
+            <View style={styles.container}>
+              <View style={styles.header}>
+                <Text h5>Calendar</Text>
+                <View style={styles.navigationButtons}>
+                  <Button gradient={gradients.primary} onPress={prevPeriod}>
+                    <Text
+                      white
+                      bold
+                      transform="uppercase"
+                      marginHorizontal={sizes.sm}
+                    >
+                      &lt;
+                    </Text>
+                  </Button>
 
-                <Text h5 paddingHorizontal={sizes.xs}>
-                  {format(currentDate, "MMMM yyyy")}
-                </Text>
-                <Button gradient={gradients.dark} onPress={nextPeriod}>
-                  <Text
-                    white
-                    bold
-                    transform="uppercase"
-                    marginHorizontal={sizes.sm}
-                  >
-                    &gt;
+                  <Text paddingHorizontal={sizes.xs}>
+                    {format(currentDate, "MMMM yyyy")}
                   </Text>
-                </Button>
+                  <Button gradient={gradients.primary} onPress={nextPeriod}>
+                    <Text
+                      white
+                      bold
+                      transform="uppercase"
+                      marginHorizontal={sizes.sm}
+                    >
+                      &gt;
+                    </Text>
+                  </Button>
+                </View>
               </View>
+
+              <View style={styles.legend}>
+                <View style={styles.legendItem}>
+                  <View
+                    style={[
+                      styles.legendColor,
+                      { backgroundColor: "lightgreen" },
+                    ]}
+                  />
+                  <Text>Published Events</Text>
+                </View>
+                <View style={styles.legendItem}>
+                  <View
+                    style={[
+                      styles.legendColor,
+                      { backgroundColor: "lightblue" },
+                    ]}
+                  />
+                  <Text>Unpublished Events</Text>
+                </View>
+              </View>
+
+              {renderMonthView()}
+              {/* Only show Add Event button for admin/organizer roles */}
+              {identity && ["Staff", "organizer"].includes(identity.type) && (
+                <Button
+                  flex={1}
+                  gradient={gradients.primary}
+                  marginVertical={sizes.base}
+                  onPress={() => {
+                    console.log("HELLO");
+                    navigation.navigate("AddEvent");
+                  }}
+                >
+                  <Text white bold transform="uppercase">
+                    Add Event
+                  </Text>
+                </Button>
+                // <Button
+                //   style={styles.buttons}
+                //   //   onPress={() => navigation.navigate("AddEvent")}
+                // >
+                //   <Text>Add event</Text>
+                // </Button>
+              )}
             </View>
-            {renderMonthView()}
-            {/* Only show Add Event button for admin/organizer roles */}
-            {/* {identity && ["Staff", "organizer"].includes(identity.type) && (
-              <Button
-                flex={1}
-                gradient={gradients.success}
-                marginVertical={sizes.base}
-              >
-                <Text white bold transform="uppercase">
-                  Add Event
-                </Text>
-              </Button>
-              // <Button
-              //   style={styles.buttons}
-              //   //   onPress={() => navigation.navigate("AddEvent")}
-              // >
-              //   <Text>Add event</Text>
-              // </Button>
-            )} */}
-          </View>
-        </SafeAreaView>
+          </SafeAreaView>
+        </Block>
       </Block>
     </Block>
   );
@@ -305,10 +355,26 @@ const styles = StyleSheet.create({
   },
   buttons: {
     margin: 5,
-  },  
+  },
   dateText: {
     fontSize: 18, // Adjust as needed
     fontWeight: 'bold', // Make the date text bold
+  },
+  legend: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 10,
+    gap: 20,
+  },
+  legendItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+  },
+  legendColor: {
+    width: 16,
+    height: 16,
+    borderRadius: 4,
   },
 });
 

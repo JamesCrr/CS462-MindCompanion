@@ -1,26 +1,29 @@
 import React, { useCallback, useEffect, useState, useContext } from "react";
+import React, { useCallback, useEffect, useState, useContext } from "react";
 import { FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 
 import { useData, useTheme, useTranslation } from "../hooks/";
-import { IArticle, IEvent2 } from "../constants/types";
-import {
-  Block,
-  Button,
-  Input,
-  Image,
-  Article,
-  Text,
-  MainCalendar,
-} from "../components/";
 import { UserContext } from "../hooks/userContext";
-import CaregiverCalendarView from "../components/CaregiverCalendarView";
+import { IArticle, IEvent2 } from "../constants/types";
+import { Block, Button, Input, Image, Article, Text, MainCalendar } from "../components/";
 
 const RentalHeader = ({ viewMode, onToggleView }) => {
   const { t } = useTranslation();
   const { identity } = useContext(UserContext);
   const { assets, gradients, sizes } = useTheme();
-  
+  const [viewCalendar, setViewCalendar] = useState(false);
+  const navigation = useNavigation();
+  const { identity } = useContext(UserContext);
+
+  const changeView = () => {
+    if (identity["type"] == "Caregiver") {
+      navigation.navigate("CaregiverCalendar");
+    } else {
+      navigation.navigate("StaffCalendar");
+    }
+  };
+
   return (
     <>
       <Block

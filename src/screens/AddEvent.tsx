@@ -4,7 +4,9 @@ import { useNavigation } from "@react-navigation/core";
 import { useData, useTheme, useTranslation } from "../hooks/";
 import { Block, Button, Input, Image, Text, Checkbox, Badge } from "../components/";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
-import { db } from "../../config/firebaseConfig";
+import { db, storage } from "../../config/firebaseConfig";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import * as ImagePicker from "expo-image-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { InsertEvent } from "../../api/event";
 import { addEventIntoEventRecords } from '../../api/eventRecords';
@@ -33,6 +35,7 @@ const AddEvent = () => {
     information: "",
     datetime: new Date(),
     meetUpLocations: [],
+    meetUpLocations: [],
     itemsToBring: [],
   });
 
@@ -43,6 +46,9 @@ const AddEvent = () => {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [tempMeetUpLocation, setTempMeetUpLocation] = useState("");
   const [tempItemsToBring, setTempItemsToBring] = useState("");
+
+  const [selectedImage, setSelectedImage] = useState<any>(null);
+  const [uploadUrl, setUploadUrl] = useState("");
 
   const { assets, colors, gradients, sizes } = useTheme();
 
@@ -55,6 +61,8 @@ const AddEvent = () => {
 
   const handleAddEvent = useCallback(async () => {
     try {
+      // const imageUrl = await uploadImage(); // Upload image and get URL
+
       const eventPayload = {
         ...eventData,
         // meetUpLocations: filteredMeetUp,
@@ -70,6 +78,7 @@ const AddEvent = () => {
         location: "",
         information: "",
         datetime: new Date(), // Initialize with current date
+        meetUpLocations: [],
         meetUpLocations: [],
         itemsToBring: [],
       });
@@ -161,6 +170,57 @@ const AddEvent = () => {
     setItemsToBring(newItemsToBring);
   };
 
+  const openImagePicker = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert("Permission to access camera roll is required!");
+      return;
+    }
+
+    const pickerResult = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    console.log(pickerResult);
+    if (!pickerResult.canceled) {
+      setSelectedImage(pickerResult["assets"][0].uri);
+    }
+  };
+
+  const uploadImage = async () => {
+    if (!selectedImage) return "";
+
+    try {
+      const response = await fetch(selectedImage);
+      const blob = await response.blob();
+
+      const storageRef = ref(storage, `images/${Date.now()}`);
+      const snapshot = await uploadBytes(storageRef, blob);
+      const url = await getDownloadURL(snapshot.ref);
+
+      setUploadUrl(url);
+      console.log("Image uploaded successfully:", url);
+      return url;
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
+
+  useEffect(() => {
+    setIsValid((state) => ({
+      ...state,
+      name: eventData.name.length > 0,
+      location: eventData.location.length > 0,
+      information: eventData.information.length > 0,
+      meetUpLocations: eventData.meetUpLocations.length > 0,
+      itemsToBring: eventData.itemsToBring.length > 0,
+      datetime: eventData.datetime,
+    }));
+  }, [eventData, setIsValid]);
+
   return (
     <Block safe marginTop={sizes.md}>
       <Block paddingHorizontal={sizes.s}>
@@ -178,7 +238,7 @@ const AddEvent = () => {
               flex={0}
               justify="flex-start"
               onPress={() => navigation.goBack()}
-              style={{ position: "absolute", top: sizes.sm, left: sizes.sm }}
+              style={{ position: "absolute", top: sizes.sm, left: sizes.sm, zIndex: 2 }}
             >
               <Image
                 radius={0}
@@ -193,7 +253,7 @@ const AddEvent = () => {
               </Text>
             </Button>
 
-            <Text h4 center white marginBottom={sizes.md}>
+            <Text h4 center white marginTop={sizes.l}>
               {t("addEvent.title")}
             </Text>
           </Image>
@@ -213,6 +273,21 @@ const AddEvent = () => {
             >
               {/* form inputs */}
               <Block paddingHorizontal={sizes.sm}>
+                {/* image picker */}
+                <Block marginVertical={sizes.sm}>
+                  <Button gradient={gradients.primary} onPress={openImagePicker} marginVertical={sizes.s}>
+                    <Text bold white>
+                      Select Event Image
+                    </Text>
+                  </Button>
+
+                  <Block flex={1} align="center">
+                    {selectedImage && (
+                      <Image source={{ uri: selectedImage }} style={{ width: 100, height: 100 }} resizeMode="cover" />
+                    )}
+                  </Block>
+                </Block>
+
                 <Input
                   label={t("common.eventName")}
                   autoCapitalize="none"

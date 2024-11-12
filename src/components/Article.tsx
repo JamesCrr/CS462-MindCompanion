@@ -1,12 +1,12 @@
-import React from 'react';
-import dayjs from 'dayjs';
-import {TouchableWithoutFeedback} from 'react-native';
+import React from "react";
+import dayjs from "dayjs";
+import { TouchableWithoutFeedback } from "react-native";
 
-import Text from './Text';
-import Block from './Block';
-import Image from './Image';
-import {useTheme, useTranslation} from '../hooks/';
-import {IArticle, IEvent2} from '../constants/types';
+import Text from "./Text";
+import Block from "./Block";
+import Image from "./Image";
+import { useTheme, useTranslation } from "../hooks/";
+import { IArticle, IEvent2 } from "../constants/types";
 
 const Article = ({
   title,
@@ -16,26 +16,28 @@ const Article = ({
   category,
   // rating,
   location,
-  dateTime, 
+  dateTime,
   thingsToBring,
   meetUpLocations,
   participants,
   volunteers,
   timestamp,
   // user,
+  published,
 
   onPress,
 }: IEvent2) => {
-  const {t} = useTranslation();
-  const {colors, gradients, icons, sizes} = useTheme();
+  const { t } = useTranslation();
+  const { colors, gradients, icons, sizes } = useTheme();
 
   image = "https://images.unsplash.com/photo-1604998103924-89e012e5265a?fit=crop&w=450&q=80";
+
   // render card for Newest & Fashion
   if (category?.id !== 1) {
     return (
       <TouchableWithoutFeedback onPress={onPress}>
         <Block card padding={sizes.sm} marginTop={sizes.sm}>
-          <Image height={170} resizeMode="cover" source={{uri: image}} />
+          <Image height={170} resizeMode="cover" source={{ uri: image }} />
           {/* article category */}
           {category?.name && (
             <Text
@@ -45,7 +47,8 @@ const Article = ({
               marginTop={sizes.s}
               transform="uppercase"
               marginLeft={sizes.xs}
-              gradient={gradients.primary}>
+              gradient={gradients.primary}
+            >
               {category?.name}
             </Text>
           )}
@@ -55,11 +58,7 @@ const Article = ({
             {title}
           </Text>
           {information && (
-            <Text
-              p
-              marginTop={sizes.s}
-              marginLeft={sizes.xs}
-              marginBottom={sizes.sm}>
+            <Text p marginTop={sizes.s} marginLeft={sizes.xs} marginBottom={sizes.sm}>
               {information}
             </Text>
           )}
@@ -89,19 +88,37 @@ const Article = ({
 
           {/* location & rating */}
           {(Boolean(location) || Boolean(dateTime)) && (
+            <Block wrap="wrap" row align="center">
+              <Block row align="center">
+                <Image source={icons.location} marginRight={sizes.s} />
+                <Text p size={12} semibold>
+                  {/* {location?.city}, {location?.country} */}
+                  {location}
+                </Text>
+              </Block>
+              {/* <Text p bold marginHorizontal={sizes.s}></Text> */}
+              <Block row align="center">
+                <Image source={icons.star} marginRight={sizes.s} />
+                <Text p size={12} semibold>
+                  {dateTime}
+                </Text>
+              </Block>
+            </Block>
+          )}
+
+          {/* Published or not */}
+          {Boolean(published) && (
             <Block row align="center">
-              <Image source={icons.location} marginRight={sizes.s} />
+              <Image source={icons.bell} marginRight={sizes.s} />
               <Text p size={12} semibold>
                 {/* {location?.city}, {location?.country} */}
-                {location}
+                {published ? "Published" : "Draft"}
               </Text>
-              <Text p bold marginHorizontal={sizes.s}>
-                •
-              </Text>
-              <Image source={icons.star} marginRight={sizes.s} />
-              <Text p size={12} semibold>
-                {dateTime}
-              </Text>
+              <Text p bold marginHorizontal={sizes.s}></Text>
+              {/* <Image source={icons.star} marginRight={sizes.s} />
+  <Text p size={12} semibold>
+    {dateTime}
+  </Text> */}
             </Block>
           )}
         </Block>

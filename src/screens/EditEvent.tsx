@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   Platform,
 } from "react-native";
-import { useTheme } from "../hooks/";
+import { useData, useTheme } from "../hooks/";
 
 import { fetchEvent, updateEvent } from "../../api/event";
 import {
@@ -42,10 +42,14 @@ interface Event {
   itemsToBring?: string[];
   participants?: string[];
   volunteers?: string[];
+  participantAttendance?: string[];
+  volunteerAttendance?: string[];
+  published?: boolean;
 }
 
 export default function EditEvent() {
   const navigation = useNavigation();
+  const { fetchEvents } = useData();
   const [event, setEvent] = useState<Event>();
   const [loading, setLoading] = useState<boolean>(false);
   const [newItem, setNewItem] = useState<string>();
@@ -91,6 +95,9 @@ export default function EditEvent() {
       itemsToBring: eventDoc.itemsToBring || [],
       participants: eventDoc.participants || [],
       volunteers: eventDoc.volunteers || [],
+      participantAttendance: eventDoc.participantAttendance || [],
+      volunteerAttendance: eventDoc.volunteerAttendance || [],
+      published: eventDoc.published || false,
     };
   };
 
@@ -117,6 +124,8 @@ export default function EditEvent() {
   const saveChanges = async () => {
     try {
       const res = await updateEvent(eventId, event);
+      fetchEvents();
+      navigation.navigate("Rentals");
       console.log(res);
     } catch (error) {
       console.log(error);

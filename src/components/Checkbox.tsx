@@ -1,21 +1,16 @@
-import React, {useCallback, useState} from 'react';
-import {Platform, Pressable} from 'react-native';
+import React, { useCallback, useState } from "react";
+import { Platform, Pressable } from "react-native";
 
-import * as Haptics from 'expo-haptics';
+import * as Haptics from "expo-haptics";
 
-import {useTheme} from '../hooks/';
-import Block from '../components/Block';
-import Image from '../components/Image';
-import {ICheckboxProps} from '../constants/types';
+import { useTheme } from "../hooks/";
+import Block from "../components/Block";
+import Image from "../components/Image";
+import { ICheckboxProps } from "../constants/types";
 
-const Checkbox = ({
-  onPress,
-  haptic = true,
-  id = 'Checkbox',
-  ...props
-}: ICheckboxProps) => {
-  const {colors, icons, sizes} = useTheme();
-  const [checked, setChecked] = useState(false);
+const Checkbox = ({ onPress, haptic = true, id = "Checkbox", ...props }: ICheckboxProps) => {
+  const { colors, icons, sizes } = useTheme();
+  const [checked, setChecked] = useState(true);
 
   const handlePress = useCallback(() => {
     onPress?.(!checked);
@@ -28,8 +23,7 @@ const Checkbox = ({
   }, [checked, haptic, setChecked, onPress]);
 
   // generate component testID or accessibilityLabel based on Platform.OS
-  const checkboxID =
-    Platform.OS === 'android' ? {accessibilityLabel: id} : {testID: id};
+  const checkboxID = Platform.OS === "android" ? { accessibilityLabel: id } : { testID: id };
 
   return (
     <Pressable {...checkboxID} hitSlop={sizes.s} onPress={handlePress}>
@@ -43,7 +37,8 @@ const Checkbox = ({
         height={sizes.checkboxHeight}
         radius={sizes.checkboxRadius}
         gradient={checked ? colors.checkbox : undefined}
-        {...props}>
+        {...props}
+      >
         {checked && (
           <Image
             source={icons.check}

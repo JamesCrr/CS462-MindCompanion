@@ -30,6 +30,7 @@ import {
   ViewEvent,
   StaffCharts,
   EventRecord,
+  TrackLocation,
 } from "../screens";
 import { useNavigation } from "@react-navigation/native";
 
@@ -39,6 +40,7 @@ import { UserContext } from "../hooks/userContext";
 import { useContext } from "react";
 import staffAttendanceLocations from "../screens/StaffAttendanceLocations";
 import staffAttendanceLocation from "../screens/StaffAttendanceLocation";
+import BgTask from "../screens/BgTask";
 
 const Stack = createStackNavigator();
 
@@ -219,14 +221,18 @@ export default () => {
         name="EditEvent"
         component={EditEvent}
         options={{
-          title: t("navigation.eventId"),
+          title: "Edit event",
+          ...screenOptions.rental,
         }}
       />
 
       <Stack.Screen
         name="CaregiverCalendar"
         component={CaregiverCalendar}
-        options={{ title: t("navigation.caregivercalendar"), ...screenOptions.rental }}
+        options={{
+          title: t("navigation.caregivercalendar"),
+          ...screenOptions.rental,
+        }}
       />
 
       <Stack.Screen
@@ -242,14 +248,22 @@ export default () => {
         name="StaffAttendanceLocations"
         component={staffAttendanceLocations}
         options={{
-          title: t("navigation.eventId"),
+          title: t("navigation.locations"),
         }}
       />
       <Stack.Screen
         name="StaffAttendanceLocation"
         component={staffAttendanceLocation}
         options={{
-          title: t("navigation.eventId"),
+          title: t("navigation.takeAttendance"),
+        }}
+      />
+
+      <Stack.Screen
+        name="BgTask"
+        component={BgTask}
+        options={{
+          title: t("navigation.locationTracking") || "Background Location Tracking",
         }}
       />
 
@@ -273,11 +287,15 @@ export default () => {
         options={{
           title: t("navigation.staffcharts"),
           ...screenOptions.rental,
-          // headerLeft: () => (
-          //   <TouchableOpacity onPress={() => navigation.goBack()}>
-          //     <Text style={{ color: "blue", marginRight: 10 }}>Back</Text>
-          //   </TouchableOpacity>
-          // ),
+        }}
+      />
+
+      <Stack.Screen
+        name="TrackLocation"
+        component={TrackLocation}
+        options={{
+          title: t("navigation.tracklocation"),
+          ...screenOptions.rental,
         }}
       />
     </Stack.Navigator>

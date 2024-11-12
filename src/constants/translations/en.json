@@ -78,7 +78,8 @@
     "profile": "Profile",
     "settings": "Settings",
     "register": "Create account",
-    "extra": "Extra - Automotive"
+    "extra": "Extra - Automotive",
+    "locationTracking": "Location Tracking"
   },
   "navigation": {
     "home": "Home",
@@ -101,7 +102,13 @@
     "shopping": "Shopping Cart",
     "checklist": "Items Checklist",
     "staffcharts": "Charts",
-    "eventRecords": "Event Records"
+    "eventRecords": "Event Records",
+    "caregivercalendar": "Calendar",
+    "backgroundTracking": "Background Tracking",
+    "locationTracking": "Location Tracking",
+    "locations": "Locations",
+    "takeAttendance": "Take Attendance",
+    "tracklocation": "Check Participants Location"
   },
   "menu": {
     "started": "Getting Started",
@@ -113,6 +120,10 @@
     "title": "Soft UI",
     "following": "Following",
     "trending": "Trending"
+  },
+  "staffhome": {
+    "addevent": "Add Event",
+    "statistics": "Statistics for Month"
   },
   "extras": {
     "title1": "Want to try before",
@@ -184,7 +195,8 @@
     "moreOptions": "You can see more options from other categories.",
     "joinEvent": "Join Event",
     "publish": "Publish Event",
-    "takeAttendance": "Take Attendace"
+    "takeAttendance": "Take Attendace",
+    "tracklocation": "Check Participants Location"
   },
   "eventRecords": {
     "title": "Event Records",
@@ -235,5 +247,9 @@
       "generatesheets": "Generate Sheets",
       "generating": "Generating"
     }
+  },
+  "caregivercalendar": {
+    "title": "Calendar",
+    "addevent": "Add Event"
   }
 }

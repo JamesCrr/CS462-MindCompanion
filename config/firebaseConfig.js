@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, initializeFirestore } from "firebase/firestore";
 import { setLogLevel as setFirestoreLogLevel } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 // setFirestoreLogLevel("debug");
 
 const firebaseConfig = {
@@ -19,4 +20,5 @@ const db = getFirestore(app);
 //   experimentalForceLongPolling: true,
 //   useFetchStreams: false,
 // });
-export { db };
+const storage = getStorage(app);
+export { db, storage };

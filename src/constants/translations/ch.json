@@ -74,7 +74,8 @@
     "profile": "个人资料",
     "settings": "设置",
     "register": "创建账户",
-    "extra": "额外 - 汽车"
+    "extra": "额外 - 汽车",
+    "locationTracking": "位置追踪"
   },
   "navigation": {
     "home": "家",
@@ -98,7 +99,12 @@
     "shopping": "购物车",
     "checklist": "物品清单",
     "staffcharts": "事件图表",
-    "eventRecords": "活动记录"
+    "eventRecords": "活动记录",
+    "caregivercalendar": "日历",
+    "locationTracking": "位置追踪",
+    "locations": "地点",
+    "takeAttendance": "签到",
+    "tracklocation": "追踪参与者位置"
   },
   "menu": {
     "started": "入门",
@@ -107,9 +113,13 @@
     "login": "登录"
   },
   "home": {
-    "title": "Soft UI",
+    "title": "软用户界面",
     "following": "关注",
     "trending": "趋势"
+  },
+  "staffhome": {
+    "addevent": "添加事件",
+    "statistics": "本月统计数据"
   },
   "extras": {
     "title1": "想在购买前试用",
@@ -180,7 +190,8 @@
     "notFound2": " 在我们的应用中。",
     "moreOptions": "您可以从其他类别中查看更多选项。",
     "joinEvent": "加入活动",
-    "publish": "发布活动"
+    "publish": "发布活动",
+    "tracklocation": "追踪参与者位置"
   },
   "profile": {
     "title": "个人资料",
@@ -216,5 +227,9 @@
       "generatesheets": "生成至表格",
       "generating": "正在生成"
     }
+  },
+  "caregivercalendar": {
+    "title": "日历",
+    "addevent": "添加事件"
   }
 }

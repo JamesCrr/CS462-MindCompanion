@@ -6,22 +6,24 @@ import { UserContext } from "../hooks/userContext";
 import { format, addDays } from "date-fns";
 import { collection, getDocs, DocumentData } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
-import { useTheme } from "../hooks";
+import { useTheme, useTranslation } from "../hooks";
 
 interface Event {
   name: string;
   location: string;
   information: string;
   datetime: Date;
-  published: boolean;
-  id?: string;
   meetUpLocations?: string[];
   itemsToBring?: string[];
   participants?: string[];
   volunteers?: string[];
+  participantAttendance?: string[];
+  volunteerAttendance?: string[];
+  published?: boolean;
 }
 
 const CaregiverCalendarView = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const { identity } = useContext(UserContext);
   const { assets, colors, gradients, sizes } = useTheme();
@@ -52,6 +54,8 @@ const CaregiverCalendarView = () => {
         itemsToBring: doc.data().itemsToBring || [],
         participants: doc.data().participants || [],
         volunteers: doc.data().volunteers || [],
+        participantAttendance: doc.data().participantAttendance || [],
+        volunteerAttendance: doc.data().volunteerAttendance || [],
         published: doc.data().published,
       };
       events.push(event);
@@ -66,6 +70,17 @@ const CaregiverCalendarView = () => {
     retrieveData();
     setCurrentDate(new Date());
   }, []);
+
+  // Add a new useEffect to listen for focus events
+  useEffect(() => {
+    // Add listener for when the screen comes into focus
+    const unsubscribe = navigation.addListener('focus', () => {
+      retrieveAllEvents(); // Re-fetch events when screen is focused
+    });
+
+    // Cleanup subscription on unmount
+    return unsubscribe;
+  }, [navigation]);
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -110,7 +125,8 @@ const CaregiverCalendarView = () => {
                 <ScrollView>
                   {events
                     .filter((event) => {
-                      return formatDate(event.datetime.toISOString()) === formatDate(day.toISOString());
+                      return formatDate(event.datetime.toISOString()) === formatDate(day.toISOString()) 
+                        && event.published === true;
                     })
                     .map((event) => (
                       <TouchableOpacity
@@ -165,46 +181,62 @@ const CaregiverCalendarView = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
   };
 
+  const renderLegend = () => {
+    return (
+      <View style={styles.legend}>
+        <View style={styles.legendItem}>
+          <View style={[styles.legendColor, { backgroundColor: 'lightgreen' }]} />
+          <Text>Available Events</Text>
+        </View>
+        <View style={styles.legendItem}>
+          <View style={[styles.legendColor, { backgroundColor: 'lightblue' }]} />
+          <Text>Joined Events</Text>
+        </View>
+      </View>
+    );
+  };
+
   return (
-    <Block row marginVertical={sizes.sm}>
-      <Block card marginHorizontal={sizes.xs}>
-        {/* {identity && <Text h5={true}>Current role is {identity["type"]}</Text>} */}
+    <Block scroll showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: sizes.padding }}>
+      <Block row marginVertical={sizes.sm}>
+        <Block card marginHorizontal={sizes.xs}>
+          <SafeAreaView style={styles.safeArea}>
+            <View style={styles.container}>
+              <View style={styles.header}>
+                <Text h5>Calendar</Text>
+                <View style={styles.navigationButtons}>
+                  <Button gradient={gradients.primary} onPress={prevPeriod}>
+                    <Text white bold transform="uppercase" marginHorizontal={sizes.sm}>
+                      &lt;
+                    </Text>
+                  </Button>
 
-        <SafeAreaView style={styles.safeArea}>
-          <View style={styles.container}>
-            <View style={styles.header}>
-              <View style={styles.navigationButtons}>
-                <Button gradient={gradients.dark} onPress={prevPeriod}>
-                  <Text white bold transform="uppercase" marginHorizontal={sizes.sm}>
-                    &lt;
-                  </Text>
-                </Button>
-
-                <Text h5 paddingHorizontal={sizes.xs}>
-                  {format(currentDate, "MMMM yyyy")}
-                </Text>
-                <Button gradient={gradients.dark} onPress={nextPeriod}>
-                  <Text white bold transform="uppercase" marginHorizontal={sizes.sm}>
-                    &gt;
-                  </Text>
-                </Button>
+                  <Text paddingHorizontal={sizes.xs}>{format(currentDate, "MMMM yyyy")}</Text>
+                  <Button gradient={gradients.primary} onPress={nextPeriod}>
+                    <Text white bold transform="uppercase" marginHorizontal={sizes.sm}>
+                      &gt;
+                    </Text>
+                  </Button>
+                </View>
               </View>
+              {renderLegend()}
+              {renderMonthView()}
+              {/* Only show Add Event button for admin/organizer roles */}
+              {identity && ["Staff", "organizer"].includes(identity.type) && (
+                <Button
+                  flex={1}
+                  gradient={gradients.primary}
+                  marginVertical={sizes.base}
+                  onPress={() => navigation.navigate("AddEvent")}
+                >
+                  <Text white bold transform="uppercase">
+                    {t("caregivercalendar.addevent")}
+                  </Text>
+                </Button>
+              )}
             </View>
-            {renderMonthView()}
-            {/* Only show Add Event button for admin/organizer roles */}
-            {/* {identity && ["Staff", "organizer"].includes(identity.type) && (
-              <Button
-                flex={1}
-                gradient={gradients.success}
-                marginVertical={sizes.base}
-              >
-                <Text white bold transform="uppercase">
-                  Add Event
-                </Text>
-              </Button>
-            )} */}
-          </View>
-        </SafeAreaView>
+          </SafeAreaView>
+        </Block>
       </Block>
     </Block>
   );
@@ -272,6 +304,22 @@ const styles = StyleSheet.create({
   },
   buttons: {
     margin: 5,
+  },
+  legend: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 10,
+    gap: 20,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  legendColor: {
+    width: 16,
+    height: 16,
+    borderRadius: 4,
   },
 });
 
