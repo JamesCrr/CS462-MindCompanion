@@ -52,6 +52,7 @@ interface Event {
   location: string;
   information: string;
   datetime: Date;
+  published: boolean;
   meetUpLocations?: string[];
   itemsToBring?: string[];
   participants?: string[];
@@ -108,6 +109,7 @@ export default function StaffAttendanceLocation() {
   const navigation = useNavigation();
   const [event, setEvent] = useState<Event>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingData, setLoadingData] = useState<boolean>(false);
   const { assets, colors, gradients, sizes } = useTheme();
   const [volunteerData, setVolunteerData] = useState<Set<string>>(new Set());
   const [participantData, setParticipantData] = useState<Set<string>>(
@@ -163,7 +165,7 @@ export default function StaffAttendanceLocation() {
 
   useEffect(() => {
     let lastCall = 0;
-    let changed = false;
+
     if (isScanning && allUsers && event) {
       try {
         Beacons.startMonitoringForRegion(REGION);
@@ -175,13 +177,43 @@ export default function StaffAttendanceLocation() {
       const beaconScanner = DeviceEventEmitter.addListener(
         "beaconsDidRange",
         async (data: BeaconsData) => {
+          let changed = false;
+          var myevent = event;
           const now = Date.now();
-          if (now - lastCall > 10000) {
+          if (now - lastCall > 5000) {
             lastCall = now;
 
             console.log("BEACONS:", data);
             // Process each detected beacon
+            if (loadingData) {
+              console.log("FS");
 
+              // Get participants for this location and volunteers
+              const locationParticipants =
+                event?.participants
+                  ?.filter((p) => p.split(",")[1] === location)
+                  .map((p) => p.split(",")[0]) || [];
+              const volunteers = event?.volunteers || [];
+
+              // Add a beacon for each user
+              [...locationParticipants, ...volunteers].forEach((userName) => {
+                const matchedUser = allUsers?.find(
+                  (user) => user.name === userName
+                );
+                if (matchedUser?.uuid) {
+                  data.beacons.push({
+                    distance: 0.006325537089737412,
+                    major: 1,
+                    minor: 6,
+                    proximity: "immediate",
+                    rssi: -38,
+                    uuid: matchedUser.uuid,
+                  });
+                }
+              });
+
+              setLoadingData(false);
+            }
             for (const beacon of data.beacons) {
               const beaconId = beacon.uuid;
               console.log(beaconId, "beaconId");
@@ -213,41 +245,37 @@ export default function StaffAttendanceLocation() {
                       console.log("MATCHED USER IN EVENT");
                       changed = true;
                       if (matchedUser.type == "Volunteer") {
-                        const updatedEvent = {
-                          ...event,
+                        myevent = {
+                          ...myevent,
                           volunteerAttendance: Array.from(
                             new Set([
-                              ...(event.volunteerAttendance || []),
+                              ...(myevent.volunteerAttendance || []),
                               matchedUser.id,
                             ])
                           ),
                         };
-                        setEvent(updatedEvent);
                         setVolunteerData(
                           (prev) => new Set([...prev, matchedUser.name])
                         );
                         setNotAttendedVolunteers((prev) =>
                           prev.filter((v) => v !== matchedUser.name)
                         );
-                        await saveChanges(updatedEvent);
                       } else if (matchedUser.type === "Caregiver") {
-                        const updatedEvent = {
-                          ...event,
+                        myevent = {
+                          ...myevent,
                           participantAttendance: Array.from(
                             new Set([
-                              ...(event.participantAttendance || []),
+                              ...(myevent.participantAttendance || []),
                               matchedUser.id,
                             ])
                           ),
                         };
-                        setEvent(updatedEvent);
                         setParticipantData(
                           (prev) => new Set([...prev, matchedUser.name])
                         );
                         setNotAttendedParticipants((prev) =>
                           prev.filter((p) => p !== matchedUser.name)
                         );
-                        await saveChanges(updatedEvent);
                       }
                     }
                   }
@@ -258,6 +286,10 @@ export default function StaffAttendanceLocation() {
                 console.log("end task");
               }
             }
+          }
+          if (changed) {
+            setEvent(myevent);
+            await saveChanges(myevent);
           }
         }
       );
@@ -271,7 +303,7 @@ export default function StaffAttendanceLocation() {
       Beacons.stopMonitoringForRegion(REGION);
       Beacons.stopRangingBeaconsInRegion(REGION);
     }
-  }, [isScanning, processedBeacons, allUsers]);
+  }, [isScanning, processedBeacons, allUsers, loadingData]);
   // Map Firestore document to the Event type
   const mapFirestoreToEvent = (eventDoc: DocumentData): Event => {
     return {
@@ -285,6 +317,7 @@ export default function StaffAttendanceLocation() {
       volunteers: eventDoc.volunteers || [],
       participantAttendance: eventDoc.participantAttendance || [],
       volunteerAttendance: eventDoc.volunteerAttendance || [],
+      published: eventDoc.published || false,
     };
   };
 
@@ -427,6 +460,7 @@ export default function StaffAttendanceLocation() {
             ))}
           </Block>
         </Block>
+        <Text onPress={() => setLoadingData(true)}>FS</Text>
       </ScrollView>
     </Block>
   );
