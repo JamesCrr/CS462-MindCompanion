@@ -119,58 +119,75 @@ const CaregiverCalendarView = () => {
             <Text>{day}</Text>
           </View>
         ))}
-        {monthDays.map((day, index) => (
-          <View key={index} style={styles.dayCell}>
-            {day && (
-              <>
-                <Text style={styles.dayNumber}>{day.getDate()}</Text>
-                <ScrollView>
-                  {events
-                    .filter((event) => {
-                      return formatDate(event.datetime.toISOString()) === formatDate(day.toISOString()) 
-                        && event.published === true;
-                    })
-                    .map((event) => (
-                      <TouchableOpacity
-                        key={event.id}
-                        onPress={() =>
-                          navigation.navigate("ViewEvent", {
-                            eventId: event.id,
-                          })
-                        }
-                      >
-                        <View
-                          style={[
-                            styles.event,
-                            {
-                              backgroundColor:
-                                identity?.type === "Caregiver"
-                                  ? event.participants?.some(
-                                      (participant) => participant.split(",")[0] === identity?.name
-                                    )
-                                    ? "lightblue"
-                                    : "lightgreen"
-                                  : identity?.type === "Volunteer"
-                                  ? event.volunteers?.includes(identity?.name)
-                                    ? "lightblue"
-                                    : "lightgreen"
-                                  : "lightgreen", // default color for other types (e.g., Staff)
-                            },
-                          ]}
-                        >
-                          <Text style={styles.eventTitle}>{event.name}</Text>
-                          <Text style={styles.eventTime}>
-                            {String(event.datetime.getHours()).padStart(2, "0")}:
-                            {String(event.datetime.getMinutes()).padStart(2, "0")}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    ))}
-                </ScrollView>
-              </>
-            )}
-          </View>
-        ))}
+        {monthDays.map((day, index) => {
+          if (day) {
+            const dayEvents = events.filter((event) => 
+              formatDate(event.datetime.toISOString()) === formatDate(day.toISOString()) 
+              && event.published === true
+            );
+          }
+          
+          return (
+            <View key={index} style={styles.dayCell}>
+              {day && (
+                <>
+                  <Text style={styles.dayNumber}>{day.getDate()}</Text>
+                  <ScrollView 
+                    style={styles.eventScrollView}
+                    showsVerticalScrollIndicator={false}
+                    nestedScrollEnabled={true}
+                    scrollEnabled={true}
+                  >
+                    <View style={styles.eventsContainer}>
+                      {events
+                        .filter((event) => 
+                          formatDate(event.datetime.toISOString()) === formatDate(day.toISOString()) 
+                          && event.published === true
+                        )
+                        .sort((a, b) => a.datetime.getTime() - b.datetime.getTime())
+                        .map((event) => (
+                          <TouchableOpacity
+                            key={event.id}
+                            onPress={() =>
+                              navigation.navigate("ViewEvent", {
+                                eventId: event.id,
+                              })
+                            }
+                          >
+                            <View
+                              style={[
+                                styles.event,
+                                {
+                                  backgroundColor:
+                                    identity?.type === "Caregiver"
+                                      ? event.participants?.some(
+                                          (participant) => participant.split(",")[0] === identity?.name
+                                        )
+                                        ? "lightblue"
+                                        : "lightgreen"
+                                      : identity?.type === "Volunteer"
+                                      ? event.volunteers?.includes(identity?.name)
+                                        ? "lightblue"
+                                        : "lightgreen"
+                                      : "lightgreen",
+                                },
+                              ]}
+                            >
+                              <Text style={styles.eventTitle} numberOfLines={1}>{event.name}</Text>
+                              <Text style={styles.eventTime}>
+                                {String(event.datetime.getHours()).padStart(2, "0")}:
+                                {String(event.datetime.getMinutes()).padStart(2, "0")}
+                              </Text>
+                            </View>
+                          </TouchableOpacity>
+                        ))}
+                    </View>
+                  </ScrollView>
+                </>
+              )}
+            </View>
+          );
+        })}
       </View>
     );
   };
@@ -282,26 +299,38 @@ const styles = StyleSheet.create({
   dayCell: {
     width: "14.28%",
     height: 100,
-    borderTopWidth: 1, // Add top border
-    borderColor: "#ccc", // Color for both borders
-    padding: 5,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 2,
   },
   dayNumber: {
     fontWeight: "bold",
+    marginBottom: 2,
+    fontSize: 10,
+  },
+  eventScrollView: {
+    flex: 1,
+    height: 75,
+  },
+  eventsContainer: {
+    flexGrow: 1,
   },
   event: {
     padding: 2,
-    marginBottom: 2,
+    marginBottom: 1,
     borderRadius: 3,
-    minHeight: 20, // Add this to make events more visible
+    minHeight: 15,
   },
   eventTitle: {
-    color: "black", // Change to black for better visibility
-    fontSize: 8, // Increase from 1 to 8
+    color: "black",
+    fontSize: 8,
+    fontWeight: '500',
+    lineHeight: 10,
   },
   eventTime: {
-    color: "black", // Change to black for better visibility
-    fontSize: 8, // Increase from 1 to 8
+    color: "black",
+    fontSize: 7,
+    lineHeight: 8,
   },
   buttons: {
     margin: 5,
