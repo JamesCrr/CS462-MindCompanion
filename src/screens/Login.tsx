@@ -130,7 +130,7 @@ const Login = () => {
                   {t("login.roleselection")}
                 </Text>
                 <Block row flex={0} justify="space-between" marginBottom={sizes.sm}>
-                  {["Staff", "Participant", "Volunteer"].map((type) => (
+                  {["Staff", "Caregiver", "Volunteer"].map((type) => (
                     <Button
                       key={type}
                       flex={0}
@@ -145,7 +145,7 @@ const Login = () => {
                         transform="uppercase"
                         color={selectedType === type ? colors.white : colors.primary}
                       >
-                        {t(`login.${type.toLowerCase()}`)}
+                        {t(`login.${(type == "Caregiver" ? "Participant" : type).toLowerCase()}`)}
                       </Text>
                     </Button>
                   ))}

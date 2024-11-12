@@ -7,6 +7,7 @@ import { format, addDays } from "date-fns";
 import { collection, getDocs, DocumentData } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import { useTheme, useTranslation } from "../hooks";
+import EventNotification from "../components/EventNotification";
 
 interface Event {
   name: string;
@@ -31,13 +32,6 @@ const Home = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [todayDate] = useState(new Date());
   const [view, setView] = useState<"month" | "week" | "day">("month");
-
-  // useEffect(() => {
-  //   console.log("identity:", identity);
-  //   if (identity == null) {
-  //     navigation.replace("Login");
-  //   }
-  // }, [identity]);
 
   const retrieveAllEvents = async () => {
     var events: Event[] = [];
@@ -66,6 +60,11 @@ const Home = () => {
     retrieveData();
     setCurrentDate(new Date());
   }, []);
+
+  // Add this check for identity
+  if (!identity) {
+    return null;
+  }
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -153,6 +152,7 @@ const Home = () => {
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingBottom: sizes.padding * 1.5 }}
     >
+      <EventNotification />
       <Block center>
         {identity && (
           <Text h5={true} center>
