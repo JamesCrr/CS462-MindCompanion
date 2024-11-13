@@ -109,7 +109,6 @@ const Participant = ({
           </Text>
         </Button>
       </Block>
-    </Block>
   );
 };
 
