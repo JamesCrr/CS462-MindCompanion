@@ -145,8 +145,8 @@
     "title1": "Event Participants",
     "description": "Manage your event participants",
     "list": "Participants List",
-    "viewFeedback": "View Feedback",
-    "viewItemsToBring": "View Items"
+    "viewFeedback": "Feedback",
+    "viewItemsToBring": "Items"
   },
   "register": {
     "title": "Welcome",
@@ -239,7 +239,7 @@
     "noOfMedals": "Medals",
     "noOfPodiums": "Podiums",
     "totalScore": "Total Score",
-    "noOfActivitiesAttended": "Activities Attended",
+    "noOfActivitiesAttended": "Activities Attended"
   },
   "notifications": {
     "title": "Notifications",
