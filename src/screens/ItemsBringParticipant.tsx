@@ -53,32 +53,32 @@ const ItemsBringParticipant = () => {
     fetchItemsToBring(eventId);
   }, [eventId]);
 
-  useEffect(() => {
-    console.log("thingsToBring", thingsToBring);
-    const fetchItems = async () => {
-      console.log("Id", participantId);
-      try {
-        const itemsBought = await findItemsForClient(participantId);
-        console.log("Items bought", itemsBought);
+  // useEffect(() => {
+  //   console.log("thingsToBring", thingsToBring);
+  //   const fetchItems = async () => {
+  //     console.log("Id", participantId);
+  //     try {
+  //       const itemsBought = await findItemsForClient(participantId);
+  //       console.log("Items bought", itemsBought);
 
-        areItemsBrought(itemsBought);
+  //       areItemsBrought(itemsBought);
 
-        const intervalId = setInterval(() => areItemsBrought(itemsBought), 1000); // Runs every second
-        // Cleanup function
-        return () => {
-          clearInterval(intervalId); // Clears the interval when the component unmounts
-          console.log("Interval cleared");
-        };
-      } catch (error) {
-        console.error("Error fetching items for client:", error);
-      }
-    };
+  //       const intervalId = setInterval(() => areItemsBrought(itemsBought), 1000); // Runs every second
+  //       // Cleanup function
+  //       return () => {
+  //         clearInterval(intervalId); // Clears the interval when the component unmounts
+  //         console.log("Interval cleared");
+  //       };
+  //     } catch (error) {
+  //       console.error("Error fetching items for client:", error);
+  //     }
+  //   };
 
-    if (thingsToBring.length > 0) {
-      console.log("Fetching items");
-      fetchItems();
-    }
-  }, [participantId, thingsToBring]);
+  //   if (thingsToBring.length > 0) {
+  //     console.log("Fetching items");
+  //     fetchItems();
+  //   }
+  // }, [participantId, thingsToBring]);
 
   // useEffect(() => {
   //   console.log("EventId:", eventId);
@@ -116,6 +116,40 @@ const ItemsBringParticipant = () => {
   //   fetchItems();
   // }, [thingsToBring]);
 
+
+  useEffect(() => {
+    console.log("thingsToBring", thingsToBring);
+
+    const fetchItems = async () => {
+      console.log("Id", participantId);
+      try {
+        const itemsBought = await findItemsForClient(participantId);
+        console.log("Items bought", itemsBought);
+        areItemsBrought(itemsBought);
+      } catch (error) {
+        console.error("Error fetching items for client:", error);
+      }
+    };
+
+    // Only set up the interval if there are items to bring
+    if (thingsToBring.length > 0) {
+      console.log("Fetching items");
+
+      // Immediately fetch items once
+      fetchItems();
+
+      // Set up interval to fetch items every 2 seconds
+      const intervalId = setInterval(fetchItems, 2000); // Runs every 2 seconds
+
+      // Cleanup function to clear the interval when the component unmounts
+      return () => {
+        clearInterval(intervalId);
+        console.log("Interval cleared");
+      };
+    }
+  }, [participantId, thingsToBring]);
+
+  
   const CARD_WIDTH = sizes.width - sizes.s;
   const hasSmallScreen = sizes.width < 414; // iPhone 11
   const SNAP_OFFSET = CARD_WIDTH - (hasSmallScreen ? 28 : 19) + sizes.s;

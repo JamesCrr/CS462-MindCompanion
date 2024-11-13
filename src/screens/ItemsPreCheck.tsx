@@ -39,27 +39,30 @@ const ItemsPreCheck = () => {
   useEffect(() => {
     console.log("EventId:", eventId);
     console.log("thingsToBring", thingsToBring);
+  
     const fetchItems = async () => {
       console.log("Identity", identity);
       try {
         const itemsBought = await findItemsForClient(identity.id);
         console.log("Items bought", itemsBought);
-
         areItemsBrought(itemsBought);
-
-        const intervalId = setInterval(() => areItemsBrought(itemsBought), 1000); // Runs every second
-        // Cleanup function
-        return () => {
-          clearInterval(intervalId); // Clears the interval when the component unmounts
-          console.log("Interval cleared");
-        };
       } catch (error) {
         console.error("Error fetching items for client:", error);
       }
     };
 
-    fetchItems();
+    // Call fetchItems every 2 seconds
+    const intervalId = setInterval(fetchItems, 2000); // Runs every 2 seconds
+  
+    // Cleanup function to clear the interval when the component unmounts
+    return () => {
+      clearInterval(intervalId);
+      console.log("Interval cleared");
+    };
   }, [identity, thingsToBring]);
+
+
+
 
   const CARD_WIDTH = sizes.width - sizes.s;
   const hasSmallScreen = sizes.width < 414; // iPhone 11
