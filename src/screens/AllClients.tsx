@@ -136,7 +136,7 @@ const AllClients = () => {
 
         if (user.type === "Caregiver") {
           user.image = imageMapping[user.image as keyof typeof imageMapping] || imageMapping['default'];
-          const { password, stats, ...userInfo } = user;
+          const { password, ...userInfo } = user;
           console.log("User Info", userInfo);
           return userInfo;
         }
