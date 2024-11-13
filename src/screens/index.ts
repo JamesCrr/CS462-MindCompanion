@@ -32,3 +32,5 @@ export { default as EventRecord } from "./EventRecord";
 export { default as TrackLocation } from "./TrackLocation";
 export { default as FeedbackParticipant } from "./FeedbackParticipant";
 export { default as ItemsBringParticipant } from "./ItemsBringParticipant";
+export { default as AllClients } from "./AllClients";
+export { default as ClientProfile } from "./ClientProfile";

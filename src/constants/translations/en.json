@@ -100,6 +100,8 @@
     "register": "Register",
     "login": "Login",
     "eventParticipants": "Event Participants",
+    "allClients": "All Clients",
+    "clientProfile": "Client Profile",
     "extra": "Automotive",
     "shopping": "Shopping Cart",
     "checklist": "Items Checklist",
@@ -126,7 +128,8 @@
   },
   "staffhome": {
     "addevent": "Add Event",
-    "statistics": "Statistics for Month"
+    "statistics": "Statistics for Month",
+    "allClients": "All Clients"
   },
   "extras": {
     "title1": "Want to try before",
@@ -147,6 +150,13 @@
     "list": "Participants List",
     "viewFeedback": "Feedback",
     "viewItemsToBring": "Items"
+  },
+  "allClients": {
+    "title1": "All Clients",
+    "description": "All Clients",
+    "list": "Client List",
+    "viewFeedback": "View Feedback",
+    "viewItemsToBring": "View Items"
   },
   "register": {
     "title": "Welcome",

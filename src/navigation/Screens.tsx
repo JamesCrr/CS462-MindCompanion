@@ -34,6 +34,7 @@ import {
   EventRecord,
   TrackLocation,
   ItemsBringParticipant,
+  ClientProfile,
 } from "../screens";
 import { useNavigation } from "@react-navigation/native";
 
@@ -44,6 +45,7 @@ import { useContext } from "react";
 import staffAttendanceLocations from "../screens/StaffAttendanceLocations";
 import staffAttendanceLocation from "../screens/StaffAttendanceLocation";
 import BgTask from "../screens/BgTask";
+import AllClients from "../screens/AllClients";
 
 const Stack = createStackNavigator();
 
@@ -179,6 +181,9 @@ export default () => {
 
       <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
 
+      <Stack.Screen name="ClientProfile" component={ClientProfile} options={{ headerShown: false }}/>
+
+
       <Stack.Screen
         name="Settings"
         component={Settings}
@@ -224,6 +229,12 @@ export default () => {
         name="Participants"
         component={Participants}
         options={{ title: t("navigation.eventParticipants"), ...screenOptions.back, }}
+      />
+
+<Stack.Screen
+        name="AllClients"
+        component={AllClients}
+        options={{ title: t("navigation.allClients"), ...screenOptions.back, }}
       />
 
       <Stack.Screen

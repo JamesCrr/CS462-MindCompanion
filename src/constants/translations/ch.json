@@ -96,6 +96,9 @@
     "privacy": "隐私",
     "register": "注册",
     "login": "登录",
+    "eventParticipants": "活动参与者",
+    "clientProfile": "客户资料",
+    "allClients": "所有客户",
     "extra": "汽车",
     "shopping": "购物车",
     "checklist": "物品清单",
@@ -121,7 +124,8 @@
   },
   "staffhome": {
     "addevent": "添加事件",
-    "statistics": "本月统计数据"
+    "statistics": "本月统计数据",
+    "allClients": "所有客户"
   },
   "extras": {
     "title1": "想在购买前试用",

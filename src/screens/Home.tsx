@@ -196,6 +196,15 @@ const Home = () => {
                 {t("staffhome.statistics")}
               </Text>
             </Button>
+            <Button
+              gradient={gradients.primary}
+              marginTop={sizes.s}
+              onPress={() => navigation.navigate("AllClients")}
+            >
+              <Text bold white>
+                {t("staffhome.allClients")}
+              </Text>
+            </Button>
           </Block>
         )}
       </View>
