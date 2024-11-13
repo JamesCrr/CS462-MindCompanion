@@ -11,7 +11,7 @@ import { UserContext } from "../hooks/userContext";
 const isAndroid = Platform.OS === "android";
 
 const Login = () => {
-  const { isDark } = useData();
+  const { isDark, fetchEvents } = useData();
   const { t } = useTranslation();
   const navigation = useNavigation();
   const { login } = useContext(UserContext);
@@ -95,6 +95,8 @@ const Login = () => {
       setError("An error occurred during sign in");
       setLoading(false);
     }
+
+    fetchEvents();
   }, [loginData, selectedType, login, navigation]);
 
   return (
