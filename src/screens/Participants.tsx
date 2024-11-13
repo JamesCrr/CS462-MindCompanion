@@ -46,7 +46,7 @@ const Participant = ({
         transform="uppercase"
         success={available}
         danger={!available}>
-        {t(`extras.${available ? 'available' : 'unavailable'}`)}
+        {t(`extras.${available ? 'unavailable' : 'available'}`)}
       </Text>
       <Block row justify="space-evenly" marginTop={sizes.sm}>
         {/* <Button
@@ -196,16 +196,13 @@ const Participants = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingVertical: sizes.md}}>
         <Text h3 gradient={gradients.primary} end={[0.7, 0]}>
-          {t('extras.title1')}
-        </Text>
-        <Text h3 gradient={gradients.primary} end={[0.7, 0]}>
-          {t('extras.title2')}
+          {t('eventParticipants.title1')}
         </Text>
         <Text p marginVertical={sizes.sm}>
-          {t('extras.description')}
+          {t('eventParticipants.description')}
         </Text>
         <Text p semibold>
-          {t('extras.schedule')}
+          {t('eventParticipants.list')}
         </Text>
 
         {/* using map for items due to nested scrolls on same direction (vertical) */}
@@ -219,11 +216,11 @@ const Participants = () => {
       </Block>
 
       {/* contact us */}
-      <Button gradient={gradients.primary} marginTop={sizes.s}>
+      {/* <Button gradient={gradients.primary} marginTop={sizes.s}>
         <Text bold white transform="uppercase" marginHorizontal={sizes.sm}>
           {t('extras.contactUs')}
         </Text>
-      </Button>
+      </Button> */}
 
       {/* change time modal */}
       {/* <Modal

@@ -135,6 +135,11 @@
     "booked": "已预订",
     "contactUs": "联系我们"
   },
+  "participants": {
+    "title1": "管理您的活动参与者",
+    "description": "管理您的活动参与者",
+    "list": "参与者列表"
+  },
   "register": {
     "title": "欢迎",
     "subtitle": "注册"
