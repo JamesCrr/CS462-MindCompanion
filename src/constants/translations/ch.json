@@ -135,10 +135,12 @@
     "booked": "已预订",
     "contactUs": "联系我们"
   },
-  "participants": {
+  "eventParticipants": {
     "title1": "管理您的活动参与者",
     "description": "管理您的活动参与者",
-    "list": "参与者列表"
+    "list": "参与者列表",
+    "viewFeedback": "查看反馈",
+    "viewItemsToBring": "查看需要携带的物品"
   },
   "register": {
     "title": "欢迎",

@@ -26,6 +26,7 @@ const Participant = ({
   booked,
   available,
   onLeaveFeedback,
+  onViewItemsToBring,
   // onBook,
   // onSave,
   // onTimeSelect,
@@ -90,10 +91,21 @@ const Participant = ({
           flex={0.5}
           // disabled={!available}
           onPress={() => onLeaveFeedback?.()}
+          marginHorizontal={sizes.s}
           gradient={gradients.primary}>
           <Text bold white transform="uppercase" marginHorizontal={sizes.sm}>
             {/* {t(booked ? 'extras.booked' : 'extras.book')} */}
-            View Feedback
+            {t('eventParticipants.viewFeedback')}
+          </Text>
+        </Button>
+        <Button
+          flex={0.5}
+          // disabled={!available}
+          onPress={() => onViewItemsToBring?.()}
+          gradient={gradients.primary}>
+          <Text bold white transform="uppercase" marginHorizontal={sizes.sm}>
+            {/* {t(booked ? 'extras.booked' : 'extras.book')} */}
+            {t('eventParticipants.viewItemsToBring')}
           </Text>
         </Button>
       </Block>
@@ -189,6 +201,11 @@ const Participants = () => {
     navigation.navigate("FeedbackParticipant", { leaveFeedback: true, eventId: params.eventId, eventDetails: eventDetails, userRecord: userRecord, participantName: participantName }); 
   }
 
+  const handleViewItemsToBring = async (participant: any) => {
+    console.log("Viewing Items for Participant", participant.name, participant.id,  params.eventId);
+    navigation.navigate("ItemsBringParticipant", { eventId: params.eventId, participantId: participant.id});
+  }
+
   return (
     <Block safe marginHorizontal={sizes.padding} paddingBottom={sizes.sm}>
       <Block
@@ -211,6 +228,7 @@ const Participants = () => {
             {...participant}
             key={`participant-${participant?.name}`}
             onLeaveFeedback={() => {handleLeaveFeedback(participant?.name)}}
+            onViewItemsToBring={() => {handleViewItemsToBring(participant)}}
           />
         ))}
       </Block>

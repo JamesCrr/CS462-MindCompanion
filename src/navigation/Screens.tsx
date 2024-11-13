@@ -33,6 +33,7 @@ import {
   StaffCharts,
   EventRecord,
   TrackLocation,
+  ItemsBringParticipant,
 } from "../screens";
 import { useNavigation } from "@react-navigation/native";
 
@@ -292,6 +293,15 @@ export default () => {
           //     <Text style={{ color: "blue", marginRight: 10 }}>Back</Text>
           //   </TouchableOpacity>
           // ),
+        }}
+      />
+
+<Stack.Screen
+        name="ItemsBringParticipant"
+        component={ItemsBringParticipant}
+        options={{
+          title: t("navigation.checklist"),
+           ...screenOptions.back
         }}
       />
 

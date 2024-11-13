@@ -143,7 +143,9 @@
   "eventParticipants": {
     "title1": "Event Participants",
     "description": "Manage your event participants",
-    "list": "Participants List"
+    "list": "Participants List",
+    "viewFeedback": "View Feedback",
+    "viewItemsToBring": "View Items"
   },
   "register": {
     "title": "Welcome",
