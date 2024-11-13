@@ -4,6 +4,7 @@ import { useNavigation, useRoute } from "@react-navigation/core";
 import { useTheme, useTranslation } from "../hooks";
 import { Block, Button, Text } from "../components";
 import { UserContext } from "../hooks/userContext";
+import { findItemsForClient } from "../../api/subscribe";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ItemsPreCheck = () => {
@@ -11,6 +12,7 @@ const ItemsPreCheck = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { gradients, sizes } = useTheme();
+  const [itemsPresent, setItemsPresent] = useState([]);
   const [buttonProps, setButtonProps] = useState([]);
 
   // Retrieve from route parameters
@@ -20,26 +22,44 @@ const ItemsPreCheck = () => {
   /**
    * Check if the item has been brought
    */
-  const areItemsBrought = async () => {
+  const areItemsBrought = async (itemsBought: any[]) => {
     let newProps = [];
-    for (let _ of thingsToBring) {
-      newProps.push({ success: true });
-      // newProps.push({danger:true})
+    const itemOrder = ["card", "umbrella", "water bottle"];
+    for (let item of thingsToBring) {
+      const index = itemOrder.indexOf(item.toLowerCase());
+      if (index !== -1 && itemsBought[index]) {
+        newProps.push({ success: true });
+      } else {
+        newProps.push({ danger: true });
+      }
     }
     setButtonProps(newProps);
   };
 
   useEffect(() => {
-    // console.log("eventId", eventId);
-    // console.log("thingsToBring", thingsToBring);
+    console.log("EventId:", eventId);
+    console.log("thingsToBring", thingsToBring);
+    const fetchItems = async () => {
+      console.log("Identity", identity);
+      try {
+        const itemsBought = await findItemsForClient(identity.id);
+        console.log("Items bought", itemsBought);
 
-    const intervalId = setInterval(areItemsBrought, 1000); // Runs every second
-    // Cleanup function
-    return () => {
-      clearInterval(intervalId); // Clears the interval when the component unmounts
-      console.log("Interval cleared");
+        areItemsBrought(itemsBought);
+
+        const intervalId = setInterval(() => areItemsBrought(itemsBought), 1000); // Runs every second
+        // Cleanup function
+        return () => {
+          clearInterval(intervalId); // Clears the interval when the component unmounts
+          console.log("Interval cleared");
+        };
+      } catch (error) {
+        console.error("Error fetching items for client:", error);
+      }
     };
-  }, []);
+
+    fetchItems();
+  }, [identity, thingsToBring]);
 
   const CARD_WIDTH = sizes.width - sizes.s;
   const hasSmallScreen = sizes.width < 414; // iPhone 11
