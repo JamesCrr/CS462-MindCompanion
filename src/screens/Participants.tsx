@@ -40,14 +40,14 @@ const Participant = ({
       <Text p semibold marginTop={sizes.sm} marginBottom={sizes.xs}>
         {name}
       </Text>
-      <Text
+      {/* <Text
         p
         bold
         transform="uppercase"
         success={available}
         danger={!available}>
         {t(`extras.${available ? 'available' : 'unavailable'}`)}
-      </Text>
+      </Text> */}
       <Block row justify="space-evenly" marginTop={sizes.sm}>
         {/* <Button
           flex={0.5}
@@ -93,7 +93,7 @@ const Participant = ({
           gradient={gradients.primary}>
           <Text bold white transform="uppercase" marginHorizontal={sizes.sm}>
             {/* {t(booked ? 'extras.booked' : 'extras.book')} */}
-            View Feedback
+            Give Feedback
           </Text>
         </Button>
       </Block>
@@ -195,10 +195,10 @@ const Participants = () => {
         scroll
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingVertical: sizes.md}}>
-        <Text h3 gradient={gradients.primary} end={[0.7, 0]}>
+        {/* <Text h3 gradient={gradients.primary} end={[0.7, 0]}>
           {t('extras.title1')}
-        </Text>
-        <Text h3 gradient={gradients.primary} end={[0.7, 0]}>
+        </Text> */}
+        {/* <Text h3 gradient={gradients.primary} end={[0.7, 0]}>
           {t('extras.title2')}
         </Text>
         <Text p marginVertical={sizes.sm}>
@@ -206,7 +206,7 @@ const Participants = () => {
         </Text>
         <Text p semibold>
           {t('extras.schedule')}
-        </Text>
+        </Text> */}
 
         {/* using map for items due to nested scrolls on same direction (vertical) */}
         {participants?.map((participant) => (
@@ -218,12 +218,12 @@ const Participants = () => {
         ))}
       </Block>
 
-      {/* contact us */}
+      {/* contact us
       <Button gradient={gradients.primary} marginTop={sizes.s}>
         <Text bold white transform="uppercase" marginHorizontal={sizes.sm}>
           {t('extras.contactUs')}
         </Text>
-      </Button>
+      </Button> */}
 
       {/* change time modal */}
       {/* <Modal
