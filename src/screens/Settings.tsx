@@ -60,19 +60,19 @@ const Settings = () => {
           />
         </Block>
 
-        <Block
+        {/* <Block
           row
           align="center"
           justify="space-between"
           marginBottom={sizes.sm}>
           <Text>{t('settings.recommended.faceid')}</Text>
           <Switch checked />
-        </Block>
-        <Block row align="center" justify="space-between">
+        </Block> */}
+        {/* <Block row align="center" justify="space-between">
           <Text>{t('settings.recommended.autolock')}</Text>
           <Switch />
-        </Block>
-        <Button
+        </Block> */}
+        {/* <Button
           row
           align="center"
           justify="space-between"
@@ -85,10 +85,10 @@ const Settings = () => {
             height={18}
             width={10}
           />
-        </Button>
+        </Button> */}
       </Block>
       {/* payment */}
-      <Block card padding={sizes.sm} marginBottom={sizes.sm}>
+      {/* <Block card padding={sizes.sm} marginBottom={sizes.sm}>
         <Block row align="center" marginBottom={sizes.s}>
           <Block
             flex={0}
@@ -126,10 +126,10 @@ const Settings = () => {
             width={10}
           />
         </Button>
-      </Block>
+      </Block> */}
 
       {/* privacy */}
-      <Block card padding={sizes.sm} marginBottom={sizes.sm}>
+      {/* <Block card padding={sizes.sm} marginBottom={sizes.sm}>
         <Block row align="center" marginBottom={sizes.s}>
           <Block
             flex={0}
@@ -189,7 +189,7 @@ const Settings = () => {
             width={10}
           />
         </Button>
-      </Block>
+      </Block> */}
     </Block>
   );
 };
