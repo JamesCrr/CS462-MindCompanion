@@ -26,6 +26,7 @@ const Participant = ({
   booked,
   available,
   onLeaveFeedback,
+  onViewItemsToBring,
   // onBook,
   // onSave,
   // onTimeSelect,
@@ -46,8 +47,8 @@ const Participant = ({
         transform="uppercase"
         success={available}
         danger={!available}>
-        {t(`extras.${available ? 'available' : 'unavailable'}`)}
-      </Text> */}
+        {t(`extras.${available ? 'unavailable' : 'available'}`)}
+      </Text>
       <Block row justify="space-evenly" marginTop={sizes.sm}>
         {/* <Button
           flex={0.5}
@@ -90,10 +91,21 @@ const Participant = ({
           flex={0.5}
           // disabled={!available}
           onPress={() => onLeaveFeedback?.()}
+          marginHorizontal={sizes.s}
           gradient={gradients.primary}>
           <Text bold white transform="uppercase" marginHorizontal={sizes.sm}>
             {/* {t(booked ? 'extras.booked' : 'extras.book')} */}
-            Give Feedback
+            {t('eventParticipants.viewFeedback')}
+          </Text>
+        </Button>
+        <Button
+          flex={0.5}
+          // disabled={!available}
+          onPress={() => onViewItemsToBring?.()}
+          gradient={gradients.primary}>
+          <Text bold white transform="uppercase" marginHorizontal={sizes.sm}>
+            {/* {t(booked ? 'extras.booked' : 'extras.book')} */}
+            {t('eventParticipants.viewItemsToBring')}
           </Text>
         </Button>
       </Block>
@@ -189,24 +201,26 @@ const Participants = () => {
     navigation.navigate("FeedbackParticipant", { leaveFeedback: true, eventId: params.eventId, eventDetails: eventDetails, userRecord: userRecord, participantName: participantName }); 
   }
 
+  const handleViewItemsToBring = async (participant: any) => {
+    console.log("Viewing Items for Participant", participant.name, participant.id,  params.eventId);
+    navigation.navigate("ItemsBringParticipant", { eventId: params.eventId, participantId: participant.id});
+  }
+
   return (
     <Block safe marginHorizontal={sizes.padding} paddingBottom={sizes.sm}>
       <Block
         scroll
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingVertical: sizes.md}}>
-        {/* <Text h3 gradient={gradients.primary} end={[0.7, 0]}>
-          {t('extras.title1')}
-        </Text> */}
-        {/* <Text h3 gradient={gradients.primary} end={[0.7, 0]}>
-          {t('extras.title2')}
+        <Text h3 gradient={gradients.primary} end={[0.7, 0]}>
+          {t('eventParticipants.title1')}
         </Text>
         <Text p marginVertical={sizes.sm}>
-          {t('extras.description')}
+          {t('eventParticipants.description')}
         </Text>
         <Text p semibold>
-          {t('extras.schedule')}
-        </Text> */}
+          {t('eventParticipants.list')}
+        </Text>
 
         {/* using map for items due to nested scrolls on same direction (vertical) */}
         {participants?.map((participant) => (
@@ -214,12 +228,13 @@ const Participants = () => {
             {...participant}
             key={`participant-${participant?.name}`}
             onLeaveFeedback={() => {handleLeaveFeedback(participant?.name)}}
+            onViewItemsToBring={() => {handleViewItemsToBring(participant)}}
           />
         ))}
       </Block>
 
-      {/* contact us
-      <Button gradient={gradients.primary} marginTop={sizes.s}>
+      {/* contact us */}
+      {/* <Button gradient={gradients.primary} marginTop={sizes.s}>
         <Text bold white transform="uppercase" marginHorizontal={sizes.sm}>
           {t('extras.contactUs')}
         </Text>

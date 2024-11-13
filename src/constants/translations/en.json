@@ -99,6 +99,7 @@
     "privacy": "Privacy",
     "register": "Register",
     "login": "Login",
+    "eventParticipants": "Event Participants",
     "extra": "Automotive",
     "shopping": "Shopping Cart",
     "checklist": "Items Checklist",
@@ -139,6 +140,13 @@
     "book": "Book",
     "booked": "Booked",
     "contactUs": "Contact us"
+  },
+  "eventParticipants": {
+    "title1": "Event Participants",
+    "description": "Manage your event participants",
+    "list": "Participants List",
+    "viewFeedback": "View Feedback",
+    "viewItemsToBring": "View Items"
   },
   "register": {
     "title": "Welcome",

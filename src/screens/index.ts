@@ -31,3 +31,4 @@ export { default as StaffAttendanceLocation } from "./StaffAttendanceLocation";
 export { default as EventRecord } from "./EventRecord";
 export { default as TrackLocation } from "./TrackLocation";
 export { default as FeedbackParticipant } from "./FeedbackParticipant";
+export { default as ItemsBringParticipant } from "./ItemsBringParticipant";
