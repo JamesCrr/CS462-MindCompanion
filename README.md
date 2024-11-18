@@ -8,6 +8,16 @@ Using the mobile application is very simple but it does require you to understan
 * Getting started: [https://reactnative.dev/docs/getting-started](https://reactnative.dev/docs/getting-started)
 * React Fundamentals: [https://reactnative.dev/docs/intro-react](https://reactnative.dev/docs/intro-react)
 
+Start dev server
+```
+npx expo start
+```
+
+To build to android using eas
+```
+eas build --profile development --platform android
+```
+
 ## Installation
 
 Once you've downloaded the product from our website you should unzip the folder. The next step is for you to open up your terminal and go directly to the newly created folder called `soft-ui-react-native-vX.Y` (x and y are numbers indicating the version number). Once you're there run `npm install` or `yarn install` and then `expo start` to start the project.
